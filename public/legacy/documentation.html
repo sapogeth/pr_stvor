@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STVOR Documentation — Integration Guide</title>
+  <meta name="description" content="Full integration guide for @stvor/web3. Web3, TON, EVM, AI Agents. ML-KEM-768 + Double Ratchet. Zero dependencies." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="64x64" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+  <link rel="canonical" href="https://pqc.stvor.xyz/documentation" />
+  <style>
+    :root {
+      --bg:      #07070f;
+      --bg2:     #0e0e1a;
+      --bg3:     #16162a;
+      --border:  #1e1e35;
+      --border2: #2a2a45;
+      --text:    #f0f0f8;
+      --text2:   #8888aa;
+      --purple:  #6c63ff;
+      --teal:    #00d4aa;
+      --red:     #ff6b6b;
+      --yellow:  #ffd166;
+      --r:       10px;
+      --r2:      6px;
+      --sidebar: 260px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 15px;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+    /* ── Nav ── */
+    .topnav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 56px;
+      background: rgba(7,7,15,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      padding: 0 1.5rem;
+      gap: 1.5rem;
+    }
+    .topnav-brand {
+      font-weight: 800; font-size: 1rem; letter-spacing: -0.02em;
+      color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+    }
+    .topnav-brand .badge {
+      font-size: 0.6rem; font-weight: 700;
+      background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.3);
+      color: var(--purple); padding: 2px 6px; border-radius: 20px;
+    }
+    .topnav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .topnav-links a {
+      color: var(--text2); text-decoration: none; font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+    .topnav-links a:hover, .topnav-links a.active { color: var(--text); }
+    .topnav-right { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
+    .topnav-version {
+      font-size: 0.75rem; color: var(--text2);
+      background: var(--bg2); border: 1px solid var(--border);
+      padding: 3px 10px; border-radius: 20px;
+      font-family: 'SF Mono', monospace;
+    }
+
+    /* ── Layout ── */
+    .layout {
+      display: flex;
+      margin-top: 56px;
+      min-height: calc(100vh - 56px);
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar);
+      flex-shrink: 0;
+      position: fixed;
+      top: 56px; left: 0;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      background: var(--bg);
+      padding: 1.5rem 0;
+    }
+    .sidebar::-webkit-scrollbar { width: 3px; }
+
+    .sidebar-section {
+      margin-bottom: 0.25rem;
+    }
+    .sidebar-heading {
+      font-size: 0.65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--text2); padding: 0.75rem 1.25rem 0.4rem;
+    }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 8px;
+      padding: 0.4rem 1.25rem;
+      color: var(--text2); text-decoration: none;
+      font-size: 0.855rem;
+      border-left: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .sidebar-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+    .sidebar-link.active {
+      color: var(--purple); border-left-color: var(--purple);
+      background: rgba(108,99,255,0.06);
+    }
+    .sidebar-link .dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: currentColor; flex-shrink: 0; opacity: 0.5;
+    }
+
+    /* ── Main content ── */
+    .main {
+      margin-left: var(--sidebar);
+      flex: 1;
+      max-width: 860px;
+      padding: 3rem 3.5rem 6rem;
+    }
+
+    /* ── Section anchors ── */
+    .doc-section {
+      margin-bottom: 5rem;
+      scroll-margin-top: 80px;
+    }
+
+    .section-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      padding: 3px 10px; border-radius: 20px;
+      margin-bottom: 0.75rem;
+    }
+    .badge-web3  { background: rgba(108,99,255,0.12); color: var(--purple); border: 1px solid rgba(108,99,255,0.25); }
+    .badge-ton   { background: rgba(0,136,204,0.12); color: #0af; border: 1px solid rgba(0,136,204,0.25); }
+    .badge-ai    { background: rgba(0,212,170,0.12); color: var(--teal); border: 1px solid rgba(0,212,170,0.25); }
+    .badge-core  { background: rgba(255,107,107,0.1); color: var(--red); border: 1px solid rgba(255,107,107,0.2); }
+    .badge-aa    { background: rgba(255,209,102,0.1); color: var(--yellow); border: 1px solid rgba(255,209,102,0.2); }
+
+    h1.doc-h1 {
+      font-size: 2.4rem; font-weight: 900; letter-spacing: -0.03em;
+      line-height: 1.1; margin-bottom: 1rem;
+    }
+    h2.doc-h2 {
+      font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em;
+      margin-bottom: 1rem; margin-top: 0;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    h3.doc-h3 {
+      font-size: 1.05rem; font-weight: 700;
+      margin: 2rem 0 0.75rem; color: var(--text);
+    }
+    .doc-lead {
+      font-size: 1.05rem; color: var(--text2); line-height: 1.75;
+      margin-bottom: 2rem; max-width: 640px;
+    }
+    p { color: var(--text2); line-height: 1.75; margin-bottom: 1rem; }
+    strong { color: var(--text); }
+
+    /* ── Divider ── */
+    .divider {
+      border: none; border-top: 1px solid var(--border);
+      margin: 3rem 0;
+    }
+
+    /* ── Callout boxes ── */
+    .callout {
+      border-radius: var(--r);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+      display: flex; gap: 0.75rem;
+      line-height: 1.6;
+    }
+    .callout-icon { flex-shrink: 0; font-size: 1rem; }
+    .callout-tip  { background: rgba(0,212,170,0.07); border: 1px solid rgba(0,212,170,0.2); color: #c0f0e8; }
+    .callout-warn { background: rgba(255,209,102,0.07); border: 1px solid rgba(255,209,102,0.2); color: #f5e0a0; }
+    .callout-info { background: rgba(108,99,255,0.07); border: 1px solid rgba(108,99,255,0.2); color: #ccc8ff; }
+
+    /* ── Code blocks ── */
+    .code-wrap {
+      border-radius: var(--r);
+      overflow: hidden;
+      margin: 1.25rem 0;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px var(--border2);
+    }
+    .code-bar {
+      display: flex; align-items: center; gap: 0;
+      background: #1a1a2e;
+      border-bottom: 1px solid var(--border2);
+      padding: 0 1rem;
+      height: 38px;
+      position: relative;
+    }
+    .code-dots { display: flex; align-items: center; gap: 6px; }
+    .cd { width: 11px; height: 11px; border-radius: 50%; }
+    .cd-r { background: #ff5f57; }
+    .cd-y { background: #febc2e; }
+    .cd-g { background: #28c840; }
+    .code-title {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      font-size: 0.7rem; color: #555580;
+      font-family: 'SF Mono', monospace; white-space: nowrap;
+    }
+    .code-lang {
+      margin-left: auto;
+      font-size: 0.65rem; color: #444466;
+      font-family: 'SF Mono', monospace;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    pre.code-pre {
+      background: #0a0a18;
+      margin: 0; padding: 1.25rem 1.5rem;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.82rem; line-height: 1.85;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    pre.code-pre::before {
+      content: '';
+      display: block;
+      height: 0;
+    }
+
+    /* inline code */
+    code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.82em;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      padding: 1px 6px; border-radius: 4px;
+      color: var(--teal);
+    }
+
+    /* syntax */
+    .kw  { color: #c792ea; }
+    .str { color: #c3e88d; }
+    .fn  { color: #82aaff; }
+    .cmt { color: #3d4f6b; font-style: italic; }
+    .obj { color: #00d4aa; }
+    .num { color: #f78c6c; }
+    .key { color: #ffcb6b; }
+
+    /* ── API table ── */
+    .api-table {
+      width: 100%; border-collapse: collapse;
+      margin: 1.25rem 0; font-size: 0.85rem;
+    }
+    .api-table th {
+      text-align: left; padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border2);
+      color: var(--text2); font-size: 0.75rem;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+    .api-table td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text2);
+      vertical-align: top;
+    }
+    .api-table tr:last-child td { border-bottom: none; }
+    .api-table td:first-child { font-family: 'SF Mono', monospace; font-size: 0.8rem; color: var(--teal); }
+    .api-table td code { background: none; border: none; padding: 0; color: var(--purple); font-size: 0.8rem; }
+    .api-table .req { color: var(--red); font-size: 0.7rem; font-weight: 700; }
+    .api-table .opt { color: var(--text2); font-size: 0.7rem; }
+
+    /* ── Steps ── */
+    .steps { display: flex; flex-direction: column; gap: 0; margin: 1.5rem 0; }
+    .step {
+      display: flex; gap: 1.25rem;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step:last-child { border-bottom: none; }
+    .step-num-badge {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 800; color: var(--purple);
+      margin-top: 1px;
+    }
+    .step-body {}
+    .step-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; }
+    .step-desc { font-size: 0.875rem; color: var(--text2); line-height: 1.65; }
+
+    /* ── Mobile menu button ── */
+    .nav-hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; background: none; border: none; padding: 6px;
+      margin-left: auto;
+    }
+    .nav-hamburger span {
+      display: block; width: 20px; height: 2px;
+      background: var(--text); border-radius: 2px; transition: all 0.25s;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+    /* ── Sidebar toggle button (mobile) ── */
+    .sidebar-toggle {
+      display: none;
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 300;
+      background: var(--purple); color: #fff;
+      border: none; border-radius: 50%;
+      width: 48px; height: 48px;
+      font-size: 1.1rem; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(108,99,255,0.5);
+      align-items: center; justify-content: center;
+    }
+
+    /* ── Sidebar overlay (mobile) ── */
+    .sidebar-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 149;
+      background: rgba(0,0,0,0.6);
+    }
+    .sidebar-overlay.show { display: block; }
+
+    /* ── API table scroll wrapper ── */
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.25rem 0; }
+    .table-wrap .api-table { margin: 0; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        z-index: 150;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; padding: 2rem 1.5rem 5rem; }
+      .topnav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .sidebar-toggle { display: flex; }
+
+      /* Mobile nav drawer */
+      .mobile-nav {
+        position: fixed; top: 56px; left: 0; right: 0; z-index: 199;
+        background: var(--bg2);
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 1.5rem;
+        display: none; flex-direction: column; gap: 0.75rem;
+      }
+      .mobile-nav.show { display: flex; }
+      .mobile-nav a {
+        color: var(--text2); text-decoration: none;
+        font-size: 0.95rem; padding: 0.5rem 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .mobile-nav a:last-child { border-bottom: none; }
+      .mobile-nav a.active { color: var(--purple); }
+
+      .topnav-right { display: none; }
+      h2.doc-h2 { font-size: 1.35rem; flex-wrap: wrap; gap: 0.5rem; }
+      .doc-section { margin-bottom: 3.5rem; }
+    }
+
+    @media (max-width: 600px) {
+      h1.doc-h1 { font-size: 1.7rem; }
+      h2.doc-h2 { font-size: 1.2rem; }
+      pre.code-pre { font-size: 0.74rem; padding: 1rem; }
+      .code-bar { padding: 0 0.75rem; }
+      .code-title { display: none; }
+      .callout { flex-direction: column; gap: 0.5rem; }
+      .main { padding: 1.5rem 1rem 5rem; }
+      .doc-lead { font-size: 0.95rem; }
+      .api-table th, .api-table td { padding: 0.5rem 0.6rem; font-size: 0.78rem; }
+      .section-badge { font-size: 0.62rem; }
+      .step { gap: 0.85rem; }
+    }
+
+    @media (max-width: 380px) {
+      pre.code-pre { font-size: 0.68rem; }
+    }
+    .hm-floating {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%); z-index: 250;
+      background: rgba(7,7,15,0.85);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      border: 1px solid var(--border2);
+      border-radius: 999px; padding: 5px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+      display: inline-flex; align-items: center; gap: 2px;
+    }
+    .hm-btn {
+      padding: 6px 14px; border-radius: 999px; border: none;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em;
+      cursor: pointer; font-family: inherit; transition: all 0.2s;
+      color: var(--text2); background: none;
+    }
+    .hm-btn:hover { color: var(--text); }
+    .hm-btn.active { background: var(--bg3); color: var(--text); }
+    .hm-btn.hm-machine-on.active { background: var(--purple); color: #fff; }
+
+    .copy-ai-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 20px;
+      background: rgba(0,212,170,0.08);
+      border: 1px solid rgba(0,212,170,0.2);
+      color: #00d4aa; font-size: 0.78rem; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .copy-ai-btn:hover { background: rgba(0,212,170,0.15); border-color: rgba(0,212,170,0.4); }
+
+    /* Floating toggle stays above machine view */
+    .hm-floating { z-index: 10005; }
+
+    /* ── Machine view ── */
+    .machine-view {
+      display: none;
+      position: fixed; inset: 0; z-index: 9999;
+      background: #020208;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      overflow-y: auto;
+    }
+    .machine-view.show { display: flex; flex-direction: column; }
+    .machine-view::before {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 10001;
+      background: repeating-linear-gradient(0deg, rgba(0,212,170,0.015) 0px, rgba(0,212,170,0.015) 1px, transparent 1px, transparent 3px);
+      mix-blend-mode: overlay;
+    }
+    .machine-view::after {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 10000;
+      background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.35) 100%);
+    }
+    .mv-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.75rem 1.5rem;
+      border-bottom: 1px solid #1a1a2e;
+      background: #07070f;
+      position: sticky; top: 0; z-index: 1;
+      opacity: 0;
+    }
+    .machine-view.show .mv-topbar { animation: mvFadeIn 0.4s 0.05s ease-out forwards; }
+    .mv-copy {
+      padding: 6px 16px; border-radius: 6px;
+      background: rgba(0,212,170,0.08); border: 1px solid rgba(0,212,170,0.2);
+      color: #00d4aa; font-size: 0.75rem; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+    }
+    .mv-body { padding: 2rem 2.5rem 7rem; flex: 1; position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; }
+    .mv-boot { margin-bottom: 2.5rem; }
+    .mv-line {
+      font-size: 0.82rem; line-height: 2;
+      opacity: 0; transform: translateY(2px);
+    }
+    .mv-time { color: #2a2a4a; }
+    .mv-key  { color: #6c63ff; }
+    .mv-val  { color: #00d4aa; }
+    .mv-ok   { color: #28c840; text-shadow: 0 0 12px rgba(40,200,64,0.5); }
+    .mv-h2   { color: #f0f0f8; font-size: 0.95rem; font-weight: 700; margin: 2.5rem 0 0.75rem; }
+    .mv-h3   { color: #c8c8e0; font-size: 0.82rem; font-weight: 700; margin: 1.5rem 0 0.5rem; }
+    .mv-section { margin-bottom: 2rem; opacity: 0; transform: translateY(8px); }
+
+    .mv-cursor {
+      display: inline-block; width: 8px; height: 14px;
+      background: #00d4aa; vertical-align: middle; margin-left: 4px;
+      animation: blink-cursor 0.9s steps(2) infinite;
+      box-shadow: 0 0 8px rgba(0,212,170,0.7);
+    }
+    .mv-cursor.gone { display: none; }
+    @keyframes blink-cursor { 50% { opacity: 0; } }
+    @keyframes bootLine {
+      0%   { opacity: 0; transform: translateY(2px); filter: blur(2px); }
+      40%  { opacity: 0.5; filter: blur(0); }
+      100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+    @keyframes mvFadeIn { to { opacity: 1; transform: translateY(0); } }
+    @keyframes mvFadeUp { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: translateY(0); } }
+
+    .machine-view.show .mv-line { animation: bootLine 0.45s ease-out forwards; }
+    .machine-view.show .mv-line:nth-child(1)  { animation-delay: 0.20s; }
+    .machine-view.show .mv-line:nth-child(2)  { animation-delay: 0.40s; }
+    .machine-view.show .mv-line:nth-child(3)  { animation-delay: 0.55s; }
+    .machine-view.show .mv-line:nth-child(4)  { animation-delay: 0.70s; }
+    .machine-view.show .mv-line:nth-child(5)  { animation-delay: 0.85s; }
+    .machine-view.show .mv-line:nth-child(6)  { animation-delay: 1.00s; }
+    .machine-view.show .mv-line:nth-child(7)  { animation-delay: 1.15s; }
+    .machine-view.show .mv-line:nth-child(8)  { animation-delay: 1.30s; }
+    .machine-view.show .mv-line:nth-child(9)  { animation-delay: 1.45s; }
+    .machine-view.show .mv-line:nth-child(10) { animation-delay: 1.60s; }
+    .machine-view.show .mv-line:nth-child(11) { animation-delay: 1.75s; }
+
+    .machine-view.show .mv-section { animation: mvFadeUp 0.5s ease-out forwards; }
+    .machine-view.show .mv-section:nth-of-type(1)  { animation-delay: 2.20s; }
+    .machine-view.show .mv-section:nth-of-type(2)  { animation-delay: 2.35s; }
+    .machine-view.show .mv-section:nth-of-type(3)  { animation-delay: 2.50s; }
+    .machine-view.show .mv-section:nth-of-type(4)  { animation-delay: 2.65s; }
+    .machine-view.show .mv-section:nth-of-type(5)  { animation-delay: 2.80s; }
+    .machine-view.show .mv-section:nth-of-type(6)  { animation-delay: 2.95s; }
+    .machine-view.show .mv-section:nth-of-type(7)  { animation-delay: 3.10s; }
+    .machine-view.show .mv-section:nth-of-type(8)  { animation-delay: 3.25s; }
+    .machine-view.show .mv-section:nth-of-type(9)  { animation-delay: 3.40s; }
+    .machine-view.show .mv-section:nth-of-type(10) { animation-delay: 3.55s; }
+    .machine-view.show .mv-section:nth-of-type(11) { animation-delay: 3.70s; }
+    .machine-view.show .mv-section:nth-of-type(n+12) { animation-delay: 3.85s; }
+
+    .mv-pre {
+      font-size: 0.78rem; line-height: 1.8; color: #8888aa;
+      white-space: pre; overflow-x: auto;
+      background: #07070f; border: 1px solid #1a1a2e;
+      border-radius: 6px; padding: 1rem 1.25rem;
+    }
+    .mv-pre .kw  { color: #c792ea; }
+    .mv-pre .str { color: #c3e88d; }
+    .mv-pre .fn  { color: #82aaff; }
+    .mv-pre .cmt { color: #3a3a5a; }
+    .mv-pre .obj { color: #00d4aa; }
+    .mv-pre .num { color: #f78c6c; }
+
+    .mv-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin: 0.5rem 0; }
+    .mv-table td, .mv-table th { padding: 6px 12px; border: 1px solid #1a1a2e; text-align: left; vertical-align: top; }
+    .mv-table th { color: #4a4a6a; font-weight: 600; background: #0d0d1a; }
+    .mv-table td:first-child { color: #6c63ff; white-space: nowrap; }
+    .mv-table td:last-child  { color: #8888aa; }
+    .mv-table .req { color: #ff6b6b; font-weight: 700; }
+    .mv-table .opt { color: #4a4a6a; }
+  </style>
+</head>
+<body>
+
+<!-- ── Top nav ── -->
+<nav class="topnav">
+  <a class="topnav-brand" href="/">
+    STVOR <span class="badge">PQC</span>
+  </a>
+  <div class="topnav-links">
+    <a href="/">Home</a>
+    <a href="/documentation" class="active">Docs</a>
+    <a href="https://github.com/sapogeth/web3-sdk" target="_blank">GitHub ↗</a>
+    <a href="https://npmjs.com/@stvor/web3" target="_blank">npm ↗</a>
+    <a href="https://sdk.stvor.xyz" target="_blank">Web2 PQC ↗</a>
+  </div>
+  <div class="topnav-right">
+    <button class="copy-ai-btn" id="copy-ai-btn" onclick="copyForAIDoc()">Copy for AI</button>
+    <span class="topnav-version">v0.3.0</span>
+  </div>
+  <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="/">Home</a>
+  <a href="/documentation" class="active">Docs</a>
+  <a href="https://github.com/sapogeth/web3-sdk" target="_blank">GitHub ↗</a>
+  <a href="https://npmjs.com/@stvor/web3" target="_blank">npm ↗</a>
+  <a href="https://sdk.stvor.xyz" target="_blank">Web2 PQC ↗</a>
+</div>
+
+<!-- Floating Human/Machine toggle (in-page) -->
+<div class="hm-floating">
+  <button class="hm-btn active" id="hm-human" onclick="setView('human')">HUMAN</button>
+  <button class="hm-btn hm-machine-on" id="hm-machine" onclick="setView('machine')">MACHINE</button>
+</div>
+
+<!-- Sidebar overlay for mobile -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- Sidebar toggle FAB -->
+<button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Table of contents">☰</button>
+
+<div class="layout">
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-heading">Getting Started</div>
+    <a class="sidebar-link active" href="#install"><span class="dot"></span>Installation</a>
+    <a class="sidebar-link" href="#quickstart"><span class="dot"></span>Quick Start</a>
+    <a class="sidebar-link" href="#architecture"><span class="dot"></span>Architecture</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-heading">Web3 · EVM</div>
+    <a class="sidebar-link" href="#evm-identity"><span class="dot"></span>Wallet Identity</a>
+    <a class="sidebar-link" href="#evm-session"><span class="dot"></span>E2EE Session</a>
+    <a class="sidebar-link" href="#evm-send"><span class="dot"></span>Send & Receive</a>
+    <a class="sidebar-link" href="#evm-aa"><span class="dot"></span>Account Abstraction</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-heading">TON Blockchain</div>
+    <a class="sidebar-link" href="#ton-connect"><span class="dot"></span>TON Connect</a>
+    <a class="sidebar-link" href="#ton-registry"><span class="dot"></span>Key Registry</a>
+    <a class="sidebar-link" href="#ton-messaging"><span class="dot"></span>Messaging</a>
+    <a class="sidebar-link" href="#ton-v5"><span class="dot"></span>Wallet v5 Extension</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-heading">AI Agents</div>
+    <a class="sidebar-link" href="#ai-identity"><span class="dot"></span>Agent Identity</a>
+    <a class="sidebar-link" href="#ai-channel"><span class="dot"></span>Private Channel</a>
+    <a class="sidebar-link" href="#ai-memory"><span class="dot"></span>Long-term Memory</a>
+    <a class="sidebar-link" href="#ai-multiagent"><span class="dot"></span>Multi-agent</a>
+    <a class="sidebar-link" href="#ai-frameworks"><span class="dot"></span>Framework Examples</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-heading">Low-level API</div>
+    <a class="sidebar-link" href="#wasm-mlkem"><span class="dot"></span>ML-KEM-768</a>
+    <a class="sidebar-link" href="#wasm-session"><span class="dot"></span>Sessions</a>
+    <a class="sidebar-link" href="#wasm-crypto"><span class="dot"></span>Crypto Primitives</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-heading">Reference</div>
+    <a class="sidebar-link" href="#api-ref"><span class="dot"></span>API Reference</a>
+    <a class="sidebar-link" href="#security"><span class="dot"></span>Security Model</a>
+    <a class="sidebar-link" href="#contract"><span class="dot"></span>Smart Contract</a>
+  </div>
+</aside>
+
+<!-- ── Main ── -->
+<main class="main">
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- INSTALL -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="install">
+    <h1 class="doc-h1">Integration Guide</h1>
+    <p class="doc-lead">
+      Complete documentation for integrating <code>@stvor/web3</code> — post-quantum E2EE — into Web3 apps, TON DApps, and AI agent systems. Zero external dependencies. NIST FIPS 203.
+    </p>
+
+    <h2 class="doc-h2">Installation</h2>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">terminal</span>
+        <span class="code-lang">bash</span>
+      </div>
+      <pre class="code-pre"><span class="cmt"># npm</span>
+npm install @stvor/web3
+
+<span class="cmt"># yarn</span>
+yarn add @stvor/web3
+
+<span class="cmt"># pnpm</span>
+pnpm add @stvor/web3</pre>
+    </div>
+
+    <h3 class="doc-h3">Requirements</h3>
+    <p>Node.js ≥ 18 or any modern browser (Chrome 90+, Firefox 89+, Safari 15+). Requires <strong>WebAssembly</strong> and <strong>Web Crypto API</strong> — available everywhere since 2022.</p>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">ℹ️</span>
+      <div>The package ships a 270 KB Rust WASM binary. No native addons, no node-gyp. Works in Cloudflare Workers, Vercel Edge, Deno, Bun.</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- QUICK START -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="quickstart">
+    <h2 class="doc-h2">Quick Start</h2>
+    <p>Two imports, three lines. The WASM module must be initialised once before use.</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">quickstart.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> { <span class="obj">StvorWeb3</span> } <span class="kw">from</span> <span class="str">'@stvor/web3'</span>;
+<span class="kw">import</span> initWasm     <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+
+<span class="cmt">// 1. Load WASM crypto engine (once, at app startup)</span>
+<span class="kw">const</span> wasm = <span class="kw">await</span> <span class="fn">initWasm</span>();
+
+<span class="cmt">// 2. Connect — derives quantum-safe identity from your wallet/signer</span>
+<span class="kw">const</span> alice = <span class="kw">await</span> StvorWeb3.<span class="fn">connect</span>({ provider, wasm });
+
+<span class="cmt">// 3. Send end-to-end encrypted message</span>
+<span class="kw">await</span> alice.<span class="fn">send</span>(bobAddress, { text: <span class="str">'Hello, quantum-safe world!'</span> });
+
+<span class="cmt">// 4. Receive — decrypted automatically</span>
+alice.<span class="fn">onMessage</span>(msg => console.<span class="fn">log</span>(msg.from, msg.data));
+
+<span class="cmt">// 5. Cleanup</span>
+<span class="kw">await</span> alice.<span class="fn">disconnect</span>();</pre>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- ARCHITECTURE -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="architecture">
+    <h2 class="doc-h2">Architecture</h2>
+    <p>STVOR uses a <strong>hybrid post-quantum scheme</strong>: ML-KEM-768 (quantum-safe) combined with P-256 ECDH (classical). Breaking the encryption requires breaking <em>both simultaneously</em> — impossible with any known algorithm.</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">crypto stack</span>
+        <span class="code-lang">text</span>
+      </div>
+      <pre class="code-pre">Identity:     Wallet address  (TON / EVM / any signer)
+Key exchange: Hybrid X3DH
+               ├── P-256 ECDH        (classical, NIST)
+               └── ML-KEM-768        (post-quantum, NIST FIPS 203)
+               └── HKDF-SHA256 combine → shared_secret
+Sessions:     Double Ratchet  (Signal Protocol)
+               ├── Sending chain ratchet  → fresh key per message
+               └── DH ratchet            → break-in recovery
+Encryption:   AES-256-GCM     (authenticated)
+Signing:      ECDSA P-256 / SHA-256
+Core:         Rust → WASM     (270 KB, zero C deps, memory-safe)</pre>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" style="vertical-align:middle"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      <div><strong>Hybrid security:</strong> <code>shared_key = HKDF(ecdh_sk ‖ mlkem_ss, "STVOR-HYBRID-v1")</code>. If classical ECDH is broken by a quantum computer, ML-KEM-768 still protects the key. If ML-KEM has a future flaw, ECDH still holds.</div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- WEB3 — EVM IDENTITY -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="evm-identity">
+    <span class="section-badge badge-web3">Web3 · EVM</span>
+    <h2 class="doc-h2">Wallet Identity (EVM)</h2>
+    <p>Any EIP-1193 wallet — MetaMask, Coinbase, Ledger, Rainbow — becomes a cryptographic identity. The user signs a deterministic message once; STVOR derives their P-256 + ML-KEM-768 keypairs via HKDF. <strong>Same wallet → same keys, always.</strong></p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num-badge">1</div>
+        <div class="step-body">
+          <div class="step-title">User signs the STVOR derivation message</div>
+          <div class="step-desc">The message is <code>STVOR-AA-EVM-v1:{chainId}:{address}</code>. This signature is the entropy source — never sent anywhere.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num-badge">2</div>
+        <div class="step-body">
+          <div class="step-title">HKDF derives P-256 identity keypair + signed pre-key</div>
+          <div class="step-desc">IK and SPK are derived deterministically from the signature. ML-KEM-768 keypair is generated fresh (randomised).</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num-badge">3</div>
+        <div class="step-body">
+          <div class="step-title">Public keys registered on-chain (optional)</div>
+          <div class="step-desc">For TON: stored in <code>stvor_registry.fc</code> smart contract. For EVM-only use, exchange public keys out-of-band or via your own registry.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">evm-identity.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> { <span class="obj">StvorAA</span> } <span class="kw">from</span> <span class="str">'@stvor/web3'</span>;
+<span class="kw">import</span> initWasm   <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+
+<span class="kw">const</span> wasm = <span class="kw">await</span> <span class="fn">initWasm</span>();
+
+<span class="cmt">// Works with MetaMask, Coinbase, Ledger, WalletConnect…</span>
+<span class="kw">const</span> client = <span class="kw">await</span> StvorAA.<span class="fn">connectEVM</span>({
+  provider: window.ethereum,   <span class="cmt">// any EIP-1193 provider</span>
+  chainId: <span class="num">1</span>,                  <span class="cmt">// Ethereum mainnet (or 137, 56, …)</span>
+  wasm,
+});
+
+console.<span class="fn">log</span>(client.address);   <span class="cmt">// '0xabc...' — EVM address</span>
+console.<span class="fn">log</span>(client.publicKey);  <span class="cmt">// P-256 identity key (base64url)</span>
+
+<span class="cmt">// Identity derivation is deterministic:</span>
+<span class="cmt">// personal_sign("STVOR-AA-EVM-v1:1:0xabc...")
+//   → HKDF(..., "IK",  32) → P-256 identity keypair
+//   → HKDF(..., "SPK", 32) → P-256 signed pre-key
+//   → wasm_mlkem_keygen()   → ML-KEM-768 keypair</span></pre>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- WEB3 — E2EE SESSION -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="evm-session">
+    <span class="section-badge badge-web3">Web3 · EVM</span>
+    <h2 class="doc-h2">E2EE Session Setup</h2>
+    <p>The first time Alice and Bob communicate, a <strong>hybrid X3DH</strong> key exchange establishes a shared secret. All subsequent messages use the <strong>Double Ratchet</strong> — each message has a unique key.</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">evm-session.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> { <span class="obj">StvorAA</span> } <span class="kw">from</span> <span class="str">'@stvor/web3'</span>;
+<span class="kw">import</span> initWasm   <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+
+<span class="kw">const</span> wasm = <span class="kw">await</span> <span class="fn">initWasm</span>();
+
+<span class="cmt">// Alice connects</span>
+<span class="kw">const</span> alice = <span class="kw">await</span> StvorAA.<span class="fn">connectEVM</span>({ provider: aliceProvider, chainId: <span class="num">1</span>, wasm });
+
+<span class="cmt">// Bob connects (different wallet)</span>
+<span class="kw">const</span> bob = <span class="kw">await</span> StvorAA.<span class="fn">connectEVM</span>({ provider: bobProvider, chainId: <span class="num">1</span>, wasm });
+
+<span class="cmt">// Alice sends — hybrid X3DH happens automatically on first message</span>
+<span class="kw">await</span> alice.<span class="fn">send</span>(bob.address, {
+  text: <span class="str">'First message — session established with hybrid X3DH'</span>,
+});
+
+<span class="cmt">// Bob receives and replies — Double Ratchet advances, new key per message</span>
+bob.<span class="fn">onMessage</span>(async msg => {
+  console.<span class="fn">log</span>(<span class="str">'From:'</span>, msg.from);   <span class="cmt">// '0xalice...'</span>
+  console.<span class="fn">log</span>(<span class="str">'Data:'</span>, msg.data);   <span class="cmt">// { text: 'First message...' }</span>
+  console.<span class="fn">log</span>(<span class="str">'At:'</span>,   msg.timestamp); <span class="cmt">// Date</span>
+
+  <span class="kw">await</span> bob.<span class="fn">send</span>(msg.from, { text: <span class="str">'Reply — different key than Alice's message'</span> });
+});</pre>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- WEB3 — SEND & RECEIVE -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="evm-send">
+    <span class="section-badge badge-web3">Web3 · EVM</span>
+    <h2 class="doc-h2">Send & Receive — Full Example</h2>
+    <p>Any JSON-serialisable payload is supported. The library handles serialisation, encryption, and delivery.</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">evm-chat.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> { <span class="obj">StvorAA</span> } <span class="kw">from</span> <span class="str">'@stvor/web3'</span>;
+<span class="kw">import</span> initWasm   <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+
+<span class="kw">const</span> wasm   = <span class="kw">await</span> <span class="fn">initWasm</span>();
+<span class="kw">const</span> client = <span class="kw">await</span> StvorAA.<span class="fn">connectEVM</span>({ provider: window.ethereum, chainId: <span class="num">1</span>, wasm });
+
+<span class="cmt">// ── Send any structured data ──────────────────────────────</span>
+<span class="kw">await</span> client.<span class="fn">send</span>(<span class="str">'0xrecipient...'</span>, {
+  text:          <span class="str">'Private governance vote'</span>,
+  vote:          <span class="str">'yes'</span>,
+  proposalId:    <span class="num">42</span>,
+  rationale:     <span class="str">'Increases treasury APY'</span>,
+  confidential:  <span class="kw">true</span>,
+});
+
+<span class="cmt">// ── Listen for all incoming messages ─────────────────────</span>
+<span class="kw">const</span> unsub = client.<span class="fn">onMessage</span>(msg => {
+  <span class="cmt">// msg.from      — sender address '0x...'</span>
+  <span class="cmt">// msg.data      — decrypted JSON payload</span>
+  <span class="cmt">// msg.timestamp — Date object</span>
+  <span class="cmt">// msg.id        — unique message ID</span>
+
+  <span class="kw">if</span> (msg.data.vote) {
+    console.<span class="fn">log</span>(`${msg.from} voted ${msg.data.vote} on proposal ${msg.data.proposalId}`);
+  }
+});
+
+<span class="cmt">// Unsubscribe when done</span>
+unsub();
+
+<span class="cmt">// ── Disconnect (stops polling, clears session state) ──────</span>
+<span class="kw">await</span> client.<span class="fn">disconnect</span>();</pre>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- EVM — ACCOUNT ABSTRACTION -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="evm-aa">
+    <span class="section-badge badge-aa">Account Abstraction · ERC-4337</span>
+    <h2 class="doc-h2">Account Abstraction (ERC-4337)</h2>
+    <p>Safe, Coinbase Smart Wallet, Biconomy, ZeroDev — any ERC-4337 wallet. STVOR can <strong>cryptographically bind</strong> an E2EE session to a specific UserOperation, proving that the encrypted channel belongs to the AA wallet that signed the op.</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">aa-binding.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> { <span class="obj">StvorAA</span> } <span class="kw">from</span> <span class="str">'@stvor/web3'</span>;
+<span class="kw">import</span> initWasm   <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+
+<span class="kw">const</span> wasm   = <span class="kw">await</span> <span class="fn">initWasm</span>();
+<span class="kw">const</span> client = <span class="kw">await</span> StvorAA.<span class="fn">connectEVM</span>({
+  provider: window.ethereum, <span class="cmt">// Safe, Coinbase, Biconomy — any EIP-1193</span>
+  chainId: <span class="num">1</span>,
+  wasm,
+});
+
+<span class="cmt">// ── Bind E2EE session to a UserOperation ──────────────────</span>
+<span class="cmt">// userOpHash comes from your bundler (EIP-4337)</span>
+<span class="kw">const</span> binding = client.<span class="fn">bindUserOp</span>(userOpHash, sessionRootKey);
+
+<span class="cmt">// binding = {
+//   userOpHash:        '0xdeadbeef...'      — the op being bound
+//   identitySig:       'base64url...'       — ECDSA sig over (userOpHash ‖ sessionCommitment)
+//   sessionCommitment: 'base64url...'       — HKDF commitment of session root key
+// }</span>
+
+<span class="cmt">// ── Verify peer's binding ─────────────────────────────────</span>
+<span class="kw">const</span> valid = client.<span class="fn">verifyUserOp</span>(binding, peerIdentityKey, sessionRootKey);
+console.<span class="fn">log</span>(<span class="str">'Binding valid:'</span>, valid); <span class="cmt">// true</span>
+
+<span class="cmt">// ── Send within the bound session ─────────────────────────</span>
+<span class="kw">await</span> client.<span class="fn">send</span>(peerAddress, {
+  action:     <span class="str">'execute_swap'</span>,
+  tokenIn:    <span class="str">'USDC'</span>,
+  tokenOut:   <span class="str">'ETH'</span>,
+  amount:     <span class="str">'1000'</span>,
+  boundToOp:  binding.userOpHash,
+});</pre>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" style="vertical-align:middle"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+      <div><strong>Why bind to a UserOperation?</strong> It proves that the encrypted instructions originated from the same wallet that signed the on-chain op. An attacker who intercepts the encrypted channel cannot replay it for a different op.</div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- TON — CONNECT -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="ton-connect">
+    <span class="section-badge badge-ton">TON Blockchain</span>
+    <h2 class="doc-h2">TON Connect Integration</h2>
+    <p>Connect any TON wallet (Tonkeeper, Wallet, MyTonWallet) via <strong>TON Connect v2</strong>. The wallet address becomes the userId — no separate accounts.</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">ton-connect.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> { <span class="obj">StvorWeb3</span> }  <span class="kw">from</span> <span class="str">'@stvor/web3'</span>;
+<span class="kw">import</span> initWasm       <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+<span class="kw">import</span> { <span class="obj">TonConnect</span> } <span class="kw">from</span> <span class="str">'@tonconnect/sdk'</span>; <span class="cmt">// your existing setup</span>
+
+<span class="kw">const</span> wasm = <span class="kw">await</span> <span class="fn">initWasm</span>();
+
+<span class="cmt">// Wrap your TonConnect instance in the STVOR provider interface</span>
+<span class="kw">const</span> tonProvider = {
+  <span class="fn">signTransaction</span>: (boc: string) => tonConnect.<span class="fn">sendTransaction</span>({ validUntil: Date.now() / <span class="num">1000</span> + <span class="num">300</span>, messages: [] }),
+  address: tonConnect.account?.address ?? <span class="str">''</span>,
+  network: tonConnect.account?.chain === <span class="str">'-3'</span> ? <span class="str">'testnet'</span> : <span class="str">'mainnet'</span>,
+};
+
+<span class="kw">const</span> client = <span class="kw">await</span> StvorWeb3.<span class="fn">connect</span>({
+  provider:         tonProvider,
+  contractAddress:  <span class="str">'EQD...'</span>,          <span class="cmt">// stvor_registry on TON</span>
+  tonApiUrl:        <span class="str">'https://testnet.toncenter.com/api/v2'</span>,
+  wasm,
+  tonApiKey:        process.env.<span class="obj">TON_API_KEY</span>, <span class="cmt">// optional, avoids rate limits</span>
+  pollIntervalMs:   <span class="num">5000</span>,               <span class="cmt">// how often to check for new messages</span>
+  pqc:              <span class="kw">true</span>,               <span class="cmt">// enable ML-KEM-768 (default: true)</span>
+});
+
+console.<span class="fn">log</span>(client.address); <span class="cmt">// '0:abc123...' — raw TON address</span>
+console.<span class="fn">log</span>(client.chain);   <span class="cmt">// 'testnet' | 'mainnet'</span></pre>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- TON — KEY REGISTRY -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="ton-registry">
+    <span class="section-badge badge-ton">TON Blockchain</span>
+    <h2 class="doc-h2">On-chain Key Registry</h2>
+    <p>Public keys are stored in the <code>stvor_registry.fc</code> FunC contract. This makes key discovery trustless — anyone can verify your identity key without a central server.</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">ton-registry.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> { <span class="obj">TonStorageClient</span> } <span class="kw">from</span> <span class="str">'@stvor/web3'</span>;
+
+<span class="kw">const</span> registry = <span class="kw">new</span> <span class="obj">TonStorageClient</span>({
+  tonApiUrl:        <span class="str">'https://testnet.toncenter.com/api/v2'</span>,
+  contractAddress:  <span class="str">'EQD...'</span>,
+  apiKey:           process.env.<span class="obj">TON_API_KEY</span>,
+});
+
+<span class="cmt">// ── Register your public keys on-chain ────────────────────</span>
+<span class="cmt">// Build the cell body (pure JS, no @ton/core needed)</span>
+<span class="kw">const</span> body = registry.<span class="fn">buildRegisterKeysBody</span>({
+  identityKey:          client.publicKey.identityKey,      <span class="cmt">// P-256, 65 bytes</span>
+  signedPreKey:         client.publicKey.signedPreKey,     <span class="cmt">// P-256, 65 bytes</span>
+  signedPreKeySignature: client.publicKey.spkSig,          <span class="cmt">// ECDSA DER sig</span>
+  mlkemEncapKey:        client.publicKey.mlkemEncapKey,    <span class="cmt">// ML-KEM-768, 1184 bytes</span>
+});
+
+<span class="cmt">// Sign via TonConnect and broadcast</span>
+<span class="kw">const</span> signedBoc = <span class="kw">await</span> tonConnect.<span class="fn">sendTransaction</span>({ messages: [{ address: contractAddress, amount: <span class="str">'50000000'</span>, payload: body }], validUntil: Date.now() / <span class="num">1000</span> + <span class="num">300</span> });
+<span class="kw">await</span> registry.<span class="fn">registerKeys</span>(client.publicKey, signedBoc);
+
+<span class="cmt">// ── Look up anyone's public keys ──────────────────────────</span>
+<span class="kw">const</span> bobKeys = <span class="kw">await</span> registry.<span class="fn">fetchKeys</span>(<span class="str">'0:bob_address...'</span>);
+<span class="cmt">// bobKeys = { identityKey, signedPreKey, signedPreKeySignature, mlkemEncapKey, address }</span></pre>
+    </div>
+
+    <h3 class="doc-h3">Contract ABI</h3>
+    <div class="table-wrap"><table class="api-table">
+      <thead><tr><th>Method</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>register_keys</td><td>internal</td><td>Store IK + SPK + SIG + ML-KEM EK for sender address</td></tr>
+        <tr><td>store_message</td><td>internal</td><td>Record a TON Storage bag ID for recipient</td></tr>
+        <tr><td>delete_message</td><td>internal</td><td>Remove a bag ID (recipient only)</td></tr>
+        <tr><td>get_keys(addr)</td><td>get-method</td><td>Returns (ik_cell, spk_cell, sig_cell, mlkem_cell, ts)</td></tr>
+        <tr><td>get_messages(addr)</td><td>get-method</td><td>Returns dict of pending message bag IDs</td></tr>
+        <tr><td>get_message_count(addr)</td><td>get-method</td><td>Count of pending messages</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- TON — MESSAGING -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="ton-messaging">
+    <span class="section-badge badge-ton">TON Blockchain</span>
+    <h2 class="doc-h2">TON Messaging — Full Flow</h2>
+    <p>Encrypted messages are stored off-chain in <strong>TON Storage</strong> (decentralised). Only the bag ID (32-byte hash) lands on-chain in the registry contract.</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">ton-dao-chat.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> { <span class="obj">StvorWeb3</span> } <span class="kw">from</span> <span class="str">'@stvor/web3'</span>;
+<span class="kw">import</span> initWasm      <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+
+<span class="kw">const</span> wasm = <span class="kw">await</span> <span class="fn">initWasm</span>();
+
+<span class="kw">const</span> alice = <span class="kw">await</span> StvorWeb3.<span class="fn">connect</span>({
+  provider:        tonProvider,
+  contractAddress: <span class="str">'EQD...'</span>,
+  tonApiUrl:       <span class="str">'https://testnet.toncenter.com/api/v2'</span>,
+  wasm,
+});
+
+<span class="cmt">// ── Private DAO governance ────────────────────────────────</span>
+<span class="kw">await</span> alice.<span class="fn">send</span>(<span class="str">'0:dao_member_address...'</span>, {
+  type:     <span class="str">'governance_vote'</span>,
+  proposal: <span class="num">17</span>,
+  vote:     <span class="str">'yes'</span>,
+  rationale: <span class="str">'Increases treasury yield by 3.2% with acceptable risk'</span>,
+});
+
+<span class="cmt">// ── Private OTC deal ──────────────────────────────────────</span>
+<span class="kw">await</span> alice.<span class="fn">send</span>(<span class="str">'0:counterparty...'</span>, {
+  type:        <span class="str">'otc_offer'</span>,
+  tokenIn:     <span class="str">'TON'</span>,   amount: <span class="str">'50000'</span>,
+  tokenOut:    <span class="str">'USDT'</span>,  price:  <span class="str">'5.82'</span>,
+  expiresAt:   <span class="kw">new</span> <span class="obj">Date</span>(Date.now() + <span class="num">3600000</span>).<span class="fn">toISOString</span>(),
+  escrowAddr:  <span class="str">'EQD...'</span>,
+});
+
+<span class="cmt">// ── Receive & decrypt all messages ────────────────────────</span>
+alice.<span class="fn">onMessage</span>(msg => {
+  <span class="kw">switch</span> (msg.data.type) {
+    <span class="kw">case</span> <span class="str">'governance_vote'</span>:
+      console.<span class="fn">log</span>(`Vote from ${msg.from}: ${msg.data.vote}`);
+      <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="str">'otc_offer'</span>:
+      console.<span class="fn">log</span>(`OTC: ${msg.data.amount} ${msg.data.tokenIn} @ ${msg.data.price}`);
+      <span class="kw">break</span>;
+  }
+});</pre>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- TON — WALLET V5 -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="ton-v5">
+    <span class="section-badge badge-ton">TON Blockchain</span>
+    <h2 class="doc-h2">TON Wallet v5 Extension Signing</h2>
+    <p>TON Wallet v5 supports native extensions. STVOR can sign and verify extension bodies, binding your E2EE session to a specific wallet v5 extension operation.</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">ton-v5-extension.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> { <span class="obj">StvorAA</span> } <span class="kw">from</span> <span class="str">'@stvor/web3'</span>;
+<span class="kw">import</span> initWasm   <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+
+<span class="kw">const</span> wasm      = <span class="kw">await</span> <span class="fn">initWasm</span>();
+<span class="kw">const</span> tonClient = <span class="kw">await</span> StvorAA.<span class="fn">connectTON</span>({ provider: tonProvider, wasm });
+
+<span class="cmt">// Sign a TON Wallet v5 extension body</span>
+<span class="cmt">// extensionBodyHex — hex-encoded extension body from your v5 tx</span>
+<span class="kw">const</span> ext = tonClient.<span class="fn">signTonExtension</span>(<span class="str">'deadbeef0102...'</span>);
+
+<span class="cmt">// ext = {
+//   extensionBody:   'deadbeef0102...'   — original hex body
+//   identitySig:     'base64url...'      — ECDSA sig over body hash
+//   sessionCommitment: 'base64url...'    — session binding
+// }</span>
+
+<span class="cmt">// Verify peer's extension signature</span>
+<span class="kw">const</span> ok = tonClient.<span class="fn">verifyTonExtension</span>(ext, peerIdentityKey);
+console.<span class="fn">log</span>(<span class="str">'Extension valid:'</span>, ok); <span class="cmt">// true</span></pre>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- AI — AGENT IDENTITY -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="ai-identity">
+    <span class="section-badge badge-ai">AI Agents</span>
+    <h2 class="doc-h2">Agent Identity</h2>
+    <p>Each AI agent gets a <strong>unique, deterministic cryptographic identity</strong> derived from its wallet signature. The same agent key always produces the same STVOR identity — reproducible across restarts, upgrades, and migrations.</p>
+
+    <div class="callout callout-info">
+      <span class="callout-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" style="vertical-align:middle"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M12 11V7"/><circle cx="12" cy="5" r="2"/><path d="M8 16h.01M12 16h.01M16 16h.01"/></svg></span>
+      <div>An AI agent is just a signer with a private key. It can be an EOA, a Safe multisig, a Biconomy AA wallet, or any programmatic signer. STVOR treats it identically to a human wallet.</div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">agent-identity.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> { <span class="obj">StvorAA</span> }      <span class="kw">from</span> <span class="str">'@stvor/web3'</span>;
+<span class="kw">import</span> initWasm          <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+<span class="kw">import</span> { <span class="obj">Wallet</span> }       <span class="kw">from</span> <span class="str">'ethers'</span>;    <span class="cmt">// or viem, web3.js, etc.</span>
+
+<span class="kw">const</span> wasm = <span class="kw">await</span> <span class="fn">initWasm</span>();
+
+<span class="cmt">// Agent's deterministic private key (from env / KMS / HSM)</span>
+<span class="kw">const</span> agentWallet = <span class="kw">new</span> Wallet(process.env.<span class="obj">AGENT_PRIVATE_KEY</span>!);
+
+<span class="cmt">// Wrap as EIP-1193 provider</span>
+<span class="kw">const</span> agentProvider = {
+  <span class="fn">request</span>: async ({ method, params }: { method: string; params?: unknown[] }) => {
+    <span class="kw">if</span> (method === <span class="str">'eth_accounts'</span>) <span class="kw">return</span> [agentWallet.address];
+    <span class="kw">if</span> (method === <span class="str">'eth_chainId'</span>)  <span class="kw">return</span> <span class="str">'0x1'</span>;
+    <span class="kw">if</span> (method === <span class="str">'personal_sign'</span>) {
+      <span class="kw">const</span> [msg] = params <span class="kw">as</span> string[];
+      <span class="kw">return</span> agentWallet.<span class="fn">signMessage</span>(Buffer.<span class="fn">from</span>(msg.slice(<span class="num">2</span>), <span class="str">'hex'</span>));
+    }
+    <span class="kw">throw new</span> <span class="obj">Error</span>(`Unsupported: ${method}`);
+  },
+};
+
+<span class="cmt">// Connect — identity derived from agent's wallet signature</span>
+<span class="kw">const</span> agent = <span class="kw">await</span> StvorAA.<span class="fn">connectEVM</span>({
+  provider: agentProvider,
+  chainId:  <span class="num">1</span>,
+  wasm,
+});
+
+console.<span class="fn">log</span>(<span class="str">'Agent address:'</span>, agent.address);
+<span class="cmt">// Same address → same STVOR identity, always</span></pre>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- AI — PRIVATE CHANNEL -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="ai-channel">
+    <span class="section-badge badge-ai">AI Agents</span>
+    <h2 class="doc-h2">Private Agent-to-Agent Channel</h2>
+    <p>Agents communicate through quantum-safe E2EE channels. Instructions, results, and internal state are encrypted end-to-end — invisible to network observers, MEV bots, or any third party.</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">agent-channel.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> { <span class="obj">StvorAA</span> } <span class="kw">from</span> <span class="str">'@stvor/web3'</span>;
+<span class="kw">import</span> initWasm   <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+
+<span class="kw">const</span> wasm = <span class="kw">await</span> <span class="fn">initWasm</span>();
+
+<span class="cmt">// ── Orchestrator Agent ────────────────────────────────────</span>
+<span class="kw">const</span> orchestrator = <span class="kw">await</span> StvorAA.<span class="fn">connectEVM</span>({
+  provider: orchestratorProvider,
+  chainId: <span class="num">1</span>, wasm,
+});
+
+<span class="cmt">// ── Worker Agent ──────────────────────────────────────────</span>
+<span class="kw">const</span> worker = <span class="kw">await</span> StvorAA.<span class="fn">connectEVM</span>({
+  provider: workerProvider,
+  chainId: <span class="num">1</span>, wasm,
+});
+
+<span class="cmt">// ── Orchestrator sends encrypted task ─────────────────────</span>
+<span class="kw">await</span> orchestrator.<span class="fn">send</span>(worker.address, {
+  taskId:       <span class="str">'task-001'</span>,
+  type:         <span class="str">'market_analysis'</span>,
+  params: {
+    token:      <span class="str">'TON'</span>,
+    window:     <span class="str">'24h'</span>,
+    indicators: [<span class="str">'RSI'</span>, <span class="str">'MACD'</span>, <span class="str">'BB'</span>],
+  },
+  budget:       <span class="str">'0.5 TON'</span>,
+  deadline:     <span class="kw">new</span> <span class="obj">Date</span>(Date.now() + <span class="num">60000</span>).<span class="fn">toISOString</span>(),
+  replyTo:      orchestrator.address,
+});
+
+<span class="cmt">// ── Worker receives, executes, replies ────────────────────</span>
+worker.<span class="fn">onMessage</span>(async msg => {
+  console.<span class="fn">log</span>(<span class="str">'Encrypted task from:'</span>, msg.from);
+
+  <span class="kw">const</span> result = <span class="kw">await</span> <span class="fn">runAnalysis</span>(msg.data.params);
+
+  <span class="kw">await</span> worker.<span class="fn">send</span>(msg.from, {
+    taskId:     msg.data.taskId,
+    status:     <span class="str">'done'</span>,
+    result,
+    confidence: <span class="num">0.87</span>,
+    cost:       <span class="str">'0.12 TON'</span>,
+  });
+});
+
+<span class="cmt">// ── Orchestrator receives result ──────────────────────────</span>
+orchestrator.<span class="fn">onMessage</span>(msg => {
+  console.<span class="fn">log</span>(`Task ${msg.data.taskId} done:`, msg.data.result);
+});</pre>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- AI — LONG-TERM MEMORY -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="ai-memory">
+    <span class="section-badge badge-ai">AI Agents</span>
+    <h2 class="doc-h2">Encrypted Long-term Memory</h2>
+    <p>AI agents accumulate context over time — conversation history, learned user preferences, private instructions, fine-tuning data. STVOR encrypts this memory before storing it in decentralised storage (TON Storage, IPFS, Arweave). <strong>Past context stays private forever, not just in transit.</strong></p>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" style="vertical-align:middle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+      <div>Without encryption, an agent's Long-term Memory stored on-chain or in IPFS is publicly readable. Anyone — including competing agents, MEV bots, and future quantum computers — can read it.</div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">agent-memory.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> { <span class="obj">StvorAA</span> }  <span class="kw">from</span> <span class="str">'@stvor/web3'</span>;
+<span class="kw">import</span> initWasm     <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+<span class="kw">import</span> initWasmAPI, { <span class="obj">WasmSession</span>, wasm_mlkem_keygen, wasm_mlkem_encaps, wasm_mlkem_decaps } <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+
+<span class="kw">const</span> wasm  = <span class="kw">await</span> <span class="fn">initWasm</span>();
+<span class="kw">const</span> agent = <span class="kw">await</span> StvorAA.<span class="fn">connectEVM</span>({ provider: agentProvider, chainId: <span class="num">1</span>, wasm });
+
+<span class="cmt">// ── Encrypt memory blob before storing off-chain ──────────</span>
+<span class="kw">async function</span> <span class="fn">encryptMemory</span>(memory: object, recipientAddress: string): Promise&lt;string&gt; {
+  <span class="cmt">// "Send" to yourself — uses your own public key as recipient</span>
+  <span class="cmt">// In practice: create a dedicated memory encryption session</span>
+  <span class="kw">const</span> payload = { <span class="key">type</span>: <span class="str">'long_term_memory'</span>, <span class="key">data</span>: memory, <span class="key">ts</span>: Date.now() };
+  <span class="kw">await</span> agent.<span class="fn">send</span>(recipientAddress, payload);
+  <span class="cmt">// Returns encrypted bag ID stored on TON Storage</span>
+  <span class="kw">return</span> <span class="str">'bag_id...'</span>;
+}
+
+<span class="cmt">// ── Store encrypted agent context ─────────────────────────</span>
+<span class="kw">const</span> agentMemory = {
+  <span class="key">userPreferences</span>: { theme: <span class="str">'dark'</span>, language: <span class="str">'en'</span>, riskTolerance: <span class="str">'low'</span> },
+  <span class="key">conversationHistory</span>: [
+    { role: <span class="str">'user'</span>,  content: <span class="str">'Buy TON when RSI drops below 30'</span> },
+    { role: <span class="str">'agent'</span>, content: <span class="str">'Understood. Monitoring RSI...'</span> },
+  ],
+  <span class="key">learnedPatterns</span>: [
+    <span class="str">'User prefers TON-native assets'</span>,
+    <span class="str">'Avoid trades after 22:00 UTC'</span>,
+    <span class="str">'Maximum single-trade exposure: 5%'</span>,
+  ],
+  <span class="key">privateSystemPrompt</span>: <span class="str">'You are a conservative DeFi agent. Never recommend leverage above 2x.'</span>,
+};
+
+<span class="cmt">// Encrypted — only this agent (and authorised peers) can read it</span>
+<span class="kw">await</span> <span class="fn">encryptMemory</span>(agentMemory, agent.address);
+
+<span class="cmt">// ── Retrieve and decrypt ──────────────────────────────────</span>
+agent.<span class="fn">onMessage</span>(msg => {
+  <span class="kw">if</span> (msg.data.type === <span class="str">'long_term_memory'</span>) {
+    <span class="cmt">// Restore context — decrypted automatically</span>
+    <span class="fn">restoreContext</span>(msg.data.data);
+  }
+});</pre>
+    </div>
+
+    <h3 class="doc-h3">Memory Security Guarantees</h3>
+    <div class="table-wrap"><table class="api-table">
+      <thead><tr><th>Property</th><th>Guarantee</th></tr></thead>
+      <tbody>
+        <tr><td>At rest</td><td>AES-256-GCM encrypted before upload. The decentralised storage node sees only ciphertext.</td></tr>
+        <tr><td>In transit</td><td>TLS + Double Ratchet. Each memory write uses a fresh message key.</td></tr>
+        <tr><td>Forward secrecy</td><td>Compromising today's key doesn't expose past memory writes.</td></tr>
+        <tr><td>Quantum resistance</td><td>ML-KEM-768 protects the session key — safe against future quantum decryption.</td></tr>
+        <tr><td>Access control</td><td>Only the agent holding the private key can decrypt. No server-side decryption.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- AI — MULTI-AGENT -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="ai-multiagent">
+    <span class="section-badge badge-ai">AI Agents</span>
+    <h2 class="doc-h2">Multi-agent Systems</h2>
+    <p>STVOR enables secure communication in multi-agent pipelines. Each pair of agents maintains a separate Double Ratchet session — compromising one agent doesn't expose other channels.</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">multi-agent.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> { <span class="obj">StvorAA</span> } <span class="kw">from</span> <span class="str">'@stvor/web3'</span>;
+<span class="kw">import</span> initWasm   <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+
+<span class="kw">const</span> wasm = <span class="kw">await</span> <span class="fn">initWasm</span>();
+
+<span class="cmt">// ── Spawn agent fleet ─────────────────────────────────────</span>
+<span class="kw">const</span> [coordinator, researcher, executor, auditor] = <span class="kw">await</span> Promise.<span class="fn">all</span>([
+  StvorAA.<span class="fn">connectEVM</span>({ provider: coordinatorProvider, chainId: <span class="num">1</span>, wasm }),
+  StvorAA.<span class="fn">connectEVM</span>({ provider: researcherProvider,  chainId: <span class="num">1</span>, wasm }),
+  StvorAA.<span class="fn">connectEVM</span>({ provider: executorProvider,    chainId: <span class="num">1</span>, wasm }),
+  StvorAA.<span class="fn">connectEVM</span>({ provider: auditorProvider,     chainId: <span class="num">1</span>, wasm }),
+]);
+
+<span class="cmt">// ── Coordinator broadcasts private mission ────────────────</span>
+<span class="kw">const</span> mission = {
+  type:       <span class="str">'defi_arbitrage'</span>,
+  target:     <span class="str">'TON/USDT'</span>,
+  maxSlippage: <span class="num">0.5</span>,
+  secret:     <span class="str">'internal strategy — not for public chains'</span>,
+};
+
+<span class="kw">await</span> Promise.<span class="fn">all</span>([
+  coordinator.<span class="fn">send</span>(researcher.address, { ...mission, role: <span class="str">'research'</span> }),
+  coordinator.<span class="fn">send</span>(executor.address,   { ...mission, role: <span class="str">'execute'</span>  }),
+  coordinator.<span class="fn">send</span>(auditor.address,    { ...mission, role: <span class="str">'audit'</span>   }),
+]);
+<span class="cmt">// Each channel is independently encrypted — Researcher ≠ Executor session</span>
+
+<span class="cmt">// ── Agents report back privately ──────────────────────────</span>
+researcher.<span class="fn">onMessage</span>(async msg => {
+  <span class="kw">const</span> analysis = <span class="kw">await</span> <span class="fn">doResearch</span>(msg.data);
+  <span class="kw">await</span> researcher.<span class="fn">send</span>(coordinator.address, { type: <span class="str">'research_done'</span>, analysis });
+});
+
+executor.<span class="fn">onMessage</span>(async msg => {
+  <span class="kw">const</span> txHash = <span class="kw">await</span> <span class="fn">executeStrategy</span>(msg.data);
+  <span class="kw">await</span> executor.<span class="fn">send</span>(auditor.address, { type: <span class="str">'execution_report'</span>, txHash });
+});</pre>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- AI — FRAMEWORK EXAMPLES -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="ai-frameworks">
+    <span class="section-badge badge-ai">AI Agents</span>
+    <h2 class="doc-h2">Framework Integration Examples</h2>
+
+    <h3 class="doc-h3">LangChain / LangGraph</h3>
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">langchain-agent.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> { <span class="obj">StvorAA</span> }   <span class="kw">from</span> <span class="str">'@stvor/web3'</span>;
+<span class="kw">import</span> initWasm      <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+<span class="kw">import</span> { <span class="obj">ChatOpenAI</span> } <span class="kw">from</span> <span class="str">'langchain/chat_models/openai'</span>;
+<span class="kw">import</span> { <span class="obj">AgentExecutor</span>, <span class="fn">createOpenAIFunctionsAgent</span> } <span class="kw">from</span> <span class="str">'langchain/agents'</span>;
+
+<span class="kw">const</span> wasm  = <span class="kw">await</span> <span class="fn">initWasm</span>();
+<span class="kw">const</span> stvor = <span class="kw">await</span> StvorAA.<span class="fn">connectEVM</span>({ provider: agentProvider, chainId: <span class="num">1</span>, wasm });
+
+<span class="kw">const</span> model = <span class="kw">new</span> <span class="obj">ChatOpenAI</span>({ temperature: <span class="num">0</span> });
+
+<span class="cmt">// STVOR as a LangChain Tool</span>
+<span class="kw">const</span> stvorTool = {
+  name: <span class="str">'send_private_message'</span>,
+  description: <span class="str">'Send an encrypted message to another agent or user. Use for sensitive data.'</span>,
+  schema: { recipient: <span class="str">'string'</span>, payload: <span class="str">'object'</span> },
+  <span class="fn">call</span>: async ({ recipient, payload }: { recipient: string; payload: object }) => {
+    <span class="kw">await</span> stvor.<span class="fn">send</span>(recipient, payload);
+    <span class="kw">return</span> <span class="str">'Message sent — encrypted with ML-KEM-768 + Double Ratchet'</span>;
+  },
+};
+
+<span class="cmt">// Listen for encrypted instructions</span>
+stvor.<span class="fn">onMessage</span>(async msg => {
+  <span class="kw">const</span> agent = <span class="kw">await</span> <span class="fn">createOpenAIFunctionsAgent</span>({ llm: model, tools: [stvorTool], prompt });
+  <span class="kw">const</span> executor = <span class="kw">new</span> <span class="obj">AgentExecutor</span>({ agent, tools: [stvorTool] });
+  <span class="kw">await</span> executor.<span class="fn">invoke</span>({ input: msg.data.instruction });
+});</pre>
+    </div>
+
+    <h3 class="doc-h3">Eliza Framework</h3>
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">eliza-plugin.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> { <span class="obj">StvorAA</span> } <span class="kw">from</span> <span class="str">'@stvor/web3'</span>;
+<span class="kw">import</span> initWasm   <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+
+<span class="cmt">// STVOR Eliza plugin — drop into elizaConfig.plugins</span>
+<span class="kw">export function</span> <span class="fn">stvorPlugin</span>(agentProvider: unknown) {
+  <span class="kw">let</span> client: Awaited&lt;ReturnType&lt;<span class="kw">typeof</span> StvorAA.<span class="fn">connectEVM</span>&gt;&gt;;
+
+  <span class="kw">return</span> {
+    name: <span class="str">'stvor-pqc'</span>,
+
+    <span class="fn">initialize</span>: async () => {
+      <span class="kw">const</span> wasm = <span class="kw">await</span> <span class="fn">initWasm</span>();
+      client = <span class="kw">await</span> StvorAA.<span class="fn">connectEVM</span>({ provider: agentProvider, chainId: <span class="num">1</span>, wasm });
+    },
+
+    actions: [{
+      name: <span class="str">'SEND_PRIVATE'</span>,
+      description: <span class="str">'Send post-quantum encrypted message to address'</span>,
+      <span class="fn">handler</span>: async (runtime, message) => {
+        <span class="kw">const</span> { to, data } = message.content;
+        <span class="kw">await</span> client.<span class="fn">send</span>(to, data);
+        <span class="kw">return</span> { success: <span class="kw">true</span>, encrypted: <span class="kw">true</span>, pqc: <span class="str">'ML-KEM-768'</span> };
+      },
+    }],
+
+    <span class="fn">onMessage</span>: (handler: (msg: unknown) => <span class="kw">void</span>) => client.<span class="fn">onMessage</span>(handler),
+  };
+}</pre>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- LOW-LEVEL — ML-KEM -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="wasm-mlkem">
+    <span class="section-badge badge-core">Low-level WASM API</span>
+    <h2 class="doc-h2">ML-KEM-768 Primitives</h2>
+    <p>Direct access to the Rust crypto core via WASM bindings. Use when you need fine-grained control over the key encapsulation mechanism.</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">mlkem-primitives.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> initWasm, {
+  <span class="fn">wasm_mlkem_keygen</span>,
+  <span class="fn">wasm_mlkem_encaps</span>,
+  <span class="fn">wasm_mlkem_decaps</span>,
+} <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+
+<span class="kw">await</span> <span class="fn">initWasm</span>();
+
+<span class="cmt">// ── Key generation ────────────────────────────────────────</span>
+<span class="kw">const</span> { ek, dk } = JSON.<span class="fn">parse</span>(<span class="fn">wasm_mlkem_keygen</span>());
+<span class="cmt">// ek — 1184-byte encapsulation key  (base64url) — public, share freely</span>
+<span class="cmt">// dk —   64-byte decapsulation seed (base64url) — PRIVATE, keep secret</span>
+<span class="cmt">//        64 bytes = seed (d ‖ z) per FIPS 203 §7.1</span>
+<span class="cmt">//        Full 2400-byte key is re-derived from seed on each decaps call</span>
+
+<span class="cmt">// ── Encapsulate (sender side) ─────────────────────────────</span>
+<span class="kw">const</span> { ct, ss } = JSON.<span class="fn">parse</span>(<span class="fn">wasm_mlkem_encaps</span>(ek));
+<span class="cmt">// ct — 1088-byte ciphertext (base64url) — send to recipient</span>
+<span class="cmt">// ss —   32-byte shared secret (base64url) — use as encryption key</span>
+
+<span class="cmt">// ── Decapsulate (recipient side) ──────────────────────────</span>
+<span class="kw">const</span> ss2 = <span class="fn">wasm_mlkem_decaps</span>(dk, ct);
+<span class="cmt">// ss2 === ss  ✓  — same shared secret, different sides</span>
+
+console.<span class="fn">log</span>(<span class="str">'Shared secrets match:'</span>, ss === ss2);</pre>
+    </div>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" style="vertical-align:middle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+      <div>The <code>dk</code> value (64-byte seed) is your <strong>private key</strong>. Never log it, send it over the network, or store it unencrypted. The seed is sufficient to re-derive the full 2400-byte decapsulation key at any time.</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- LOW-LEVEL — SESSIONS -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="wasm-session">
+    <span class="section-badge badge-core">Low-level WASM API</span>
+    <h2 class="doc-h2">Hybrid X3DH Sessions</h2>
+    <p>Manual session establishment using the hybrid X3DH + Double Ratchet primitives.</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">hybrid-session.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> initWasm, {
+  <span class="obj">WasmKeyPair</span>, <span class="obj">WasmSession</span>,
+  <span class="fn">wasm_mlkem_keygen</span>,
+  <span class="fn">wasm_hybrid_session_initiate</span>,
+  <span class="fn">wasm_hybrid_session_respond</span>,
+} <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+
+<span class="kw">await</span> <span class="fn">initWasm</span>();
+
+<span class="cmt">// ── Both parties generate their keypairs ──────────────────</span>
+<span class="kw">const</span> aliceIK  = <span class="kw">new</span> <span class="obj">WasmKeyPair</span>();  <span class="cmt">// Identity key (P-256)</span>
+<span class="kw">const</span> aliceSPK = <span class="kw">new</span> <span class="obj">WasmKeyPair</span>();  <span class="cmt">// Signed pre-key (P-256)</span>
+<span class="kw">const</span> bobIK    = <span class="kw">new</span> <span class="obj">WasmKeyPair</span>();
+<span class="kw">const</span> bobSPK   = <span class="kw">new</span> <span class="obj">WasmKeyPair</span>();
+<span class="kw">const</span> bobPqc   = JSON.<span class="fn">parse</span>(<span class="fn">wasm_mlkem_keygen</span>()); <span class="cmt">// ML-KEM-768 keypair</span>
+
+<span class="cmt">// ── Alice initiates hybrid X3DH ───────────────────────────</span>
+<span class="kw">const</span> { session_json, mlkem_ct } = JSON.<span class="fn">parse</span>(
+  <span class="fn">wasm_hybrid_session_initiate</span>(
+    aliceIK, aliceSPK,
+    bobIK.public_key, bobSPK.public_key, bobPqc.ek,
+  )
+);
+<span class="kw">const</span> aliceSession = WasmSession.<span class="fn">from_json</span>(session_json);
+
+<span class="cmt">// Alice sends mlkem_ct to Bob (out-of-band or in first message header)</span>
+
+<span class="cmt">// ── Bob responds, derives same shared secret ──────────────</span>
+<span class="kw">const</span> bobSession = <span class="fn">wasm_hybrid_session_respond</span>(
+  bobIK, bobSPK,
+  aliceIK.public_key, aliceSPK.public_key,
+  bobPqc.dk, mlkem_ct,
+);
+
+<span class="cmt">// ── Encrypted messaging ───────────────────────────────────</span>
+<span class="kw">const</span> ciphertext = aliceSession.<span class="fn">encrypt</span>(<span class="kw">new</span> TextEncoder().<span class="fn">encode</span>(<span class="str">'secret payload'</span>));
+<span class="kw">const</span> plaintext  = bobSession.<span class="fn">decrypt</span>(ciphertext);
+
+console.<span class="fn">log</span>(new TextDecoder().<span class="fn">decode</span>(plaintext)); <span class="cmt">// 'secret payload'</span>
+
+<span class="cmt">// ── Persist session state ─────────────────────────────────</span>
+<span class="kw">const</span> serialised = aliceSession.<span class="fn">to_json</span>();   <span class="cmt">// store in DB / KV / encrypted memory</span>
+<span class="kw">const</span> restored   = WasmSession.<span class="fn">from_json</span>(serialised); <span class="cmt">// restore next startup</span></pre>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- LOW-LEVEL — CRYPTO -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="wasm-crypto">
+    <span class="section-badge badge-core">Low-level WASM API</span>
+    <h2 class="doc-h2">Crypto Primitives</h2>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">crypto-primitives.ts</span>
+        <span class="code-lang">typescript</span>
+      </div>
+      <pre class="code-pre"><span class="kw">import</span> initWasm, {
+  <span class="obj">WasmKeyPair</span>,
+  <span class="fn">wasm_ec_sign</span>,
+  <span class="fn">wasm_ec_verify</span>,
+  <span class="fn">wasm_hkdf</span>,
+} <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+
+<span class="kw">await</span> <span class="fn">initWasm</span>();
+
+<span class="cmt">// ── P-256 ECDSA signing ───────────────────────────────────</span>
+<span class="kw">const</span> kp  = <span class="kw">new</span> <span class="obj">WasmKeyPair</span>();
+<span class="kw">const</span> msg = <span class="kw">new</span> TextEncoder().<span class="fn">encode</span>(<span class="str">'message to sign'</span>);
+<span class="kw">const</span> sig = <span class="fn">wasm_ec_sign</span>(kp, msg);         <span class="cmt">// DER-encoded ECDSA sig</span>
+<span class="kw">const</span> ok  = <span class="fn">wasm_ec_verify</span>(kp.public_key, msg, sig); <span class="cmt">// true</span>
+
+<span class="cmt">// ── HKDF-SHA256 key derivation ────────────────────────────</span>
+<span class="kw">const</span> derived = <span class="fn">wasm_hkdf</span>(
+  ikm,           <span class="cmt">// input key material (Uint8Array)</span>
+  salt,          <span class="cmt">// salt (Uint8Array)</span>
+  <span class="str">'my-context'</span>, <span class="cmt">// info string</span>
+  <span class="num">32</span>,            <span class="cmt">// output length in bytes</span>
+);
+
+<span class="cmt">// ── WasmKeyPair properties ────────────────────────────────</span>
+<span class="cmt">// kp.public_key  — base64url 65-byte uncompressed P-256 point</span>
+<span class="cmt">// kp.private_key — base64url 32-byte scalar (keep secret!)</span></pre>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- API REFERENCE -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="api-ref">
+    <h2 class="doc-h2">API Reference</h2>
+
+    <h3 class="doc-h3">StvorWeb3.connect(config)</h3>
+    <div class="table-wrap"><table class="api-table">
+      <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>provider</td><td><code>TonConnectProvider</code></td><td>TON Connect wallet provider <span class="req">required</span></td></tr>
+        <tr><td>contractAddress</td><td><code>string</code></td><td>stvor_registry contract address <span class="req">required</span></td></tr>
+        <tr><td>tonApiUrl</td><td><code>string</code></td><td>TonCenter API endpoint <span class="req">required</span></td></tr>
+        <tr><td>wasm</td><td><code>WasmModule</code></td><td>Initialised WASM module from initWasm() <span class="req">required</span></td></tr>
+        <tr><td>tonApiKey</td><td><code>string</code></td><td>TonCenter API key — avoids rate limits <span class="opt">optional</span></td></tr>
+        <tr><td>pollIntervalMs</td><td><code>number</code></td><td>Message poll interval in ms (default: 5000) <span class="opt">optional</span></td></tr>
+        <tr><td>pqc</td><td><code>boolean</code></td><td>Enable ML-KEM-768 hybrid mode (default: true) <span class="opt">optional</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="doc-h3">StvorAA.connectEVM(config)</h3>
+    <div class="table-wrap"><table class="api-table">
+      <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>provider</td><td><code>EIP1193Provider</code></td><td>Any EIP-1193 wallet provider <span class="req">required</span></td></tr>
+        <tr><td>chainId</td><td><code>number</code></td><td>EVM chain ID (1=mainnet, 137=polygon…) <span class="req">required</span></td></tr>
+        <tr><td>wasm</td><td><code>WasmModule</code></td><td>Initialised WASM module <span class="req">required</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="doc-h3">client.send(to, data)</h3>
+    <div class="table-wrap"><table class="api-table">
+      <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>to</td><td><code>string</code></td><td>Recipient address (TON raw or EVM hex) <span class="req">required</span></td></tr>
+        <tr><td>data</td><td><code>object</code></td><td>Any JSON-serialisable payload <span class="req">required</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="doc-h3">client.onMessage(handler)</h3>
+    <p>Returns an unsubscribe function. Handler receives a <code>DecryptedMessage</code> object:</p>
+    <div class="table-wrap"><table class="api-table">
+      <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>from</td><td><code>string</code></td><td>Sender address</td></tr>
+        <tr><td>data</td><td><code>object</code></td><td>Decrypted JSON payload</td></tr>
+        <tr><td>timestamp</td><td><code>Date</code></td><td>Message timestamp</td></tr>
+        <tr><td>id</td><td><code>string</code></td><td>Unique message ID (bag ID)</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- SECURITY MODEL -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="security">
+    <h2 class="doc-h2">Security Model</h2>
+
+    <h3 class="doc-h3">Hybrid PQC Scheme</h3>
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">hybrid KDF</span>
+        <span class="code-lang">text</span>
+      </div>
+      <pre class="code-pre">shared_key = HKDF-SHA256(
+  ikm  = ecdh_secret ‖ mlkem_shared_secret,
+  salt = 0x00...00  (32 zero bytes),
+  info = "STVOR-HYBRID-v1",
+  len  = 32,
+)</pre>
+    </div>
+
+    <h3 class="doc-h3">NIST ACVTS Test Vectors</h3>
+    <div class="table-wrap"><table class="api-table">
+      <thead><tr><th>Algorithm</th><th>Standard</th><th>Vectors</th></tr></thead>
+      <tbody>
+        <tr><td>P-256 ECDH</td><td>NIST KAS ECC CDH</td><td>25</td></tr>
+        <tr><td>ECDSA P-256/SHA-256</td><td>NIST FIPS 186-3 SigVer</td><td>15</td></tr>
+        <tr><td>AES-256-GCM</td><td>NIST SP 800-38D</td><td>21</td></tr>
+        <tr><td>HKDF-SHA256</td><td>RFC 5869 (NIST SP 800-56C)</td><td>3</td></tr>
+        <tr><td><strong>Total</strong></td><td></td><td><strong>64</strong></td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" style="vertical-align:middle"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span>
+      <div>Reproduce the WASM binary from source: <code>git clone github.com/sapogeth/web3-sdk && cd crypto-core && cargo test && wasm-pack build --target web --out-dir ../sdk/wasm</code></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- SMART CONTRACT -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="doc-section" id="contract">
+    <h2 class="doc-h2">Smart Contract</h2>
+    <p>The <code>stvor_registry.fc</code> FunC contract stores public keys and message bag IDs on the TON blockchain. Source is open — deploy your own instance.</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <span class="code-title">deploy contract</span>
+        <span class="code-lang">bash</span>
+      </div>
+      <pre class="code-pre"><span class="cmt"># Clone the repo</span>
+git clone https://github.com/sapogeth/web3-sdk
+cd web3-sdk/contracts
+
+<span class="cmt"># Install deps</span>
+npm install
+
+<span class="cmt"># Set your mnemonic</span>
+export STVOR_MNEMONIC="word1 word2 ... word24"
+
+<span class="cmt"># Deploy to testnet — prints contract address</span>
+node deploy.mjs
+
+<span class="cmt"># Get testnet TON from @testgiver_ton_bot on Telegram</span></pre>
+    </div>
+
+    <p style="margin-top:1rem">After deployment, pass the printed address as <code>contractAddress</code> in <code>StvorWeb3.connect()</code>.</p>
+  </div>
+
+</main>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- ── Machine view — full documentation, machine-readable ─────────────── -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="machine-view" id="machineView">
+  <div class="mv-topbar">
+    <span style="font-size:0.75rem;color:#4a4a6a;font-family:'SF Mono',monospace">@stvor/web3 · v0.3.0 · documentation · machine-readable</span>
+    <button class="mv-copy" onclick="copyForAIDoc()">Copy all for AI</button>
+  </div>
+
+  <div class="mv-body">
+
+    <!-- Boot sequence -->
+    <div class="mv-boot">
+<div class="mv-line"><span class="mv-time">[ 0.000000]</span> <span class="mv-ok">stvor/web3-docs: v0.3.0</span></div>
+<div class="mv-line"><span class="mv-time">[ 0.000312]</span> loading documentation index...</div>
+<div class="mv-line"><span class="mv-time">[ 0.001024]</span> <span class="mv-key">api:</span> <span class="mv-val">11 public methods · 3 client classes</span></div>
+<div class="mv-line"><span class="mv-time">[ 0.001337]</span> <span class="mv-key">crypto:</span> <span class="mv-val">7 primitives · NIST FIPS 203 / 186-3 / 800-38D</span></div>
+<div class="mv-line"><span class="mv-time">[ 0.001820]</span> <span class="mv-key">examples:</span> <span class="mv-val">EVM · TON · ERC-4337 · Wallet v5 · AI agents</span></div>
+<div class="mv-line"><span class="mv-time">[ 0.002048]</span> <span class="mv-key">contract:</span> <span class="mv-val">stvor_registry.fc · 3 ops · 3 get-methods</span></div>
+<div class="mv-line"><span class="mv-time">[ 0.002561]</span> <span class="mv-key">low-level:</span> <span class="mv-val">WASM bindings · ML-KEM-768 raw access</span></div>
+<div class="mv-line"><span class="mv-time">[ 0.003072]</span> <span class="mv-key">errors:</span> <span class="mv-val">7 typed error codes</span></div>
+<div class="mv-line"><span class="mv-time">[ 0.003584]</span> <span class="mv-key">deps:</span> <span class="mv-val">0</span></div>
+<div class="mv-line"><span class="mv-time">[ 0.004096]</span> <span class="mv-key">audit:</span> <span class="mv-val">internal complete · external pending funding</span></div>
+<div class="mv-line"><span class="mv-time">[ 0.004608]</span> <span class="mv-ok">documentation: ready</span><span class="mv-cursor" id="mv-cursor"></span></div>
+    </div>
+
+    <!-- 1. Package -->
+    <div class="mv-section">
+      <div class="mv-h2"># Package &amp; install</div>
+      <table class="mv-table">
+        <tr><td>name</td><td>@stvor/web3</td></tr>
+        <tr><td>version</td><td>0.3.0</td></tr>
+        <tr><td>license</td><td>MIT</td></tr>
+        <tr><td>install</td><td>npm install @stvor/web3</td></tr>
+        <tr><td>imports</td><td>@stvor/web3 · @stvor/web3/wasm</td></tr>
+        <tr><td>node</td><td>≥ 18</td></tr>
+        <tr><td>browser</td><td>any with WebAssembly + Web Crypto</td></tr>
+        <tr><td>bundle</td><td>270KB WASM (Rust core, zero C deps)</td></tr>
+      </table>
+    </div>
+
+    <!-- 2. Architecture -->
+    <div class="mv-section">
+      <div class="mv-h2"># Architecture</div>
+<pre class="mv-pre"><span class="cmt">// 3 layers</span>
+WASM core      <span class="cmt">// 270KB Rust → wasm-pack, exposes raw crypto</span>
+SDK layer      <span class="cmt">// TS wrapper: client classes, polling, state mgmt</span>
+On-chain       <span class="cmt">// stvor_registry.fc (TON) — public key registry</span>
+
+<span class="cmt">// Module imports</span>
+<span class="kw">import</span> { <span class="obj">StvorWeb3</span>, <span class="obj">StvorAA</span> } <span class="kw">from</span> <span class="str">'@stvor/web3'</span>;
+<span class="kw">import</span> initWasm                  <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;</pre>
+    </div>
+
+    <!-- 3. Core API -->
+    <div class="mv-section">
+      <div class="mv-h2"># Core API — StvorWeb3 (TON)</div>
+      <div class="mv-h3">StvorWeb3.connect(config) → Promise&lt;Client&gt;</div>
+      <table class="mv-table">
+        <tr><th>param</th><th>type</th><th>required</th><th>description</th></tr>
+        <tr><td>provider</td><td>TonConnectProvider</td><td><span class="req">yes</span></td><td>TON Connect v2 wallet</td></tr>
+        <tr><td>contractAddress</td><td>string</td><td><span class="req">yes</span></td><td>stvor_registry address (EQD...)</td></tr>
+        <tr><td>tonApiUrl</td><td>string</td><td><span class="req">yes</span></td><td>TonCenter v2 endpoint</td></tr>
+        <tr><td>wasm</td><td>WasmModule</td><td><span class="req">yes</span></td><td>result of initWasm()</td></tr>
+        <tr><td>tonApiKey</td><td>string</td><td><span class="opt">no</span></td><td>TonCenter API key</td></tr>
+        <tr><td>pollIntervalMs</td><td>number</td><td><span class="opt">no</span></td><td>default 5000</td></tr>
+        <tr><td>pqc</td><td>boolean</td><td><span class="opt">no</span></td><td>hybrid PQC, default true</td></tr>
+      </table>
+
+      <div class="mv-h3">client.send(to, data) → Promise&lt;void&gt;</div>
+      <table class="mv-table">
+        <tr><th>param</th><th>type</th><th>description</th></tr>
+        <tr><td>to</td><td>string</td><td>recipient TON address (raw "0:hex" or EQ...)</td></tr>
+        <tr><td>data</td><td>any JSON-serializable</td><td>message payload, type preserved</td></tr>
+      </table>
+
+      <div class="mv-h3">client.onMessage(handler) → unsubscribe()</div>
+<pre class="mv-pre"><span class="cmt">// Handler receives:</span>
+{
+  from:      <span class="str">'0:hex...'</span>,   <span class="cmt">// sender TON address</span>
+  data:      <span class="obj">unknown</span>,        <span class="cmt">// decrypted payload</span>
+  timestamp: <span class="obj">Date</span>,
+  id:        <span class="str">'msg_id'</span>
+}</pre>
+
+      <div class="mv-h3">client properties &amp; methods</div>
+      <table class="mv-table">
+        <tr><td>client.address</td><td>TON wallet address (string)</td></tr>
+        <tr><td>client.chain</td><td>'mainnet' | 'testnet'</td></tr>
+        <tr><td>client.disconnect()</td><td>stop polling, clear session state</td></tr>
+      </table>
+    </div>
+
+    <!-- 4. AA EVM -->
+    <div class="mv-section">
+      <div class="mv-h2"># Account Abstraction — StvorAA (EVM)</div>
+      <div class="mv-h3">StvorAA.connectEVM(config)</div>
+      <table class="mv-table">
+        <tr><th>param</th><th>type</th><th>description</th></tr>
+        <tr><td>provider</td><td>EIP-1193 provider</td><td>window.ethereum, Safe, Coinbase, Biconomy, ZeroDev</td></tr>
+        <tr><td>chainId</td><td>number</td><td>1 (mainnet), 11155111 (sepolia), etc.</td></tr>
+        <tr><td>wasm</td><td>WasmModule</td><td>result of initWasm()</td></tr>
+      </table>
+
+      <div class="mv-h3">UserOperation binding (ERC-4337)</div>
+<pre class="mv-pre"><span class="kw">const</span> binding = client.<span class="fn">bindUserOp</span>(userOpHash, sessionRootKey);
+<span class="cmt">// → { userOpHash, identitySig, sessionCommitment }</span>
+
+<span class="kw">const</span> ok = client.<span class="fn">verifyUserOp</span>(binding, peerIdentityKey, sessionRootKey);
+<span class="cmt">// → boolean</span></pre>
+
+      <div class="mv-h3">Identity derivation (deterministic)</div>
+<pre class="mv-pre">personal_sign(<span class="str">"STVOR-AA-EVM-v1:{chainId}:{address}"</span>)
+  → HKDF(sig, msg, <span class="str">"IK"</span>,  <span class="num">32</span>)  → P-256 identity keypair
+  → HKDF(sig, msg, <span class="str">"SPK"</span>, <span class="num">32</span>)  → P-256 signed pre-key
+  → wasm_mlkem_keygen()           → ML-KEM-768 keypair</pre>
+    </div>
+
+    <!-- 5. AA TON v5 -->
+    <div class="mv-section">
+      <div class="mv-h2"># Account Abstraction — StvorAA (TON Wallet v5)</div>
+<pre class="mv-pre"><span class="kw">const</span> tonClient = <span class="kw">await</span> StvorAA.<span class="fn">connectTON</span>({ provider, wasm });
+
+<span class="cmt">// Sign extension body for TON Wallet v5</span>
+<span class="kw">const</span> ext = tonClient.<span class="fn">signTonExtension</span>(<span class="str">'deadbeef0102'</span>);
+<span class="cmt">// → { body, signature, identityKey }</span>
+
+<span class="cmt">// Verify peer's extension</span>
+<span class="kw">const</span> valid = tonClient.<span class="fn">verifyTonExtension</span>(ext, peerIk);</pre>
+    </div>
+
+    <!-- 6. Crypto stack -->
+    <div class="mv-section">
+      <div class="mv-h2"># Cryptographic primitives</div>
+      <table class="mv-table">
+        <tr><th>primitive</th><th>standard</th><th>purpose</th></tr>
+        <tr><td>ML-KEM-768</td><td>NIST FIPS 203</td><td>post-quantum key encapsulation (PQ KEM)</td></tr>
+        <tr><td>P-256 ECDH</td><td>NIST KAS ECC</td><td>classical key exchange (X3DH)</td></tr>
+        <tr><td>ECDSA P-256</td><td>FIPS 186-3</td><td>signed pre-key signing</td></tr>
+        <tr><td>Hybrid X3DH</td><td>STVOR-HYBRID-v1</td><td>HKDF(ecdh_ss ‖ mlkem_ss, "STVOR-HYBRID-v1")</td></tr>
+        <tr><td>Double Ratchet</td><td>Signal Protocol</td><td>forward secrecy + break-in recovery</td></tr>
+        <tr><td>AES-256-GCM</td><td>NIST SP 800-38D</td><td>authenticated encryption</td></tr>
+        <tr><td>HKDF-SHA256</td><td>RFC 5869</td><td>key derivation</td></tr>
+        <tr><td>HMAC-SHA256</td><td>RFC 2104</td><td>chain key ratcheting</td></tr>
+      </table>
+    </div>
+
+    <!-- 7. Low-level WASM -->
+    <div class="mv-section">
+      <div class="mv-h2"># Low-level WASM API</div>
+<pre class="mv-pre"><span class="kw">import</span> initWasm, {
+  <span class="obj">WasmKeyPair</span>, <span class="obj">WasmSession</span>,
+  wasm_mlkem_keygen, wasm_mlkem_encaps, wasm_mlkem_decaps,
+  wasm_hybrid_session_initiate, wasm_hybrid_session_respond,
+  wasm_ec_sign, wasm_ec_verify, wasm_hkdf,
+} <span class="kw">from</span> <span class="str">'@stvor/web3/wasm'</span>;
+
+<span class="cmt">// ML-KEM-768 keygen</span>
+<span class="kw">const</span> { ek, dk } = JSON.<span class="fn">parse</span>(<span class="fn">wasm_mlkem_keygen</span>());
+<span class="cmt">// ek: 1184-byte encapsulation key (base64url)</span>
+<span class="cmt">// dk: 64-byte decapsulation key SEED (d‖z per FIPS 203 §7.1)</span>
+
+<span class="kw">const</span> { ct, ss } = JSON.<span class="fn">parse</span>(<span class="fn">wasm_mlkem_encaps</span>(ek));
+<span class="kw">const</span> ss2       = <span class="fn">wasm_mlkem_decaps</span>(dk, ct);
+<span class="cmt">// ss === ss2 (32 bytes shared secret)</span></pre>
+      <div class="mv-h3">Sizes</div>
+      <table class="mv-table">
+        <tr><td>ek (public)</td><td>1184 bytes</td></tr>
+        <tr><td>dk (private seed)</td><td>64 bytes — full key reconstructed each decaps</td></tr>
+        <tr><td>ct (ciphertext)</td><td>1088 bytes</td></tr>
+        <tr><td>ss (shared secret)</td><td>32 bytes</td></tr>
+      </table>
+    </div>
+
+    <!-- 8. Smart contract -->
+    <div class="mv-section">
+      <div class="mv-h2"># Smart contract — stvor_registry.fc</div>
+      <table class="mv-table">
+        <tr><th>op</th><th>code</th><th>type</th><th>description</th></tr>
+        <tr><td>register_keys</td><td>0x1001</td><td>internal</td><td>store IK + SPK + SIG + ML-KEM EK</td></tr>
+        <tr><td>store_message</td><td>0x1002</td><td>internal</td><td>record TON Storage bag ID</td></tr>
+        <tr><td>delete_message</td><td>0x1003</td><td>internal</td><td>remove bag ID (recipient only)</td></tr>
+      </table>
+      <div class="mv-h3">Get methods</div>
+      <table class="mv-table">
+        <tr><td>get_keys(addr)</td><td>(ik_cell, spk_cell, sig_cell, mlkem_cell, ts) — 5 stack items</td></tr>
+        <tr><td>get_messages(addr)</td><td>dict(256 → MsgMeta) of pending bag IDs</td></tr>
+        <tr><td>get_message_count(addr)</td><td>uint — count of pending messages</td></tr>
+      </table>
+    </div>
+
+    <!-- 9. AI agents -->
+    <div class="mv-section">
+      <div class="mv-h2"># AI agents — patterns</div>
+      <table class="mv-table">
+        <tr><th>pattern</th><th>method</th></tr>
+        <tr><td>agent identity</td><td>StvorAA.connectEVM(agentSigner) — keys derived from wallet sig</td></tr>
+        <tr><td>agent ↔ agent</td><td>client.send(peerAddress, taskPayload) — E2EE channel</td></tr>
+        <tr><td>long-term memory</td><td>encrypt(memory) → store on IPFS / TON Storage</td></tr>
+        <tr><td>multi-agent swarm</td><td>1-to-1 sessions per pair (group E2EE roadmap Q3 2026)</td></tr>
+        <tr><td>frameworks</td><td>LangChain · ElizaOS · AutoGPT — drop-in via send/onMessage</td></tr>
+      </table>
+    </div>
+
+    <!-- 10. Errors -->
+    <div class="mv-section">
+      <div class="mv-h2"># Error codes</div>
+      <table class="mv-table">
+        <tr><th>error</th><th>cause</th></tr>
+        <tr><td>WALLET_NOT_CONNECTED</td><td>provider not connected or wallet rejected</td></tr>
+        <tr><td>CONTRACT_NOT_FOUND</td><td>contractAddress invalid or contract not deployed</td></tr>
+        <tr><td>KEYS_NOT_FOUND</td><td>recipient hasn't registered keys on-chain yet</td></tr>
+        <tr><td>SESSION_DESYNC</td><td>Double Ratchet state mismatch — reconnect both peers</td></tr>
+        <tr><td>WASM_NOT_INITIALIZED</td><td>initWasm() not awaited before connect()</td></tr>
+        <tr><td>INVALID_SIGNATURE</td><td>identity sig verification failed</td></tr>
+        <tr><td>TON_API_ERROR</td><td>TonCenter v2 unreachable or rate-limited</td></tr>
+      </table>
+    </div>
+
+    <!-- 11. Status / roadmap -->
+    <div class="mv-section">
+      <div class="mv-h2"># Feature status</div>
+      <table class="mv-table">
+        <tr><th>feature</th><th>status</th></tr>
+        <tr><td>ML-KEM-768 hybrid X3DH</td><td>shipped (v0.3.0)</td></tr>
+        <tr><td>Double Ratchet</td><td>shipped</td></tr>
+        <tr><td>ERC-4337 + TON Wallet v5 AA</td><td>shipped</td></tr>
+        <tr><td>NIST ACVTS test vectors</td><td>53/53 passing</td></tr>
+        <tr><td>TON testnet deployment</td><td>in progress (Q2 2026)</td></tr>
+        <tr><td>Group E2EE (Sender Keys)</td><td>planned Q3 2026</td></tr>
+        <tr><td>ML-DSA-65 signatures</td><td>planned Q3 2026</td></tr>
+        <tr><td>External security audit</td><td>planned, pending funding</td></tr>
+        <tr><td>Chain-agnostic identity</td><td>planned Q4 2026</td></tr>
+        <tr><td>FHE / ZKP on lattices</td><td>research 2027</td></tr>
+      </table>
+    </div>
+
+    <!-- 12. Contact -->
+    <div class="mv-section">
+      <div class="mv-h2"># Contact / pilot</div>
+      <table class="mv-table">
+        <tr><td>founder</td><td>Ilyas Zhaisenbaev</td></tr>
+        <tr><td>telegram</td><td>@kun_sapog</td></tr>
+        <tr><td>email</td><td>izahii@protonmail.com</td></tr>
+        <tr><td>github</td><td>github.com/sapogeth/web3-sdk</td></tr>
+        <tr><td>npm</td><td>npmjs.com/@stvor/web3</td></tr>
+        <tr><td>pilot program</td><td>tally.so/r/Me80kk (10 spots, free during pilot)</td></tr>
+        <tr><td>docs</td><td>pqc.stvor.xyz/docs</td></tr>
+        <tr><td>web2 sdk</td><td>sdk.stvor.xyz</td></tr>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ── Sidebar active link on scroll ────────────────────────
+  const sections = document.querySelectorAll('.doc-section[id]');
+  const links    = document.querySelectorAll('.sidebar-link');
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector(`.sidebar-link[href="#${e.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '-56px 0px -55% 0px' });
+
+  sections.forEach(s => io.observe(s));
+
+  // Close sidebar on link click (mobile)
+  links.forEach(l => l.addEventListener('click', () => closeSidebar()));
+
+  // ── Mobile nav ───────────────────────────────────────────
+  function toggleMobileNav() {
+    const nav = document.getElementById('mobileNav');
+    const btn = document.getElementById('navHamburger');
+    const show = !nav.classList.contains('show');
+    nav.classList.toggle('show', show);
+    btn.classList.toggle('open', show);
+  }
+
+  // ── Sidebar toggle (mobile FAB) ──────────────────────────
+  function toggleSidebar() {
+    const sidebar  = document.querySelector('.sidebar');
+    const overlay  = document.getElementById('sidebarOverlay');
+    const isOpen   = sidebar.classList.contains('open');
+    sidebar.classList.toggle('open', !isOpen);
+    overlay.classList.toggle('show', !isOpen);
+    document.body.style.overflow = isOpen ? '' : 'hidden';
+  }
+
+  function closeSidebar() {
+    document.querySelector('.sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  // ── Human/Machine toggle ─────────────────────────────────
+  let _mvCursorTimer = null;
+  function setView(mode) {
+    const mv = document.getElementById('machineView');
+    const hh = document.getElementById('hm-human');
+    const hm = document.getElementById('hm-machine');
+    const cursor = document.getElementById('mv-cursor');
+
+    if (mode === 'machine') {
+      mv.classList.remove('show');
+      void mv.offsetWidth;
+      mv.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      hh.classList.remove('active'); hm.classList.add('active');
+      if (cursor) cursor.classList.remove('gone');
+      clearTimeout(_mvCursorTimer);
+      _mvCursorTimer = setTimeout(() => cursor && cursor.classList.add('gone'), 2200);
+    } else {
+      mv.classList.remove('show');
+      document.body.style.overflow = '';
+      hh.classList.add('active'); hm.classList.remove('active');
+      clearTimeout(_mvCursorTimer);
+    }
+  }
+
+  // Close on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      const mv = document.getElementById('machineView');
+      if (mv && mv.classList.contains('show')) {
+        setView('human');
+        return;
+      }
+      closeSidebar();
+      document.getElementById('mobileNav').classList.remove('show');
+      document.getElementById('navHamburger').classList.remove('open');
+    }
+  });
+
+  function copyForAIDoc() {
+    const text = `# STVOR — Post-Quantum E2EE for Web3 and AI Agents
+Package: @stvor/web3 · v0.3.0 · MIT
+Docs: https://pqc.stvor.xyz · npm: https://npmjs.com/@stvor/web3
+GitHub: https://github.com/sapogeth/web3-sdk
+
+## What it is
+Post-quantum end-to-end encryption library for TON blockchain, EVM chains, and AI agents.
+Zero npm runtime dependencies. Rust/WASM crypto core (270KB).
+
+## Crypto stack
+- ML-KEM-768 (NIST FIPS 203) — post-quantum key encapsulation
+- P-256 X3DH — classical Extended Triple Diffie-Hellman key exchange
+- Hybrid key derivation: HKDF-SHA256(ecdh_ss || mlkem_ss, "STVOR-HYBRID-v1")
+- Double Ratchet (Signal Protocol) — forward secrecy + break-in recovery
+- AES-256-GCM — authenticated encryption
+- ECDSA P-256 / SHA-256 — signing
+- 53 NIST ACVTS test vectors verified (25 ECDH + 15 ECDSA + 21 AES-GCM + 3 HKDF)
+
+## Install
+npm install @stvor/web3
+
+## Quick start (TON)
+import { StvorWeb3 } from '@stvor/web3';
+import initWasm from '@stvor/web3/wasm';
+const wasm = await initWasm();
+const alice = await StvorWeb3.connect({ provider: tonConnectProvider, contractAddress: 'EQD...', tonApiUrl: 'https://testnet.toncenter.com/api/v2', wasm });
+alice.onMessage(msg => console.log(msg.from, msg.data));
+await alice.send('0:bob_address', { text: 'Hello!' });
+await alice.disconnect();
+
+## Quick start (EVM / Account Abstraction)
+import { StvorAA } from '@stvor/web3';
+import initWasm from '@stvor/web3/wasm';
+const wasm = await initWasm();
+const client = await StvorAA.connectEVM({ provider: window.ethereum, chainId: 1, wasm });
+await client.send('0xrecipient', { text: 'Hello from AA wallet!' });
+
+## API
+StvorWeb3.connect(config) — TON wallet identity, returns client
+StvorAA.connectEVM(config) — EVM wallet identity (Safe, Coinbase, Biconomy, ZeroDev)
+StvorAA.connectTON(config) — TON Wallet v5 identity
+client.send(to, data) — send E2EE message
+client.onMessage(handler) — receive messages (returns unsubscribe fn)
+client.address — wallet address
+client.chain — 'mainnet' | 'testnet'
+client.disconnect() — stop polling, clear session
+client.bindUserOp(userOpHash, sessionKey) — bind session to ERC-4337 UserOp
+client.verifyUserOp(binding, peerIK, sessionKey) — verify binding
+tonClient.signTonExtension(body) — sign TON v5 extension body
+tonClient.verifyTonExtension(ext, peerIK) — verify extension
+
+## Identity derivation (EVM)
+personal_sign("STVOR-AA-EVM-v1:{chainId}:{address}")
+  → HKDF(sig, msg, "IK", 32)  → P-256 identity keypair
+  → HKDF(sig, msg, "SPK", 32) → P-256 signed pre-key
+  → wasm_mlkem_keygen()        → ML-KEM-768 keypair
+Same signature → same keys (deterministic).
+
+## Smart contract (TON)
+stvor_registry.fc — FunC contract storing public keys + message bag IDs
+Ops: register_keys (0x1001), store_message (0x1002), delete_message (0x1003)
+Get methods: get_keys(addr), get_messages(addr), get_message_count(addr)
+
+## Security properties
+- Breaking encryption requires breaking BOTH P-256 AND ML-KEM-768 simultaneously
+- Forward secrecy: each message uses a fresh key derived from the ratchet chain
+- Private key material zeroed from memory via Rust zeroize crate
+- ML-KEM DK stored as 64-byte seed (d||z per FIPS 203 §7.1)
+- Rust source open: cargo test + wasm-pack build reproduces the binary deterministically
+
+## Status (v0.3.0)
+- Crypto core: complete, NIST-verified
+- ERC-4337 AA: complete
+- TON testnet: deploying
+- Group E2EE: planned Q3 2026
+- ML-DSA-65 signatures: planned Q3 2026
+- External audit: planned, pending funding
+
+## Contact
+Founder: Ilyas Zhaisenbaev · @kun_sapog (Telegram) · izahii@protonmail.com
+Design partner program: https://tally.so/r/Me80kk (free pilot, 10 spots)`;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copy-ai-btn');
+      btn.textContent = '✓ Copied for AI';
+      setTimeout(() => btn.textContent = 'Copy for AI', 1800);
+    });
+  }
+</script>
+
+</body>
+</html>
