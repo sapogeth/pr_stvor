@@ -18,20 +18,15 @@ export default function DemoPage() {
   return (
     <>
       <Header />
-      <main className="flex-1 flex flex-col">
-        {/* animated hero — compact so IDE is above fold */}
+      <main className="flex-1">
         <DemoHero />
 
-        {/* IDE — takes remaining visible space */}
-        <div className="flex-1 px-4 md:px-6 pb-8 max-w-7xl mx-auto w-full">
+        <div className="px-4 md:px-6 pb-16 max-w-7xl mx-auto w-full">
           <DemoIDE />
         </div>
 
-        {/* bottom CTAs */}
         <div className="py-16 text-center px-4 border-t border-[var(--color-border)]">
-          <p className="text-sm text-[var(--color-fg-muted)] mb-5">
-            Ready to integrate?
-          </p>
+          <p className="text-sm text-[var(--color-fg-muted)] mb-5">Ready to integrate?</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <ButtonLink href={siteConfig.cta.docs} variant="primary" size="lg">
               Read the docs <ArrowRight size={15} />

@@ -65,7 +65,7 @@ function Terminal({ chain, running }: { chain: DemoChain; running: boolean }) {
   const done = visible >= chain.terminalSteps.length && visible > 0;
 
   return (
-    <div className="flex flex-col h-full min-h-0">
+    <div className="flex flex-col h-full overflow-hidden">
       <div className="flex items-center gap-2 px-4 py-2 border-b border-white/8 bg-[#0d1117] shrink-0">
         <span className="size-2.5 rounded-full bg-[#ff5f57]" />
         <span className="size-2.5 rounded-full bg-[#febc2e]" />
@@ -232,12 +232,12 @@ export function DemoIDE() {
           </button>
         </div>
 
-        {/* split pane — fixed heights, no reflow */}
+        {/* split pane — strict fixed heights, overflow-hidden on all wrappers */}
         <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-white/8">
-          <div className="h-[380px] lg:h-[440px] overflow-hidden">
+          <div className="h-[380px] lg:h-[440px] overflow-hidden shrink-0">
             <TypewriterCode code={chain.code} language={chain.language} running={running} />
           </div>
-          <div className="h-[280px] lg:h-[440px] bg-[#0a0e14]">
+          <div className="h-[380px] lg:h-[440px] overflow-hidden shrink-0 bg-[#0a0e14]">
             <Terminal chain={chain} running={running} />
           </div>
         </div>
