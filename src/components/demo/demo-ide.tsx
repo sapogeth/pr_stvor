@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Play, Key, MessageSquare, AlertTriangle, ChevronRight } from "lucide-react";
 import { demoChains, type ChainId, type DemoChain } from "@/data/demo";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "./animated-counter";
 import { TypewriterCode } from "./typewriter-code";
+import { useRef } from "react";
 
 /* ─── step icon ─── */
 function StepIcon({ icon }: { icon: "run" | "ok" | "key" | "msg" | "warn" }) {
@@ -65,15 +66,12 @@ function Terminal({ chain, running }: { chain: DemoChain; running: boolean }) {
 
   return (
     <div className="flex flex-col h-full min-h-0">
-      {/* title bar */}
       <div className="flex items-center gap-2 px-4 py-2 border-b border-white/8 bg-[#0d1117] shrink-0">
         <span className="size-2.5 rounded-full bg-[#ff5f57]" />
         <span className="size-2.5 rounded-full bg-[#febc2e]" />
         <span className="size-2.5 rounded-full bg-[#28c840]" />
         <span className="ml-2 text-[11px] text-white/30 font-mono">terminal</span>
       </div>
-
-      {/* output */}
       <div className="flex-1 overflow-y-auto px-4 py-3 font-mono text-[11.5px] leading-relaxed space-y-1.5 min-h-0">
         {!running && !done && (
           <p className="text-white/20 italic text-[11px]">Waiting for run…</p>
@@ -97,7 +95,6 @@ function Terminal({ chain, running }: { chain: DemoChain; running: boolean }) {
             </span>
           </motion.div>
         ))}
-
         {running && !done && (
           <motion.span
             animate={{ opacity: [1, 0] }}
@@ -105,12 +102,10 @@ function Terminal({ chain, running }: { chain: DemoChain; running: boolean }) {
             className="inline-block w-2 h-3.5 bg-white/50 ml-1 align-middle"
           />
         )}
-
         {done && (
           <motion.div
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             className="mt-2 text-[#4ade80] flex items-center gap-1.5 font-semibold"
           >
             <Check size={13} /> Session established — ready.
@@ -132,7 +127,7 @@ function ComparisonPanel({ chain, show }: { chain: DemoChain; show: boolean }) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.35 }}
-          className="mt-5 rounded-xl border border-white/10 bg-[#0d1117] overflow-hidden"
+          className="rounded-xl border border-white/10 bg-[#0d1117] overflow-hidden"
         >
           <div className="px-5 py-3 border-b border-white/8 flex items-center gap-2">
             <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/35">
@@ -143,19 +138,15 @@ function ComparisonPanel({ chain, show }: { chain: DemoChain; show: boolean }) {
               quantum threat + performance breakdown
             </span>
           </div>
-
           <div className="overflow-x-auto">
             <table className="w-full text-[12.5px] min-w-[560px]">
               <thead>
                 <tr className="border-b border-white/8">
                   {["Metric", "Classic approach", "Stvor"].map((h, i) => (
-                    <th
-                      key={h}
-                      className={cn(
-                        "px-5 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.12em]",
-                        i === 2 ? CHAIN_TEXT[chain.id] : "text-white/25"
-                      )}
-                    >
+                    <th key={h} className={cn(
+                      "px-5 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.12em]",
+                      i === 2 ? CHAIN_TEXT[chain.id] : "text-white/25"
+                    )}>
                       {h}
                     </th>
                   ))}
@@ -170,25 +161,18 @@ function ComparisonPanel({ chain, show }: { chain: DemoChain; show: boolean }) {
                     transition={{ delay: 0.08 + i * 0.06, duration: 0.22 }}
                     className={i < chain.comparison.length - 1 ? "border-b border-white/5" : ""}
                   >
-                    <td className="px-5 py-3 font-medium text-white/65 leading-snug">
-                      {row.metric}
-                    </td>
+                    <td className="px-5 py-3 font-medium text-white/65 leading-snug">{row.metric}</td>
                     <td className={cn("px-5 py-3 leading-snug", row.classicBad ? "text-[#f87171]" : "text-white/40")}>
                       {row.classic}
                     </td>
                     <td className="px-5 py-3 text-[#4ade80] font-medium leading-snug">
-                      {row.metric.includes("latency") ? (
-                        <AnimatedCounter value="~14 ms" />
-                      ) : (
-                        row.stvor
-                      )}
+                      {row.metric.includes("latency") ? <AnimatedCounter value="~14 ms" /> : row.stvor}
                     </td>
                   </motion.tr>
                 ))}
               </tbody>
             </table>
           </div>
-
           <div className="px-5 py-3 border-t border-white/8 text-[10.5px] text-white/22 leading-relaxed">
             Shor's algorithm runs in polynomial time on a quantum computer and breaks RSA, ECDH, and
             Ed25519. ML-KEM-768 (lattice-based) has no known quantum speedup — secure even against a
@@ -212,35 +196,23 @@ export function DemoIDE() {
     setShowComparison(false);
     setTimeout(() => {
       setRunning(true);
-      const totalDelay =
-        chain.terminalSteps.reduce((acc, s) => acc + s.delay, 0) + 1000 + 600;
-      setTimeout(() => {
-        setShowComparison(true);
-      }, totalDelay);
+      const totalDelay = chain.terminalSteps.reduce((acc, s) => acc + s.delay, 0) + 1000 + 600;
+      setTimeout(() => setShowComparison(true), totalDelay);
     }, 80);
   }, [chain]);
 
-  // reset on chain switch
   useEffect(() => {
     setRunning(false);
     setShowComparison(false);
   }, [activeId]);
 
   return (
-    <div className="w-full space-y-4">
-      {/* ── chain selector ── */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-        className="flex flex-wrap gap-2"
-      >
-        {demoChains.map((c, i) => (
-          <motion.button
+    <div className="w-full flex flex-col gap-4">
+      {/* chain selector */}
+      <div className="flex flex-wrap gap-2">
+        {demoChains.map((c) => (
+          <button
             key={c.id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: i * 0.06, duration: 0.2 }}
             onClick={() => setActiveId(c.id)}
             className={cn(
               "px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 border",
@@ -250,78 +222,54 @@ export function DemoIDE() {
             )}
           >
             {c.label}
-          </motion.button>
+          </button>
         ))}
-      </motion.div>
+      </div>
 
-      {/* ── IDE window ── */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeId}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className={cn(
-            "rounded-xl border overflow-hidden bg-[#0d1117]",
-            CHAIN_GLOW[activeId]
-          )}
-        >
-          {/* title bar */}
-          <div className="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-white/8">
-            <div className="flex items-center gap-3">
-              <div className="flex gap-1.5">
-                <span className="size-3 rounded-full bg-[#ff5f57]" />
-                <span className="size-3 rounded-full bg-[#febc2e]" />
-                <span className="size-3 rounded-full bg-[#28c840]" />
-              </div>
-              <span className="text-[11px] text-white/35 font-mono">{chain.file}</span>
+      {/* IDE — fixed layout, no shift */}
+      <div className={cn("rounded-xl border overflow-hidden bg-[#0d1117] transition-shadow duration-300", CHAIN_GLOW[activeId])}>
+        {/* title bar */}
+        <div className="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-white/8">
+          <div className="flex items-center gap-3">
+            <div className="flex gap-1.5">
+              <span className="size-3 rounded-full bg-[#ff5f57]" />
+              <span className="size-3 rounded-full bg-[#febc2e]" />
+              <span className="size-3 rounded-full bg-[#28c840]" />
             </div>
-            <motion.button
-              whileTap={{ scale: 0.94 }}
-              onClick={handleRun}
-              className={cn(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-opacity hover:opacity-90",
-                `bg-gradient-to-r ${CHAIN_GRADIENT[activeId]} text-white`
-              )}
-            >
-              <Play size={11} fill="currentColor" />
-              Run
-            </motion.button>
+            <span className="text-[11px] text-white/35 font-mono">{chain.file}</span>
           </div>
+          <button
+            onClick={handleRun}
+            className={cn(
+              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-opacity hover:opacity-90 active:scale-95",
+              `bg-gradient-to-r ${CHAIN_GRADIENT[activeId]} text-white`
+            )}
+          >
+            <Play size={11} fill="currentColor" />
+            Run
+          </button>
+        </div>
 
-          {/* split pane */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-white/8">
-            {/* code */}
-            <div className="h-[380px] lg:h-[440px] overflow-hidden">
-              <TypewriterCode
-                code={chain.code}
-                language={chain.language}
-                running={running}
-              />
-            </div>
-
-            {/* terminal */}
-            <div className="h-[280px] lg:h-[440px] bg-[#0a0e14]">
-              <Terminal chain={chain} running={running} />
-            </div>
+        {/* split pane — fixed heights, no reflow */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-white/8">
+          <div className="h-[380px] lg:h-[440px] overflow-hidden">
+            <TypewriterCode code={chain.code} language={chain.language} running={running} />
           </div>
-        </motion.div>
-      </AnimatePresence>
+          <div className="h-[280px] lg:h-[440px] bg-[#0a0e14]">
+            <Terminal chain={chain} running={running} />
+          </div>
+        </div>
+      </div>
 
       {/* hint */}
       {!running && !showComparison && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="flex items-center gap-1.5 text-xs text-white/25"
-        >
+        <p className="flex items-center gap-1.5 text-xs text-white/25">
           <ChevronRight size={13} />
           Select a platform and click <strong className="text-white/40">Run</strong> to watch the handshake.
-        </motion.p>
+        </p>
       )}
 
+      {/* comparison — appended below, no layout above shifts */}
       <ComparisonPanel chain={chain} show={showComparison} />
     </div>
   );
