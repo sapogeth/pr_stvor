@@ -123,20 +123,11 @@ function Terminal({ chain, running }: { chain: DemoChain; running: boolean }) {
 }
 
 /* ─── comparison ─── */
-function ComparisonPanel({
-  chain,
-  show,
-  panelRef,
-}: {
-  chain: DemoChain;
-  show: boolean;
-  panelRef: React.RefObject<HTMLDivElement | null>;
-}) {
+function ComparisonPanel({ chain, show }: { chain: DemoChain; show: boolean }) {
   return (
     <AnimatePresence>
       {show && (
         <motion.div
-          ref={panelRef}
           initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 16 }}
@@ -214,7 +205,6 @@ export function DemoIDE() {
   const [activeId, setActiveId] = useState<ChainId>("ton");
   const [running, setRunning] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
-  const comparisonRef = useRef<HTMLDivElement | null>(null);
   const chain = demoChains.find((c) => c.id === activeId)!;
 
   const handleRun = useCallback(() => {
@@ -226,10 +216,6 @@ export function DemoIDE() {
         chain.terminalSteps.reduce((acc, s) => acc + s.delay, 0) + 1000 + 600;
       setTimeout(() => {
         setShowComparison(true);
-        // scroll only after comparison has mounted and animated in
-        setTimeout(() => {
-          comparisonRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        }, 400);
       }, totalDelay);
     }, 80);
   }, [chain]);
@@ -336,8 +322,7 @@ export function DemoIDE() {
         </motion.p>
       )}
 
-      {/* comparison — auto-scrolled to */}
-      <ComparisonPanel chain={chain} show={showComparison} panelRef={comparisonRef} />
+      <ComparisonPanel chain={chain} show={showComparison} />
     </div>
   );
 }
