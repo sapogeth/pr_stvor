@@ -1,4 +1,4 @@
-import { ArrowRight, Calendar, BookOpen } from "lucide-react";
+import { ArrowRight, Calendar, Play } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { Badge } from "@/components/ui/card";
 import { siteConfig } from "@/lib/site-config";
@@ -36,11 +36,11 @@ export function Hero() {
             <ButtonLink href={siteConfig.cta.quickstart} variant="primary" size="lg">
               Get Started Free <ArrowRight size={16} />
             </ButtonLink>
-            <ButtonLink href={siteConfig.cta.demo} variant="secondary" size="lg">
-              <Calendar size={16} /> Book a 20-min Demo
+            <ButtonLink href="/demo" variant="secondary" size="lg">
+              <Play size={16} /> Try it live
             </ButtonLink>
-            <ButtonLink href={siteConfig.cta.docs} variant="ghost" size="lg">
-              <BookOpen size={16} /> Read the Docs
+            <ButtonLink href={siteConfig.cta.demo} variant="ghost" size="lg">
+              <Calendar size={16} /> Book a demo
             </ButtonLink>
           </div>
 

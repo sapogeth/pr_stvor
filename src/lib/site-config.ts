@@ -44,9 +44,10 @@ export const siteConfig = {
 } as const;
 
 export const navItems = [
-  { label: "Pricing", href: "#pricing" },
-  { label: "Use cases", href: "#use-cases" },
-  { label: "Compare", href: "#compare" },
+  { label: "Demo", href: "/demo" },
+  { label: "Pricing", href: "/#pricing" },
+  { label: "Use cases", href: "/#use-cases" },
+  { label: "Compare", href: "/#compare" },
   { label: "Docs", href: "/docs" },
   { label: "Security", href: "/security" },
 ] as const;
