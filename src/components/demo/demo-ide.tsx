@@ -81,9 +81,9 @@ function Terminal({ chain, running }: { chain: DemoChain; running: boolean }) {
         {chain.terminalSteps.slice(0, visible).map((step, i) => (
           <motion.div
             key={`${chain.id}-s${i}`}
-            initial={{ opacity: 0, x: -8 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.18 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.15 }}
             className="flex items-start gap-2"
           >
             <span className="mt-[1px]"><StepIcon icon={step.icon} /></span>
@@ -128,10 +128,10 @@ function ComparisonPanel({ chain, show }: { chain: DemoChain; show: boolean }) {
     <AnimatePresence>
       {show && (
         <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 16 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.35 }}
           className="mt-5 rounded-xl border border-white/10 bg-[#0d1117] overflow-hidden"
         >
           <div className="px-5 py-3 border-b border-white/8 flex items-center gap-2">
@@ -165,8 +165,8 @@ function ComparisonPanel({ chain, show }: { chain: DemoChain; show: boolean }) {
                 {chain.comparison.map((row, i) => (
                   <motion.tr
                     key={row.metric}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     transition={{ delay: 0.08 + i * 0.06, duration: 0.22 }}
                     className={i < chain.comparison.length - 1 ? "border-b border-white/5" : ""}
                   >
@@ -230,17 +230,17 @@ export function DemoIDE() {
     <div className="w-full space-y-4">
       {/* ── chain selector ── */}
       <motion.div
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
         className="flex flex-wrap gap-2"
       >
         {demoChains.map((c, i) => (
           <motion.button
             key={c.id}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: i * 0.07, duration: 0.25 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: i * 0.06, duration: 0.2 }}
             onClick={() => setActiveId(c.id)}
             className={cn(
               "px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 border",
@@ -258,10 +258,10 @@ export function DemoIDE() {
       <AnimatePresence mode="wait">
         <motion.div
           key={activeId}
-          initial={{ opacity: 0, y: 16, scale: 0.995 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -8, scale: 0.995 }}
-          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
           className={cn(
             "rounded-xl border overflow-hidden bg-[#0d1117]",
             CHAIN_GLOW[activeId]
