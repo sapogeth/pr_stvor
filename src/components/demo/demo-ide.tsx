@@ -226,10 +226,10 @@ export function DemoIDE() {
         chain.terminalSteps.reduce((acc, s) => acc + s.delay, 0) + 1000 + 600;
       setTimeout(() => {
         setShowComparison(true);
-        // smooth scroll to comparison after it mounts
+        // scroll only after comparison has mounted and animated in
         setTimeout(() => {
-          comparisonRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 120);
+          comparisonRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }, 400);
       }, totalDelay);
     }, 80);
   }, [chain]);
