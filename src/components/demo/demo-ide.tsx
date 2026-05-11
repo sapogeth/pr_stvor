@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Check, Play, Key, MessageSquare, AlertTriangle, ChevronRight } from "lucide-react";
 import { demoChains, type ChainId, type DemoChain } from "@/data/demo";
 import { cn } from "@/lib/utils";
@@ -118,69 +118,51 @@ function Terminal({ chain, running }: { chain: DemoChain; running: boolean }) {
 }
 
 /* ─── comparison ─── */
-function ComparisonPanel({ chain, show }: { chain: DemoChain; show: boolean }) {
+function ComparisonPanel({ chain }: { chain: DemoChain }) {
   return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.35 }}
-          className="rounded-xl border border-white/10 bg-[#0d1117] overflow-hidden"
-        >
-          <div className="px-5 py-3 border-b border-white/8 flex items-center gap-2">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/35">
-              vs the old way
-            </span>
-            <span className="text-white/15 text-[11px]">—</span>
-            <span className="text-[11px] text-white/30">
-              quantum threat + performance breakdown
-            </span>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-[12.5px] min-w-[560px]">
-              <thead>
-                <tr className="border-b border-white/8">
-                  {["Metric", "Classic approach", "Stvor"].map((h, i) => (
-                    <th key={h} className={cn(
-                      "px-5 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.12em]",
-                      i === 2 ? CHAIN_TEXT[chain.id] : "text-white/25"
-                    )}>
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {chain.comparison.map((row, i) => (
-                  <motion.tr
-                    key={row.metric}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.08 + i * 0.06, duration: 0.22 }}
-                    className={i < chain.comparison.length - 1 ? "border-b border-white/5" : ""}
-                  >
-                    <td className="px-5 py-3 font-medium text-white/65 leading-snug">{row.metric}</td>
-                    <td className={cn("px-5 py-3 leading-snug", row.classicBad ? "text-[#f87171]" : "text-white/40")}>
-                      {row.classic}
-                    </td>
-                    <td className="px-5 py-3 text-[#4ade80] font-medium leading-snug">
-                      {row.metric.includes("latency") ? <AnimatedCounter value="~14 ms" /> : row.stvor}
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="px-5 py-3 border-t border-white/8 text-[10.5px] text-white/22 leading-relaxed">
-            Shor's algorithm runs in polynomial time on a quantum computer and breaks RSA, ECDH, and
-            Ed25519. ML-KEM-768 (lattice-based) has no known quantum speedup — secure even against a
-            cryptographically-relevant quantum computer (CRQC).
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div className="rounded-xl border border-white/10 bg-[#0d1117] overflow-hidden">
+      <div className="px-5 py-3 border-b border-white/8 flex items-center gap-2">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/35">
+          vs the old way
+        </span>
+        <span className="text-white/15 text-[11px]">—</span>
+        <span className="text-[11px] text-white/30">quantum threat + performance breakdown</span>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-[12.5px] min-w-[560px]">
+          <thead>
+            <tr className="border-b border-white/8">
+              {["Metric", "Classic approach", "Stvor"].map((h, i) => (
+                <th key={h} className={cn(
+                  "px-5 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.12em]",
+                  i === 2 ? CHAIN_TEXT[chain.id] : "text-white/25"
+                )}>
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {chain.comparison.map((row, i) => (
+              <tr key={row.metric} className={i < chain.comparison.length - 1 ? "border-b border-white/5" : ""}>
+                <td className="px-5 py-3 font-medium text-white/65 leading-snug">{row.metric}</td>
+                <td className={cn("px-5 py-3 leading-snug", row.classicBad ? "text-[#f87171]" : "text-white/40")}>
+                  {row.classic}
+                </td>
+                <td className="px-5 py-3 text-[#4ade80] font-medium leading-snug">
+                  {row.metric.includes("latency") ? <AnimatedCounter value="~14 ms" /> : row.stvor}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="px-5 py-3 border-t border-white/8 text-[10.5px] text-white/22 leading-relaxed">
+        Shor's algorithm runs in polynomial time on a quantum computer and breaks RSA, ECDH, and
+        Ed25519. ML-KEM-768 (lattice-based) has no known quantum speedup — secure even against a
+        cryptographically-relevant quantum computer (CRQC).
+      </div>
+    </div>
   );
 }
 
@@ -261,16 +243,22 @@ export function DemoIDE() {
         </div>
       </div>
 
-      {/* hint */}
-      {!running && !showComparison && (
-        <p className="flex items-center gap-1.5 text-xs text-white/25">
-          <ChevronRight size={13} />
-          Select a platform and click <strong className="text-white/40">Run</strong> to watch the handshake.
-        </p>
-      )}
+      {/* hint — always in DOM, just hidden */}
+      <p
+        className="flex items-center gap-1.5 text-xs text-white/25"
+        style={{ visibility: !running && !showComparison ? "visible" : "hidden" }}
+      >
+        <ChevronRight size={13} />
+        Select a platform and click <strong className="text-white/40">Run</strong> to watch the handshake.
+      </p>
 
-      {/* comparison — appended below, no layout above shifts */}
-      <ComparisonPanel chain={chain} show={showComparison} />
+      {/* comparison — always in DOM, opacity transition only */}
+      <div
+        className="transition-opacity duration-300"
+        style={{ opacity: showComparison ? 1 : 0, pointerEvents: showComparison ? "auto" : "none" }}
+      >
+        <ComparisonPanel chain={chain} />
+      </div>
     </div>
   );
 }
