@@ -8,6 +8,7 @@ import { Comparison } from "@/components/sections/comparison";
 import { Pricing } from "@/components/sections/pricing";
 import { TrustSignals } from "@/components/sections/trust-signals";
 import { GetStarted } from "@/components/sections/get-started";
+import { Partners } from "@/components/sections/partners";
 
 export default function HomePage() {
   return (
@@ -15,6 +16,7 @@ export default function HomePage() {
       <Header />
       <main className="flex-1">
         <Hero />
+        <Partners />
         <Problem />
         <Solution />
         <UseCases />
