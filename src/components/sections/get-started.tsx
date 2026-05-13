@@ -23,7 +23,7 @@ export function GetStarted() {
             Install the open-source SDK and run the quickstart sample.
           </p>
           <CodeBlock
-            code={`npm install @stvor/sdk`}
+            code={`npm install @stvor/web3`}
             language="bash"
             className="mb-5"
           />
