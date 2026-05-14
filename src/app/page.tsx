@@ -10,6 +10,9 @@ import { TrustSignals } from "@/components/sections/trust-signals";
 import { GetStarted } from "@/components/sections/get-started";
 import { Partners } from "@/components/sections/partners";
 import { SolanaRoadmap } from "@/components/sections/solana-roadmap";
+import { BeforeAfter } from "@/components/sections/before-after";
+import { SequenceFlow } from "@/components/sections/sequence-flow";
+import { Architecture } from "@/components/sections/architecture";
 
 export default function HomePage() {
   return (
@@ -19,7 +22,10 @@ export default function HomePage() {
         <Hero />
         <Partners />
         <Problem />
+        <BeforeAfter />
         <Solution />
+        <SequenceFlow />
+        <Architecture />
         <UseCases />
         <SolanaRoadmap />
         <Comparison />
