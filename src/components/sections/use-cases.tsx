@@ -13,7 +13,7 @@ export function UseCases() {
       description="Four primary audiences. One vendor-neutral SDK that ships in under a day."
     >
       <div className="grid gap-5 md:grid-cols-2">
-        {useCases.map(({ icon: Icon, audience, pitch, bullets }) => (
+        {useCases.map(({ icon: Icon, audience, pitch, bullets, example }) => (
           <Card key={audience} className="flex flex-col">
             <div className="flex items-start gap-4 mb-5">
               <div className="shrink-0 inline-flex size-11 items-center justify-center rounded-lg bg-[var(--color-brand)]/10 text-[var(--color-brand)]">
@@ -32,14 +32,21 @@ export function UseCases() {
                   key={b}
                   className="flex items-start gap-2.5 text-sm text-[var(--color-fg-muted)]"
                 >
-                  <Check
-                    size={16}
-                    className="shrink-0 mt-0.5 text-[var(--color-accent)]"
-                  />
+                  <Check size={16} className="shrink-0 mt-0.5 text-[var(--color-accent)]" />
                   <span>{b}</span>
                 </li>
               ))}
             </ul>
+            {example && (
+              <div className="mb-5 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-fg-subtle)] mb-1">
+                  Example
+                </p>
+                <p className="text-xs text-[var(--color-fg-muted)] leading-relaxed italic">
+                  {example}
+                </p>
+              </div>
+            )}
             <a
               href={siteConfig.cta.docs}
               className="mt-auto inline-flex items-center gap-1.5 text-sm font-medium text-[var(--color-brand)] hover:text-[var(--color-brand-hover)] transition-colors"

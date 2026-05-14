@@ -144,8 +144,8 @@ export function Pricing() {
       </div>
 
       <p className="mt-6 text-xs text-[var(--color-fg-subtle)] text-center max-w-2xl mx-auto">
-        We're currently onboarding paying customers manually to ensure proper integration
-        support. Self-serve checkout is planned for later in 2026.
+        Early access — book a 20-min call and we'll set you up same day.
+        Self-serve checkout is planned for later in 2026.
       </p>
 
       <div className="mt-16 mx-auto max-w-2xl">

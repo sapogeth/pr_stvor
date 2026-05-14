@@ -23,13 +23,12 @@ export function Hero() {
           </Badge>
 
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight gradient-text text-balance">
-            Cryptographic Infrastructure for Autonomous AI Agents
+            Your AI agents act with users' authority. Can you prove it?
           </h1>
 
           <p className="mt-6 text-lg md:text-xl text-[var(--color-fg-muted)] text-pretty max-w-2xl mx-auto">
-            Post-quantum secure identity, messaging, and wallet binding for ERC-4337 and TON.{" "}
-            <span className="text-[var(--color-fg)]">Vendor-neutral.</span>{" "}
-            Standards-based primitives, engineered for production. Works with MCP and any agent framework.
+            Stvor gives every agent a cryptographic identity and a tamper-proof audit trail.{" "}
+            <span className="text-[var(--color-fg)]">Drops in under a day.</span>
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center">
@@ -46,13 +45,13 @@ export function Hero() {
 
           <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-[var(--color-fg-subtle)]">
             <span className="inline-flex items-center gap-1.5">
-              <span className="size-1.5 rounded-full bg-[var(--color-accent)]" /> ML-KEM-768 + ML-DSA-65
+              <span className="size-1.5 rounded-full bg-[var(--color-accent)]" /> No vendor lock-in
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="size-1.5 rounded-full bg-[var(--color-accent)]" /> ERC-4337 & TON Wallet v5
+              <span className="size-1.5 rounded-full bg-[var(--color-accent)]" /> Drops in under a day
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="size-1.5 rounded-full bg-[var(--color-accent)]" /> Native MCP support
+              <span className="size-1.5 rounded-full bg-[var(--color-accent)]" /> Audit-ready
             </span>
           </div>
         </div>

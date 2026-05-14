@@ -1,13 +1,27 @@
-import { Wallet, Bot, Wrench, ShieldCheck, type LucideIcon } from "lucide-react";
+import { Bot, Wallet, Wrench, ShieldCheck, type LucideIcon } from "lucide-react";
 
 export type UseCase = {
   icon: LucideIcon;
   audience: string;
   pitch: string;
   bullets: string[];
+  example?: string;
 };
 
 export const useCases: UseCase[] = [
+  {
+    icon: Bot,
+    audience: "AI Agent Platforms",
+    pitch:
+      "Give your agents cryptographic identity. Verify agent-to-agent communication. Know exactly who authorized every action.",
+    bullets: [
+      "Per-agent delegation scopes & value caps",
+      "Forward-secret messaging via Double Ratchet",
+      "Tamper-proof audit trail for every agent action",
+    ],
+    example:
+      "Agent A called payment tool, moved $2,000. Stvor proves it was authorized by user wallet 0x… at 14:32 UTC. Immutable. Auditable. No manual logging.",
+  },
   {
     icon: Wallet,
     audience: "AA Wallet Teams",
@@ -17,17 +31,6 @@ export const useCases: UseCase[] = [
       "Drop-in for ERC-4337 and TON Wallet v5",
       "UserOp ↔ session binding helpers",
       "Deterministic key derivation from existing wallets",
-    ],
-  },
-  {
-    icon: Bot,
-    audience: "AI Agent Platforms",
-    pitch:
-      "Give your agents cryptographic identity. Verify agent-to-agent communication.",
-    bullets: [
-      "Per-agent delegation scopes & value caps",
-      "Forward-secret messaging via Double Ratchet",
-      "Long-term confidentiality for EU AI Act",
     ],
   },
   {
