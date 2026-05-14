@@ -8,7 +8,7 @@ export function Problem() {
       id="problem"
       eyebrow="The problem"
       title="The agent identity problem"
-      description="Today's AI agents act with users' authority but there's no cryptographic proof of it. Every action is a black box — and regulators are starting to ask questions."
+      description="Today's AI agents act with users' authority but there's no cryptographic proof of it. Every action is a black box — and when something goes wrong, nobody can prove what happened."
     >
       <div className="grid gap-5 md:grid-cols-3">
         {problemCards.map(({ icon: Icon, title, body, sub }) => (
