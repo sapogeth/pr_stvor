@@ -9,6 +9,7 @@ import { Pricing } from "@/components/sections/pricing";
 import { TrustSignals } from "@/components/sections/trust-signals";
 import { GetStarted } from "@/components/sections/get-started";
 import { Partners } from "@/components/sections/partners";
+import { SolanaRoadmap } from "@/components/sections/solana-roadmap";
 
 export default function HomePage() {
   return (
@@ -20,6 +21,7 @@ export default function HomePage() {
         <Problem />
         <Solution />
         <UseCases />
+        <SolanaRoadmap />
         <Comparison />
         <Pricing />
         <TrustSignals />
