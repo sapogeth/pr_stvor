@@ -23,13 +23,19 @@ const items = [
 export function SolanaRoadmap() {
   return (
     <section className="py-20 relative overflow-hidden">
+      {/* top fade from bg */}
+      <div aria-hidden="true" className="pointer-events-none absolute top-0 inset-x-0 h-32 z-10"
+        style={{ background: "linear-gradient(to bottom, var(--color-bg), transparent)" }} />
+      {/* bottom fade to bg */}
+      <div aria-hidden="true" className="pointer-events-none absolute bottom-0 inset-x-0 h-32 z-10"
+        style={{ background: "linear-gradient(to top, var(--color-bg), transparent)" }} />
       {/* Solana gradient glow */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(153,69,255,0.08) 0%, rgba(20,241,149,0.06) 50%, transparent 100%)",
+            "radial-gradient(ellipse 90% 70% at 50% 50%, rgba(153,69,255,0.1) 0%, rgba(20,241,149,0.07) 55%, transparent 100%)",
         }}
       />
 

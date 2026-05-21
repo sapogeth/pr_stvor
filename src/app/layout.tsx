@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { siteConfig } from "@/lib/site-config";
+import { PageBackground } from "@/components/ui/page-background";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -89,7 +90,10 @@ export default function RootLayout({
           />
         )}
       </head>
-      <body className="min-h-screen flex flex-col antialiased">{children}</body>
+      <body className="min-h-screen flex flex-col antialiased">
+        <PageBackground />
+        <div className="relative z-10 flex flex-col min-h-screen">{children}</div>
+      </body>
     </html>
   );
 }

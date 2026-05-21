@@ -3,43 +3,43 @@ import { Section } from "@/components/ui/section";
 const steps = [
   {
     n: "01",
+    label: "Identity registration",
     actor: "Agent A",
-    action: "Generate ML-KEM-768 keypair + publish via ML-DSA-65 to on-chain registry",
-    note: "One-time setup. Keys live on-chain — no trusted third party.",
-    color: "text-[#60a5fa] border-[#60a5fa]/30 bg-[#60a5fa]/5",
-    dot: "bg-[#60a5fa]",
+    body: "Generate ML-KEM-768 keypair. Publish public key on-chain, signed with ML-DSA-65.",
+    aside: "One-time. Keys live on-chain — no trusted intermediary.",
+    color: "#60a5fa",
   },
   {
     n: "02",
+    label: "Identity resolution",
     actor: "Agent B",
-    action: "Resolve Agent A's public key from registry. Verify ML-DSA-65 signature.",
-    note: "Cryptographic identity — not an API key that can be phished.",
-    color: "text-[#a78bfa] border-[#a78bfa]/30 bg-[#a78bfa]/5",
-    dot: "bg-[#a78bfa]",
+    body: "Resolve Agent A's public key from on-chain registry. Verify ML-DSA-65 signature.",
+    aside: "Cryptographic identity — cannot be phished or rotated silently.",
+    color: "#818cf8",
   },
   {
     n: "03",
-    actor: "Both",
-    action: "Hybrid X3DH handshake: ECDH P-256 + ML-KEM-768 run in parallel → HKDF → root key",
-    note: "If ECDH breaks (quantum), ML-KEM holds. If ML-KEM breaks, ECDH holds.",
-    color: "text-[#f59e0b] border-[#f59e0b]/30 bg-[#f59e0b]/5",
-    dot: "bg-[#f59e0b]",
+    label: "Hybrid handshake",
+    actor: "Both agents",
+    body: "ECDH P-256 + ML-KEM-768 run in parallel. Outputs combined via HKDF-SHA256 → root key.",
+    aside: "If either primitive is broken, the other holds. Defense in depth.",
+    color: "#a78bfa",
   },
   {
     n: "04",
+    label: "Wallet binding",
     actor: "Agent A",
-    action: "Bind session ID to UserOperation calldata. Wallet signs. On-chain verification.",
-    note: "Transplanting the session to another context causes on-chain revert.",
-    color: "text-[#34d399] border-[#34d399]/30 bg-[#34d399]/5",
-    dot: "bg-[#34d399]",
+    body: "Session ID embedded in UserOperation calldata. Wallet signs. Verified on-chain at execution.",
+    aside: "Forged sessions cause on-chain revert — cryptographically impossible to bypass.",
+    color: "#34d399",
   },
   {
     n: "05",
-    actor: "Both",
-    action: "Messages encrypted with AES-256-GCM. Double Ratchet advances per message.",
-    note: "Compromise of message N reveals nothing about messages N−1 or N+1.",
-    color: "text-[#4ade80] border-[#4ade80]/30 bg-[#4ade80]/5",
-    dot: "bg-[#4ade80]",
+    label: "Encrypted messaging",
+    actor: "Both agents",
+    body: "AES-256-GCM encryption per message. Double Ratchet advances the chain key on every send.",
+    aside: "Compromise of message N reveals nothing about N−1 or N+1.",
+    color: "#4ade80",
   },
 ];
 
@@ -51,31 +51,46 @@ export function SequenceFlow() {
       description="What happens under the hood when two agents establish a Stvor session."
     >
       <div className="mx-auto max-w-3xl">
+        {/* steps */}
         <div className="relative">
-          {/* vertical line */}
-          <div className="absolute left-[28px] top-4 bottom-4 w-px bg-gradient-to-b from-[#60a5fa]/40 via-[#a78bfa]/40 to-[#4ade80]/40" />
+          {/* vertical rule */}
+          <div className="absolute left-[19px] top-5 bottom-5 w-px bg-gradient-to-b from-[#60a5fa]/30 via-[#818cf8]/20 to-[#4ade80]/30" />
 
-          <div className="space-y-4">
-            {steps.map((step, i) => (
+          <div className="space-y-2">
+            {steps.map((step) => (
               <div key={step.n} className="flex gap-5">
-                {/* dot */}
-                <div className="relative shrink-0 flex flex-col items-center" style={{ width: 57 }}>
-                  <div className={`size-4 rounded-full border-2 border-[var(--color-bg)] ${step.dot} z-10 mt-4 shrink-0`} />
+                {/* number dot */}
+                <div className="shrink-0 flex flex-col items-center pt-[18px]">
+                  <div
+                    className="size-[10px] rounded-full ring-4 ring-[var(--color-bg)] z-10"
+                    style={{ background: step.color }}
+                  />
                 </div>
 
                 {/* card */}
-                <div className={`flex-1 rounded-xl border ${step.color} px-5 py-4 mb-1`}>
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-[10px] font-mono font-bold opacity-50">{step.n}</span>
-                    <span className={`text-[11px] font-semibold uppercase tracking-[0.12em] ${step.color.split(" ")[0]}`}>
+                <div
+                  className="flex-1 rounded-xl border px-5 py-4 mb-1"
+                  style={{
+                    borderColor: `${step.color}20`,
+                    background: `linear-gradient(135deg, ${step.color}07 0%, transparent 70%)`,
+                  }}
+                >
+                  <div className="flex items-baseline gap-3 mb-1.5 flex-wrap">
+                    <span className="text-[10px] font-mono text-[var(--color-fg-subtle)]">{step.n}</span>
+                    <span className="text-[13px] font-semibold text-[var(--color-fg)]">{step.label}</span>
+                    <span
+                      className="text-[10px] font-semibold uppercase tracking-[0.12em] px-2 py-0.5 rounded-full"
+                      style={{ background: `${step.color}18`, color: step.color }}
+                    >
                       {step.actor}
                     </span>
                   </div>
-                  <p className="text-[13.5px] font-medium text-[var(--color-fg)] leading-snug mb-2">
-                    {step.action}
+                  <p className="text-[13px] text-[var(--color-fg-muted)] leading-relaxed mb-1.5">
+                    {step.body}
                   </p>
-                  <p className="text-[12px] text-[var(--color-fg-subtle)] leading-relaxed">
-                    {step.note}
+                  <p className="text-[11px] text-[var(--color-fg-subtle)] leading-relaxed border-l-2 pl-2.5"
+                    style={{ borderColor: `${step.color}40` }}>
+                    {step.aside}
                   </p>
                 </div>
               </div>
@@ -84,13 +99,26 @@ export function SequenceFlow() {
         </div>
 
         {/* result callout */}
-        <div className="mt-8 rounded-xl border border-[#4ade80]/25 bg-[#4ade80]/5 px-6 py-5 flex items-start gap-4">
-          <div className="text-2xl shrink-0">✓</div>
+        <div
+          className="mt-5 rounded-xl border px-5 py-4 flex items-start gap-4"
+          style={{
+            borderColor: "#4ade8030",
+            background: "linear-gradient(135deg, rgba(74,222,128,0.05) 0%, transparent 70%)",
+          }}
+        >
+          <div
+            className="shrink-0 size-8 rounded-lg border flex items-center justify-center mt-0.5"
+            style={{ borderColor: "#4ade8030", background: "#4ade8012" }}
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7l3.5 3.5L12 3" stroke="#4ade80" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
           <div>
-            <p className="text-sm font-semibold text-[var(--color-fg)] mb-1">Result</p>
-            <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">
-              A cryptographically authenticated, post-quantum secure, wallet-bound E2EE session.
-              Every message is attributable. Every action is auditable. Setup time: ~14 ms.
+            <p className="text-[13px] font-semibold text-[var(--color-fg)] mb-0.5">Result — ~14 ms total</p>
+            <p className="text-[12px] text-[var(--color-fg-muted)] leading-relaxed">
+              Post-quantum secure, wallet-bound E2EE session. Every message attributable,
+              every action auditable. No new infrastructure required.
             </p>
           </div>
         </div>
