@@ -9,14 +9,14 @@ interface Props {
 }
 
 const EXECUTED = {
-  receiptId: "rcpt_7K2mNpXr4vQ",
-  agent: "agt_openai_gpt4o",
+  receiptId: "trcpt_sample_demo",
+  agent: "agt_finance_agent_v1",
   action: "payment.execute",
   destination: "0x7a3f91cd...4e",
   amount: "50,000.00 USDC",
-  committed: "2026-07-02 14:23:08Z",
-  executed: "2026-07-02 14:23:11Z",
-  status: "✓ EXECUTED",
+  committed: "2026-07-11 09:41:02Z",
+  executed: "2026-07-11 09:41:03Z",
+  status: "✓ VERIFIED",
   payloadHash: "sha256:a3f7c291...",
   signature: "ed25519:3mK9pqR2...",
   statusClass: "receipt-executed",

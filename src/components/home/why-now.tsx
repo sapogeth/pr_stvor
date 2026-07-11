@@ -37,10 +37,10 @@ export function WhyNow() {
         {/* Header */}
         <motion.div
           className="mb-16"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.32, 1] }}
+          initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ type: "spring", stiffness: 60, damping: 22, mass: 1 }}
         >
           <p className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-accent)] mb-4 font-medium">
             Why Now
@@ -66,10 +66,10 @@ export function WhyNow() {
             <motion.div
               key={force.number}
               className="group flex flex-col md:flex-row gap-0 border border-[var(--color-border)] rounded-xl overflow-hidden hover:border-[var(--color-border-strong)] transition-colors"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.32, 1] }}
+              initial={{ opacity: 0, y: 24, filter: "blur(5px)" }}
+              whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ type: "spring", stiffness: 55, damping: 22, mass: 1, delay: i * 0.08 }}
             >
               {/* Number + stat panel */}
               <div

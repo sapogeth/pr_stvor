@@ -40,10 +40,10 @@ export function FinalCTA() {
         {/* Header */}
         <motion.div
           className="text-center mb-14"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.32, 1] }}
+          initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ type: "spring", stiffness: 60, damping: 22, mass: 1 }}
         >
           <p className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-accent)] mb-4 font-medium">
             Get Started
@@ -63,10 +63,10 @@ export function FinalCTA() {
             <motion.div
               key={path.type}
               className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-7 flex flex-col"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.32, 1] }}
+              initial={{ opacity: 0, y: 24, filter: "blur(5px)" }}
+              whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ type: "spring", stiffness: 55, damping: 22, mass: 1, delay: i * 0.09 }}
             >
               <div className="mb-6">
                 <span
@@ -112,10 +112,10 @@ export function FinalCTA() {
         {/* Trust Receipt + signals */}
         <motion.div
           className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16 pt-16 border-t border-[var(--color-border)]"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 20, filter: "blur(5px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.32, 1] }}
+          transition={{ type: "spring", stiffness: 55, damping: 22, mass: 1 }}
         >
           {/* Receipt */}
           <div className="flex-shrink-0">

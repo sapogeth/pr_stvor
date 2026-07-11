@@ -21,7 +21,7 @@ const ITEM_VARIANTS = {
 } as const;
 
 const TRUST_SIGNALS = [
-  "NIST FIPS 203/204",
+  "Trust Receipt — open standard",
   "No payload data leaves your infra",
   "Apache 2.0 open source",
   "<2ms verification",
@@ -64,10 +64,10 @@ export function HomeHero() {
               variants={ITEM_VARIANTS}
               className="text-[2.6rem] md:text-[3.5rem] lg:text-[4rem] font-semibold tracking-[-0.035em] leading-[1.06] text-[var(--color-fg)] mb-6"
             >
-              Verify before
+              Every execution
               <br />
               <span className="text-[var(--color-fg-muted)] font-normal">
-                execute. Every time.
+                produces signed proof.
               </span>
             </motion.h1>
 
@@ -76,13 +76,14 @@ export function HomeHero() {
               variants={ITEM_VARIANTS}
               className="text-[15px] text-[var(--color-fg-muted)] leading-[1.7] mb-9 max-w-[480px] mx-auto lg:mx-0"
             >
-              STVOR sits between your AI agents, wallets, and payment systems —
-              and the operations they execute. Every payment, transfer, and
-              contract call is verified against a cryptographic commitment before
-              it runs.{" "}
-              <span className="text-[var(--color-fg-subtle)]">
-                Not after. Never after.
+              Stvor is pre-execution verification for AI agents and payment systems.
+              Every operation is anchored to a cryptographic commitment before it runs —
+              and produces a{" "}
+              <span className="text-[var(--color-fg)]">
+                Trust Receipt
               </span>
+              {": "}
+              a signed, offline-verifiable record of what was verified and why it was allowed.
             </motion.p>
 
             {/* CTAs */}

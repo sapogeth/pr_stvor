@@ -110,10 +110,10 @@ export function UseCases() {
         {/* Header */}
         <motion.div
           className="mb-12"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.32, 1] }}
+          initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ type: "spring", stiffness: 60, damping: 22, mass: 1 }}
         >
           <p className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-accent)] mb-4 font-medium">
             Use Cases
@@ -126,10 +126,10 @@ export function UseCases() {
         {/* Persona tabs */}
         <motion.div
           className="flex flex-wrap gap-2 mb-8"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.15 }}
+          initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ type: "spring", stiffness: 60, damping: 22, mass: 1, delay: 0.1 }}
         >
           {PERSONAS.map((p, i) => (
             <button
@@ -154,10 +154,10 @@ export function UseCases() {
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.32, 1] }}
+            initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -8, filter: "blur(3px)" }}
+            transition={{ type: "spring", stiffness: 70, damping: 20, mass: 1 }}
             className="grid md:grid-cols-2 gap-6"
           >
             {/* Left: Problem + solution */}

@@ -130,10 +130,10 @@ export function Competitive() {
         {/* Header */}
         <motion.div
           className="mb-12"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.32, 1] }}
+          initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ type: "spring", stiffness: 60, damping: 22, mass: 1 }}
         >
           <p className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-accent)] mb-4 font-medium">
             Competitive Positioning
@@ -164,10 +164,10 @@ export function Competitive() {
         {/* Table */}
         <motion.div
           className="overflow-x-auto rounded-xl border border-[var(--color-border)]"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.32, 1] }}
+          initial={{ opacity: 0, y: 24, filter: "blur(5px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, amount: 0.08 }}
+          transition={{ type: "spring", stiffness: 55, damping: 22, mass: 1, delay: 0.08 }}
         >
           <table className="w-full min-w-[720px] border-collapse">
             <thead>

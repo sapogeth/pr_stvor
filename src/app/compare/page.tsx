@@ -7,9 +7,9 @@ import { siteConfig } from "@/lib/site-config";
 import { ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Compare — Stvor vs XMTP vs Microsoft Agent Mesh",
+  title: "Compare — Stvor vs Fireblocks, Blockaid, Safe, Hypernative",
   description:
-    "How Stvor compares to XMTP, Microsoft Agent Mesh, and building in-house. Post-quantum security, AA wallet binding, self-hosted option.",
+    "How Stvor compares to custody providers, simulation layers, multisig wallets, and monitoring tools. Pre-execution verification is a different category — not a better version of what exists.",
   alternates: { canonical: "/compare" },
 };
 
@@ -22,13 +22,15 @@ export default function ComparePage() {
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-brand)] mb-3">
             Comparison
           </p>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-[var(--color-fg)] mb-4">
+          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-[var(--color-fg)] mb-4">
             Stvor vs the alternatives
           </h1>
-          <p className="text-[var(--color-fg-muted)] max-w-2xl mx-auto text-base">
-            For teams who are already evaluating options. If you're not sure you need
-            a dedicated cryptographic identity layer yet —{" "}
-            <a href="/" className="text-[var(--color-brand)] underline underline-offset-2">start here</a>.
+          <p className="text-[var(--color-fg-muted)] max-w-2xl mx-auto text-base leading-relaxed">
+            Custody tools, simulation layers, multisig wallets, and monitoring platforms all
+            solve important problems. None of them verify execution intent before a
+            transaction is broadcast. That's what Stvor does.{" "}
+            <a href="/" className="text-[var(--color-accent)] underline underline-offset-2">Start from the home page</a>{" "}
+            if you haven't seen how it works.
           </p>
         </div>
         <Comparison />

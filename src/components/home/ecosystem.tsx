@@ -3,18 +3,19 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
-// Curated enterprise-credible platform list
+// Integration targets — only what's documented in the SDK
+// No company logos. These are protocol/SDK labels, not endorsements.
 const PLATFORMS = [
-  { id: "openai",    label: "OpenAI Agents",      angle: -90 },
-  { id: "orbwallet", label: "OrbWallet",           angle: -54 },
-  { id: "anthropic", label: "Anthropic",           angle: -18 },
-  { id: "stripe",    label: "Stripe",              angle: 18  },
-  { id: "langchain", label: "LangChain",           angle: 54  },
-  { id: "coinbase",  label: "Coinbase AgentKit",   angle: 90  },
-  { id: "base",      label: "Base",                angle: 126 },
-  { id: "solanapay", label: "Solana Pay",          angle: 162 },
-  { id: "mcp",       label: "MCP",                 angle: 198 },
-  { id: "chainlink", label: "Chainlink",           angle: 234 },
+  { id: "orbwallet",    label: "OrbWallet",          angle: -90  },
+  { id: "langchain",    label: "LangChain",           angle: -45  },
+  { id: "openai-sdk",   label: "Agents SDK",          angle: 0    },
+  { id: "mcp",          label: "MCP",                 angle: 45   },
+  { id: "erc4337",      label: "ERC-4337",            angle: 90   },
+  { id: "usdc",         label: "USDC",                angle: 135  },
+  { id: "solana",       label: "Solana",              angle: 180  },
+  { id: "ethereum",     label: "Ethereum",            angle: 225  },
+  { id: "ap2",          label: "AP2 / x402",          angle: 270  },
+  { id: "webhooks",     label: "Webhooks",            angle: 315  },
 ] as const;
 
 const CX = 400;
@@ -71,25 +72,24 @@ export function Ecosystem() {
         {/* Header */}
         <motion.div
           className="text-center mb-16"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.32, 1] }}
+          initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ type: "spring", stiffness: 60, damping: 22, mass: 1 }}
         >
           <p className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-accent)] mb-4 font-medium">
             Ecosystem
           </p>
           <h2 className="text-3xl md:text-4xl font-semibold tracking-[-0.025em] leading-[1.2] text-[var(--color-fg)] mb-4">
-            One trust layer for
+            Works where you work.
             <br />
             <span className="text-[var(--color-fg-muted)] font-normal">
-              the entire execution stack.
+              Drop-in, not a rewrite.
             </span>
           </h2>
           <p className="text-sm text-[var(--color-fg-subtle)] max-w-md mx-auto leading-relaxed">
-            STVOR sits between agent frameworks, payment rails, and execution
-            targets — provider-agnostic, across every integration. Every verified
-            operation adds to a permanent, auditable record.
+            STVOR integrates with agent frameworks, wallet standards, and payment
+            rails you already use. One SDK call. Provider-agnostic. Self-hostable.
           </p>
         </motion.div>
 
@@ -199,10 +199,10 @@ export function Ecosystem() {
             <motion.div
               key={stat.label}
               className="text-center"
-              initial={{ opacity: 0, y: 8 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
+              initial={{ opacity: 0, y: 14, filter: "blur(4px)" }}
+              whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ type: "spring", stiffness: 60, damping: 22, mass: 1 }}
             >
               <div className="text-2xl font-semibold tracking-[-0.02em] text-[var(--color-fg)] mb-1">
                 {stat.value}

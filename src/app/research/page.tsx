@@ -1,45 +1,112 @@
 import type { Metadata } from "next";
-import { ExternalLink, BookOpen } from "lucide-react";
+import { ExternalLink, FileText, ShieldCheck, Lock, GitBranch } from "lucide-react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Section } from "@/components/ui/section";
-import { Card } from "@/components/ui/card";
-import { CodeBlock } from "@/components/ui/code-block";
 import { ButtonLink } from "@/components/ui/button";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "Research",
+  title: "Research — Stvor",
   description:
-    "Hybrid X3DH protocol details, references, and academic context. The cryptographic foundations behind Stvor.",
+    "The cryptographic foundations of Stvor's execution trust layer. Commitment anchoring with ed25519, SHA-256 canonical hashing, the Trust Receipt format, and the threat model it addresses.",
   alternates: { canonical: "/research" },
 };
 
 const references = [
   {
-    title: "ML-KEM (FIPS 203)",
-    body: "Module-lattice-based Key-Encapsulation Mechanism. NIST PQC standard.",
+    title: "ed25519: High-speed high-security signatures",
+    body: "Bernstein et al. (2011). The digital signature scheme Stvor uses for commitment signing. Chosen for speed (<2ms), small key size, and wide ecosystem support.",
+    href: "https://ed25519.cr.yp.to/ed25519-20110926.pdf",
+  },
+  {
+    title: "SHA-2 (FIPS 180-4)",
+    body: "NIST standard for the SHA-256 hash function used in Stvor's canonical commitment hash construction.",
+    href: "https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf",
+  },
+  {
+    title: "JSON Canonicalization Scheme (RFC 8785)",
+    body: "The serialization standard Stvor follows for deterministic canonical hashing of commitment fields before signing.",
+    href: "https://www.rfc-editor.org/rfc/rfc8785",
+  },
+  {
+    title: "ERC-4337: Account Abstraction",
+    body: "The smart account standard Stvor integrates with for on-chain execution. Stvor's commitment anchoring can gate UserOperation submission.",
+    href: "https://eips.ethereum.org/EIPS/eip-4337",
+  },
+  {
+    title: "NIST IR 8505: AI Agentic Systems",
+    body: "NIST's emerging framework for trust and security in agentic AI systems — the policy context Stvor's compliance audit trail targets.",
+    href: "https://csrc.nist.gov/pubs/ir/8505/ipd",
+  },
+  {
+    title: "MiCA Regulation (EU) 2023/1114",
+    body: "Markets in Crypto Assets regulation. Stvor's Trust Receipt format is designed with MiCA's traceability and audit trail requirements in mind.",
+    href: "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32023R1114",
+  },
+  {
+    title: "GENIUS Act (U.S., 2025)",
+    body: "Proposed U.S. stablecoin framework requiring traceable execution and compliance audit trails. Stvor receipts are structured to support GENIUS Act compliance reporting.",
+    href: "https://www.congress.gov/bill/119th-congress/senate-bill/394",
+  },
+  {
+    title: "ML-KEM (NIST FIPS 203) — Post-quantum roadmap",
+    body: "Lattice-based key encapsulation standard. Stvor's 2027 post-quantum migration roadmap targets ML-DSA (FIPS 204) for commitment signatures.",
     href: "https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf",
   },
+];
+
+const concepts = [
   {
-    title: "ML-DSA (FIPS 204)",
-    body: "Module-lattice-based Digital Signature Standard. NIST PQC standard.",
-    href: "https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf",
+    Icon: Lock,
+    title: "Commitment anchoring",
+    body: `The core primitive. Before any transaction is built, the caller signs a structured intent object — destination, amount, method selector, agent identity, and TTL — using ed25519. The signature is the commitment. It cannot be changed after signing.
+
+When the transaction is ready to submit, stvor.verify() checks: does the live payload match the signed commitment? If yes, a Trust Receipt is issued. If no — field mismatch, method change, destination swap — a VerificationError is thrown and the transaction is NOT submitted.
+
+This is pre-execution verification. It runs after signing, before broadcast.`,
   },
   {
-    title: "Signal Double Ratchet",
-    body: "The original specification of the messaging ratchet that powers our forward-secret channel.",
-    href: "https://signal.org/docs/specifications/doubleratchet/",
+    Icon: ShieldCheck,
+    title: "Canonical hash construction",
+    body: `To make the commitment hash deterministic across languages and platforms, Stvor canonicalizes the intent object before hashing:
+
+1. Sort all keys alphabetically (RFC 8785)
+2. Normalize amounts to 18 decimal places (no floating point)
+3. Lowercase all address fields
+4. Strip trailing whitespace
+5. Serialize to UTF-8 JSON without whitespace
+6. SHA-256 hash the result
+
+This prevents encoding-variant attacks: two different serializations of the same intent produce the same hash. The canonical spec is open and language-agnostic — any SDK implementation can be verified against a reference vector.`,
   },
   {
-    title: "X3DH Key Agreement",
-    body: "Extended Triple Diffie-Hellman, the asynchronous key agreement Stvor extends with PQC.",
-    href: "https://signal.org/docs/specifications/x3dh/",
+    Icon: FileText,
+    title: "Trust Receipt format",
+    body: `A Trust Receipt is a signed JSON document issued by Stvor after a successful verification. It contains:
+
+• id — globally unique receipt identifier
+• hash — SHA-256 canonical hash of the committed intent
+• signature — ed25519 signature over the hash
+• fields — map of verified field names to their committed values
+• agent — identifier of the signing agent
+• issued_at — ISO 8601 timestamp
+• ttl — commitment time-to-live in seconds
+
+The receipt is verifiable offline using Stvor's published public key at /.well-known/jwks.json. No Stvor API call is required to verify a receipt — this is by design. An auditor, regulator, or counterparty can verify any historical receipt without a vendor relationship.`,
   },
   {
-    title: "ERC-4337",
-    body: "Account abstraction via entry-point contract. The wallet standard our binding helpers target.",
-    href: "https://eips.ethereum.org/EIPS/eip-4337",
+    Icon: GitBranch,
+    title: "Threat model",
+    body: `Stvor addresses three attack classes in the AI agent finance context:
+
+Payload manipulation — the transaction payload is modified between intent and execution. Stvor's commitment comparison catches destination swaps, amount changes, and method selector changes before submission.
+
+Context injection — a malicious prompt or tool response causes an agent to authorize a different operation than intended. Stvor's commitment was signed before the injection can affect the payload.
+
+Authorization gap — an agent operates beyond its delegated scope. Stvor's policy gate compares the intent against a declared policy (maxAmount, allowedMethods, allowedRecipients) before anchoring the commitment.
+
+What Stvor does NOT address: private key compromise, malicious agent code, or attacks at the smart contract level. These require additional controls. See the security page for the full honest scope.`,
   },
 ];
 
@@ -47,103 +114,96 @@ export default function ResearchPage() {
   return (
     <>
       <Header />
-      <main className="flex-1 pt-24">
-        <Section
-          eyebrow="Research"
-          title="The cryptographic foundations"
-          description="Stvor is built on standards. This page lays out what they are and how we combine them. If you're a security researcher, this is the page for you."
-        >
-          <div className="mx-auto max-w-3xl space-y-8">
-            <div>
-              <h3 className="text-xl font-semibold text-[var(--color-fg)] mb-3 tracking-tight">
-                Hybrid X3DH handshake
-              </h3>
-              <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed mb-5">
-                A classical ECDH (P-256) and a post-quantum ML-KEM-768 encapsulation are run in
-                parallel. The two shared secrets are concatenated and fed through HKDF with a domain
-                separator. The output is the seed for the Double Ratchet.
-              </p>
-              <CodeBlock
-                language="ts"
-                code={`// Conceptual sketch — actual implementation is constant-time.
-const ecdh_ss   = ECDH(P256, ourPriv, peerPub);
-const mlkem_ss  = MLKEM_768.encap(peerKemPub);
+      <main className="flex-1 pt-24 pb-20">
+        {/* ── Page header ── */}
+        <div className="container-page max-w-3xl mb-16 text-center">
+          <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--color-accent)] mb-3 font-mono">
+            Technical notes
+          </p>
+          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-[var(--color-fg)] mb-5">
+            How Stvor works, cryptographically.
+          </h1>
+          <p className="text-[15px] text-[var(--color-fg-muted)] leading-[1.7] max-w-2xl mx-auto">
+            The cryptographic primitives are not novel — ed25519 and SHA-256 are industry
+            standard. What Stvor provides is the composition: a commitment anchoring scheme
+            designed specifically for the AI agent execution context, with a portable, offline-verifiable
+            receipt format.
+          </p>
+        </div>
 
-const root = HKDF_SHA256(
-  ikm: ecdh_ss || mlkem_ss,
-  salt: "STVOR-HYBRID-v1",
-  info: sessionContext,
-  length: 32,
-);`}
-              />
-            </div>
+        {/* ── Concepts ── */}
+        <Section eyebrow="Architecture" title="Core concepts" align="left">
+          <div className="space-y-10 max-w-3xl">
+            {concepts.map(({ Icon, title, body }) => (
+              <div key={title} className="flex gap-5">
+                <div className="flex-shrink-0 mt-1">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[var(--color-bg-elevated)] border border-[var(--color-border)]">
+                    <Icon size={15} style={{ color: "var(--color-accent)" }} />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-[15px] font-semibold text-[var(--color-fg)] mb-3">
+                    {title}
+                  </h3>
+                  <div className="text-[13.5px] text-[var(--color-fg-muted)] leading-[1.8] whitespace-pre-line">
+                    {body}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
 
-            <div>
-              <h3 className="text-xl font-semibold text-[var(--color-fg)] mb-3 tracking-tight">
-                Why hybrid?
-              </h3>
-              <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">
-                ML-KEM is new. Confidence in any single PQC primitive should grow over time. Until
-                that confidence is mature, hybrid constructions give you the security of the
-                stronger of the two — if either ECDH or ML-KEM remains secure against an attacker,
-                the session key is safe.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-semibold text-[var(--color-fg)] mb-3 tracking-tight">
-                AA UserOperation binding
-              </h3>
-              <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">
-                A messaging session is bound to a specific UserOp by including the UserOp hash and
-                the wallet's signing public key in the X3DH transcript. An attacker who phishes the
-                user into signing a UserOp cannot transplant the resulting session into a different
-                channel — the binding hash will not match.
-              </p>
+        {/* ── Spec teaser ── */}
+        <Section eyebrow="Specification" title="Open spec — in progress" align="left">
+          <div className="max-w-3xl space-y-4">
+            <p className="text-[14px] text-[var(--color-fg-muted)] leading-[1.7]">
+              The Trust Receipt format and canonical hash spec will be published as an
+              open document with reference implementations in TypeScript, Python, and Rust.
+              The goal is for any third party to implement a compatible verifier without
+              a Stvor dependency.
+            </p>
+            <p className="text-[14px] text-[var(--color-fg-muted)] leading-[1.7]">
+              The spec is currently in internal draft. Design partners receive the draft
+              during the alpha engagement. If you are implementing a compatible verifier
+              or have feedback on the format, reach out directly.
+            </p>
+            <div className="pt-2">
+              <ButtonLink
+                href={`mailto:${siteConfig.emails.founder}?subject=Trust%20Receipt%20spec%20%E2%80%94%20request`}
+                variant="secondary"
+              >
+                Request spec draft
+              </ButtonLink>
             </div>
           </div>
         </Section>
 
-        <Section
-          eyebrow="References"
-          title="Standards we build on"
-          description="Direct links — we'd rather you read the source than our marketing page."
-        >
-          <div className="grid gap-4 md:grid-cols-2">
+        {/* ── References ── */}
+        <Section eyebrow="References" title="Standards and prior work">
+          <div className="grid gap-4 md:grid-cols-2 max-w-4xl mx-auto">
             {references.map((ref) => (
               <a
                 key={ref.title}
                 href={ref.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group"
+                className="group flex flex-col gap-2 p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] hover:border-[var(--color-border-strong)] transition-all"
               >
-                <Card className="h-full">
-                  <div className="flex items-start justify-between mb-3">
-                    <BookOpen
-                      size={18}
-                      className="text-[var(--color-brand)]"
-                    />
-                    <ExternalLink
-                      size={14}
-                      className="text-[var(--color-fg-subtle)] group-hover:text-[var(--color-fg)] transition-colors"
-                    />
-                  </div>
-                  <h3 className="text-base font-semibold text-[var(--color-fg)] mb-1 tracking-tight">
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="text-[13px] font-medium text-[var(--color-fg)] leading-snug">
                     {ref.title}
                   </h3>
-                  <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">
-                    {ref.body}
-                  </p>
-                </Card>
+                  <ExternalLink
+                    size={12}
+                    className="shrink-0 text-[var(--color-fg-subtle)] group-hover:text-[var(--color-fg-muted)] transition-colors mt-0.5"
+                  />
+                </div>
+                <p className="text-[12px] text-[var(--color-fg-muted)] leading-relaxed">
+                  {ref.body}
+                </p>
               </a>
             ))}
-          </div>
-
-          <div className="mt-12 text-center">
-            <ButtonLink href={`mailto:${siteConfig.emails.founder}?subject=Research%20discussion`} variant="primary" size="lg">
-              Talk to the protocol designer
-            </ButtonLink>
           </div>
         </Section>
       </main>

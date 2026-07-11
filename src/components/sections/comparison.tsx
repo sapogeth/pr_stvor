@@ -1,6 +1,6 @@
 import { Check, Minus, Info } from "lucide-react";
 import { Section } from "@/components/ui/section";
-import { comparisonColumns, comparisonRows } from "@/data/comparison";
+import { comparisonColumns, comparisonRows, type ComparisonRow } from "@/data/comparison";
 
 function CellContent({ value, highlight }: { value: string; highlight?: boolean }) {
   if (value === "No") {
@@ -32,17 +32,33 @@ function CellContent({ value, highlight }: { value: string; highlight?: boolean 
   );
 }
 
+const DATA_KEYS: Array<keyof Omit<ComparisonRow, "feature" | "note">> = [
+  "fireblocks",
+  "blockaid",
+  "safe",
+  "monitoring",
+  "stvor",
+];
+
 export function Comparison() {
   return (
     <Section
       id="compare"
       eyebrow="Why Stvor"
-      title="How we compare"
-      description="No vendor lock-in. No 12-month rewrites. Drop into ERC-4337 or TON quickly."
+      title="Different category, not just a better tool"
+      description="Custody providers, simulation layers, and monitoring tools all solve pieces of the problem — after the fact. Stvor is pre-execution verification: the commitment is anchored before the transaction is built."
     >
+      {/* Mobile scroll hint */}
+      <p className="flex items-center gap-1.5 text-[11px] text-[var(--color-fg-subtle)] mb-3 sm:hidden">
+        <span>Scroll right for full table</span>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+          <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </p>
+
       <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm min-w-[760px]">
+          <table className="w-full text-sm min-w-[900px]">
             <thead>
               <tr className="bg-[var(--color-bg-subtle)] border-b border-[var(--color-border)]">
                 {comparisonColumns.map((col, idx) => (
@@ -52,10 +68,13 @@ export function Comparison() {
                     className={[
                       "px-4 md:px-5 py-4 text-left text-xs font-semibold uppercase tracking-[0.14em]",
                       "highlight" in col && col.highlight
-                        ? "text-[var(--color-brand)]"
+                        ? "text-[var(--color-accent)]"
                         : "text-[var(--color-fg-muted)]",
                       idx === 0
                         ? "sticky left-0 bg-[var(--color-bg-subtle)] z-10"
+                        : "",
+                      col.key === "stvor"
+                        ? "bg-[var(--color-accent)]/[0.06]"
                         : "",
                     ].join(" ")}
                   >
@@ -74,7 +93,7 @@ export function Comparison() {
                   >
                     <th
                       scope="row"
-                      className="sticky left-0 z-10 bg-[var(--color-bg-elevated)] px-4 md:px-5 py-4 text-left font-medium text-[var(--color-fg)] align-top"
+                      className="sticky left-0 z-10 bg-[var(--color-bg-elevated)] px-4 md:px-5 py-4 text-left font-medium text-[var(--color-fg)] align-top min-w-[160px]"
                     >
                       <span className="inline-flex items-start gap-1.5">
                         <span>{row.feature}</span>
@@ -98,18 +117,17 @@ export function Comparison() {
                         )}
                       </span>
                     </th>
-                    <td className="px-4 md:px-5 py-4 align-top">
-                      <CellContent value={row.diy} />
-                    </td>
-                    <td className="px-4 md:px-5 py-4 align-top">
-                      <CellContent value={row.xmtp} />
-                    </td>
-                    <td className="px-4 md:px-5 py-4 align-top">
-                      <CellContent value={row.msAgent} />
-                    </td>
-                    <td className="px-4 md:px-5 py-4 align-top bg-[var(--color-brand)]/[0.04]">
-                      <CellContent value={row.stvor} highlight />
-                    </td>
+                    {DATA_KEYS.map((key) => (
+                      <td
+                        key={key}
+                        className={[
+                          "px-4 md:px-5 py-4 align-top text-sm",
+                          key === "stvor" ? "bg-[var(--color-accent)]/[0.04]" : "",
+                        ].join(" ")}
+                      >
+                        <CellContent value={row[key]} highlight={key === "stvor"} />
+                      </td>
+                    ))}
                   </tr>
                 );
               })}
@@ -119,10 +137,10 @@ export function Comparison() {
       </div>
 
       <p className="mt-4 text-xs text-[var(--color-fg-subtle)] text-center">
-        Comparison is informational and reflects publicly documented behavior at time of writing
-        (May 2026). Sources available on request — email{" "}
+        Comparison reflects publicly documented behavior at time of writing (July 2026).
+        Sources and corrections welcome —{" "}
         <a
-          href="mailto:founder@stvor.xyz?subject=Comparison%20sources"
+          href="mailto:founder@stvor.xyz?subject=Comparison%20feedback"
           className="hover:text-[var(--color-fg-muted)] underline underline-offset-2"
         >
           founder@stvor.xyz
