@@ -394,11 +394,16 @@ function FlowDiagram({
   );
 }
 
+// Shared easing tuple (framer-motion needs typed tuple, not number[])
+const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.32, 1];
+
 // ── Main component ────────────────────────────────────────────────────────────
 
 export function ScrollStory() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
   const [currentIdx, setCurrentIdx] = useState(0);
+  const [entered, setEntered] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -406,6 +411,7 @@ export function ScrollStory() {
   });
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
+    if (!entered && v > 0) setEntered(true);
     const idx = Math.min(
       STEPS.length - 1,
       Math.floor(v * STEPS.length)
@@ -423,13 +429,13 @@ export function ScrollStory() {
       style={{ height: `${STEPS.length * 100}vh` }}
     >
       {/* Sticky viewport */}
-      <div className="sticky top-0 h-screen overflow-hidden flex items-center">
+      <div ref={stickyRef} className="sticky top-0 h-screen overflow-hidden flex items-center">
         {/* Progress bar */}
         <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-[var(--color-border)]">
           <motion.div
             className="w-full bg-[var(--color-accent)]"
             style={{ height: `${((currentIdx + 1) / STEPS.length) * 100}%` }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.4, ease: EASE_OUT }}
           />
         </div>
 
@@ -438,13 +444,20 @@ export function ScrollStory() {
 
             {/* ── Left: text ── */}
             <div className="flex-1 min-w-0">
-              <AnimatePresence mode="sync">
+              {/*
+                mode="wait" — exit fully completes BEFORE enter begins.
+                This eliminates the double-animation overlap that looked choppy.
+              */}
+              <AnimatePresence mode="wait">
                 <motion.div
                   key={currentIdx}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.2, ease: [0.16, 1, 0.32, 1] }}
+                  initial={{ opacity: 0, y: 14, filter: "blur(5px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
+                  transition={{
+                    duration: 0.38,
+                    ease: EASE_OUT,
+                  }}
                 >
                   {/* Step label */}
                   <p className="text-[10px] tracking-[0.18em] uppercase text-[var(--color-accent)] mb-5 font-medium">
@@ -476,26 +489,32 @@ export function ScrollStory() {
               </AnimatePresence>
             </div>
 
-            {/* ── Right: flow diagram ── */}
-            <div className="hidden md:flex flex-shrink-0 items-center justify-center">
+            {/* ── Right: flow diagram — fades in with the section ── */}
+            <motion.div
+              className="hidden md:flex flex-shrink-0 items-center justify-center"
+              initial={{ opacity: 0, x: 16 }}
+              animate={{ opacity: entered ? 1 : 0, x: entered ? 0 : 16 }}
+              transition={{ duration: 0.7, ease: EASE_OUT, delay: 0.1 }}
+            >
               <FlowDiagram step={step} />
-            </div>
+            </motion.div>
           </div>
         </div>
 
-        {/* Step counter */}
+        {/* Step counter dots */}
         <div className="absolute bottom-8 right-8 flex items-center gap-2">
           {STEPS.map((s, i) => (
-            <div
+            <motion.div
               key={s.n}
-              className="h-[2px] rounded-full transition-all duration-300"
-              style={{
+              className="h-[2px] rounded-full"
+              animate={{
                 width: i === currentIdx ? 24 : 8,
                 background:
                   i <= currentIdx
                     ? "var(--color-accent)"
                     : "var(--color-border-strong)",
               }}
+              transition={{ duration: 0.3, ease: EASE_OUT }}
             />
           ))}
         </div>

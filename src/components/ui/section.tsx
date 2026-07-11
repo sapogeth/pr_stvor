@@ -31,17 +31,17 @@ export function Section({
             )}
           >
             {eyebrow && (
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-brand)] mb-4">
+              <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--color-accent)] mb-4 font-mono">
                 {eyebrow}
               </p>
             )}
             {title && (
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-balance gradient-text">
+              <h2 className="text-2xl md:text-4xl font-semibold tracking-[-0.025em] text-[var(--color-fg)] text-balance leading-tight">
                 {title}
               </h2>
             )}
             {description && (
-              <p className="mt-5 text-lg text-[var(--color-fg-muted)] text-pretty">
+              <p className="mt-4 text-[15px] text-[var(--color-fg-muted)] leading-[1.7] text-pretty max-w-2xl mx-auto">
                 {description}
               </p>
             )}
