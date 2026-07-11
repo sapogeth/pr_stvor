@@ -1,22 +1,24 @@
 export const siteConfig = {
   name: "Stvor",
-  title: "Stvor — Cryptographic Infrastructure for AI Agents | Post-Quantum E2EE",
-  shortTitle: "Stvor — Cryptographic Infrastructure for AI Agents",
+  title: "Stvor — The Execution Trust Layer for AI-Driven Finance",
+  shortTitle: "Stvor — Verify Before Execute",
   description:
-    "Post-quantum secure identity, messaging, and wallet binding for ERC-4337 and TON. Vendor-neutral. Standards-based, engineered for production. Built on NIST FIPS 203/204 algorithms.",
+    "STVOR is the execution trust layer for AI agents, wallets, and payment systems. Every payment, transfer, and contract call is verified against a cryptographic commitment before it runs. Not after. Never after.",
   keywords: [
-    "post-quantum cryptography",
+    "execution trust layer",
     "AI agent security",
-    "ERC-4337",
-    "AA wallets",
-    "MCP",
-    "TON",
-    "ML-KEM",
-    "ML-DSA",
-    "agent identity",
-    "E2EE",
+    "pre-execution verification",
+    "payment security",
+    "wallet security",
+    "stablecoin infrastructure",
+    "crypto compliance",
+    "trust receipt",
+    "agent authorization",
+    "programmable finance",
+    "NIST FIPS 203",
+    "post-quantum",
   ],
-  url: "https://pqc.stvor.xyz",
+  url: "https://stvor.xyz",
 
   emails: {
     founder: "founder@stvor.xyz",
@@ -44,9 +46,9 @@ export const siteConfig = {
 } as const;
 
 export const navItems = [
-  { label: "Demo", href: "/demo" },
-  { label: "Compare", href: "/compare" },
-  { label: "Pricing", href: "/#pricing" },
+  { label: "How it works", href: "#how-it-works" },
+  { label: "Use cases", href: "#use-cases" },
+  { label: "Compare", href: "#compare" },
   { label: "Docs", href: "/docs" },
   { label: "Security", href: "/security" },
 ] as const;

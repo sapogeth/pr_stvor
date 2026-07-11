@@ -54,7 +54,7 @@ export function Footer() {
               <span className="text-lg">{siteConfig.name}</span>
             </Link>
             <p className="mt-3 text-sm text-[var(--color-fg-muted)] max-w-[200px]">
-              Cryptographic infrastructure for autonomous AI agents.
+              The execution trust layer for AI-driven finance.
             </p>
             <div className="mt-5 flex gap-3">
               <a

@@ -1,33 +1,46 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { Hero } from "@/components/sections/hero";
-import { Partners } from "@/components/sections/partners";
-import { Problem } from "@/components/sections/problem";
-import { WhyNow } from "@/components/sections/why-now";
-import { BeforeAfter } from "@/components/sections/before-after";
-import { SequenceFlow } from "@/components/sections/sequence-flow";
-import { Architecture } from "@/components/sections/architecture";
-import { SolanaRoadmap } from "@/components/sections/solana-roadmap";
-import { SocialProof } from "@/components/sections/social-proof";
-import { Pricing } from "@/components/sections/pricing";
-import { GetStarted } from "@/components/sections/get-started";
+import { HomeHero } from "@/components/home/hero";
+import { TrustBar } from "@/components/home/trust-bar";
+import { Problem } from "@/components/home/problem";
+import { WhyNow } from "@/components/home/why-now";
+import { ScrollStory } from "@/components/home/scroll-story";
+import { UseCases } from "@/components/home/use-cases";
+import { Competitive } from "@/components/home/competitive";
+import { Ecosystem } from "@/components/home/ecosystem";
+import { Vision } from "@/components/home/vision";
+import { FinalCTA } from "@/components/home/final-cta";
+
+function Divider() {
+  return (
+    <div className="container-page">
+      <div className="section-divider" />
+    </div>
+  );
+}
 
 export default function HomePage() {
   return (
     <>
       <Header />
       <main className="flex-1">
-        <Hero />
-        <Partners />
+        <HomeHero />
+        <TrustBar />
+        <Divider />
         <Problem />
+        <Divider />
         <WhyNow />
-        <BeforeAfter />
-        <SequenceFlow />
-        <Architecture />
-        <SolanaRoadmap />
-        <SocialProof />
-        <Pricing />
-        <GetStarted />
+        <ScrollStory />
+        <Divider />
+        <UseCases />
+        <Divider />
+        <Competitive />
+        <Divider />
+        <Ecosystem />
+        <Divider />
+        <Vision />
+        <Divider />
+        <FinalCTA />
       </main>
       <Footer />
     </>
