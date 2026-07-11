@@ -88,7 +88,7 @@ const PERSONAS = [
     codeLines: [
       '// Every treasury action: receipt-on-chain',
       '{',
-      '  receipt_id:  "rcpt_7K2mNpXr4vQ",',
+      '  receipt_id:  "trcpt_sample_001",',
       '  action:      "settlement.execute",',
       '  authorized:  ["cfo@corp.com", "treasury_agent"],',
       '  amount:      "5,000,000.00 USDC",',

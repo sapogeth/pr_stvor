@@ -126,7 +126,7 @@ const STEPS = [
       '  status:      "BLOCKED",',
       '  reason:      "DESTINATION_MISMATCH",',
       '  receipt_sig: "ed25519:3mK9...",',
-      '  agent_id:    "agt_openai_gpt4o",',
+      '  agent_id:    "agt_finance_agent_v1",',
       '  timestamp:   "2026-07-02T14:23:09Z"',
       "}",
     ],
@@ -284,7 +284,7 @@ function FlowDiagram({
           fontSize="9" fontFamily="var(--font-mono)"
           fill="rgba(255,255,255,0.2)"
         >
-          agt_openai_gpt4o
+          finance_agent_v1
         </text>
       </motion.g>
 
