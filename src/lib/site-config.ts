@@ -25,8 +25,8 @@ export const siteConfig = {
   },
 
   social: {
-    github: "https://github.com/stvor",
-    twitter: "https://x.com/kun_sapog",
+    github: "https://github.com/stvor-hq",
+    twitter: "https://x.com/hq_stvor",
   },
 
   cta: {
