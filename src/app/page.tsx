@@ -1,15 +1,15 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { HomeHero } from "@/components/home/hero";
-import { TrustBar } from "@/components/home/trust-bar";
+import { RealHacks } from "@/components/home/real-hacks";
 import { Problem } from "@/components/home/problem";
-import { WhyNow } from "@/components/home/why-now";
-import { ScrollStory } from "@/components/home/scroll-story";
-import { UseCases } from "@/components/home/use-cases";
+import { HowItWorks } from "@/components/home/how-it-works";
+import { WhoItsFor } from "@/components/home/who-its-for";
+import { NeutralPositioning } from "@/components/home/neutral-positioning";
 import { Competitive } from "@/components/home/competitive";
-import { Ecosystem } from "@/components/home/ecosystem";
-import { Vision } from "@/components/home/vision";
-import { FinalCTA } from "@/components/home/final-cta";
+import { CurrentStage } from "@/components/home/current-stage";
+import { PilotOffer } from "@/components/home/pilot-offer";
+import { Roadmap } from "@/components/home/roadmap";
 
 function Divider() {
   return (
@@ -25,22 +25,22 @@ export default function HomePage() {
       <Header />
       <main className="flex-1">
         <HomeHero />
-        <TrustBar />
+        <Divider />
+        <RealHacks />
         <Divider />
         <Problem />
         <Divider />
-        <WhyNow />
-        <ScrollStory />
+        <HowItWorks />
         <Divider />
-        <UseCases />
+        <WhoItsFor />
         <Divider />
+        <NeutralPositioning />
         <Competitive />
         <Divider />
-        <Ecosystem />
+        <CurrentStage />
         <Divider />
-        <Vision />
-        <Divider />
-        <FinalCTA />
+        <PilotOffer />
+        <Roadmap />
       </main>
       <Footer />
     </>

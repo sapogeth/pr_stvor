@@ -154,26 +154,32 @@ export default function ResearchPage() {
           </div>
         </Section>
 
-        {/* ── Spec teaser ── */}
-        <Section eyebrow="Specification" title="Open spec — in progress" align="left">
+        {/* ── ATS-1 spec ── */}
+        <Section eyebrow="ATS-1" title="Trust Receipt format (draft)" align="left" id="ats-1">
           <div className="max-w-3xl space-y-4">
             <p className="text-[14px] text-[var(--color-fg-muted)] leading-[1.7]">
-              The Trust Receipt format and canonical hash spec will be published as an
-              open document with reference implementations in TypeScript, Python, and Rust.
-              The goal is for any third party to implement a compatible verifier without
-              a Stvor dependency.
+              ATS-1 is the open Trust Receipt format Stvor is drafting: a portable JSON
+              document signed with ECDSA P-256 over a canonical payload hash. Any verifier
+              with the issuer&apos;s public key can validate a receipt offline — no Stvor
+              API call required.
             </p>
             <p className="text-[14px] text-[var(--color-fg-muted)] leading-[1.7]">
-              The spec is currently in internal draft. Design partners receive the draft
-              during the alpha engagement. If you are implementing a compatible verifier
-              or have feedback on the format, reach out directly.
+              Fields include commitment hash, verified checks, decision (ALLOW / DENY),
+              agent identity, and timestamp. The draft spec and reference verifier ship
+              with pilot engagements and on GitHub as they stabilize.
             </p>
-            <div className="pt-2">
+            <div className="pt-2 flex flex-wrap gap-3">
               <ButtonLink
-                href={`mailto:${siteConfig.emails.founder}?subject=Trust%20Receipt%20spec%20%E2%80%94%20request`}
+                href={siteConfig.cta.github}
                 variant="secondary"
               >
-                Request spec draft
+                View on GitHub
+              </ButtonLink>
+              <ButtonLink
+                href={`mailto:${siteConfig.emails.founder}?subject=ATS-1%20spec%20draft%20request`}
+                variant="secondary"
+              >
+                Request draft
               </ButtonLink>
             </div>
           </div>

@@ -35,8 +35,8 @@ export default function ComparePage() {
         </div>
         <Comparison />
         <div className="mt-10 text-center">
-          <ButtonLink href={siteConfig.cta.demo} variant="primary" size="lg">
-            Book a 15-min audit call <ArrowRight size={15} />
+          <ButtonLink href={siteConfig.cta.pilot} variant="primary" size="lg">
+            Book the pilot <ArrowRight size={15} />
           </ButtonLink>
         </div>
       </main>

@@ -140,15 +140,16 @@ export function Competitive() {
           </p>
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
             <h2 className="text-3xl md:text-4xl font-semibold tracking-[-0.025em] leading-[1.2] text-[var(--color-fg)] max-w-xl">
-              Every existing solution
+              Custody tools act too late
               <br />
               <span className="text-[var(--color-fg-muted)] font-normal">
-                acts too late, or inside one provider.
+                or inside one provider.
               </span>
             </h2>
             <p className="text-sm text-[var(--color-fg-muted)] max-w-sm lg:text-right leading-relaxed">
-              No existing solution is provider-agnostic, AI-native, and operates
-              before execution with cryptographic proof. That is the gap STVOR closes.
+              Stvor is pre-execution verification with a signed receipt — not a
+              custody product, not post-event monitoring. Comparison reflects
+              publicly documented behavior; corrections welcome.
             </p>
           </div>
         </motion.div>

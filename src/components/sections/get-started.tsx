@@ -28,7 +28,7 @@ export function GetStarted() {
             className="mb-5"
           />
           <a
-            href={siteConfig.cta.quickstart}
+            href={siteConfig.cta.docs}
             className="mt-auto inline-flex items-center gap-1.5 text-sm font-medium text-[var(--color-brand)] hover:text-[var(--color-brand-hover)]"
           >
             Quickstart guide <ArrowRight size={14} />
@@ -47,7 +47,7 @@ export function GetStarted() {
             integration points.
           </p>
           <a
-            href={siteConfig.cta.demo}
+            href={siteConfig.cta.pilot}
             className="mt-auto inline-flex items-center gap-1.5 text-sm font-medium text-[var(--color-brand)] hover:text-[var(--color-brand-hover)]"
           >
             Email founder <ArrowRight size={14} />

@@ -44,7 +44,7 @@ export function Hero() {
 
           {/* primary CTA */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <ButtonLink href={siteConfig.cta.demo} variant="primary" size="lg" className="px-8">
+            <ButtonLink href={siteConfig.cta.pilot} variant="primary" size="lg" className="px-8">
               Get an Agent Security Audit in 15 Minutes <ArrowRight size={16} />
             </ButtonLink>
           </div>

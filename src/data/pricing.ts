@@ -44,7 +44,7 @@ export const pricingTiers: PricingTier[] = [
       "Email support (48h response)",
       "99.5% uptime SLA",
     ],
-    cta: { label: "Get early access", href: siteConfig.pricing.proCheckout },
+    cta: { label: "Book the pilot", href: siteConfig.cta.pilot },
   },
   {
     id: "business",
@@ -61,7 +61,7 @@ export const pricingTiers: PricingTier[] = [
       "99.9% uptime SLA",
       "AA UserOp binding helpers",
     ],
-    cta: { label: "Book a call", href: siteConfig.pricing.businessCheckout },
+    cta: { label: "Book the pilot", href: siteConfig.cta.pilot },
     highlight: true,
   },
   {
@@ -79,7 +79,7 @@ export const pricingTiers: PricingTier[] = [
       "Stvor Certified badge",
       "Annual security review",
     ],
-    cta: { label: "Book a call", href: siteConfig.cta.enterprise },
+    cta: { label: "Book the pilot", href: siteConfig.cta.pilot },
   },
 ];
 

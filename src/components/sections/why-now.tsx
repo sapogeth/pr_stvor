@@ -82,7 +82,7 @@ export function WhyNow() {
           </p>
         </div>
         <a
-          href={siteConfig.cta.demo}
+          href={siteConfig.cta.pilot}
           className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)] text-white text-sm font-semibold px-5 py-2.5 transition-colors"
         >
           Book audit call <ArrowRight size={14} />

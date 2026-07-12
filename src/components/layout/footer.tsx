@@ -6,28 +6,26 @@ const columns = [
   {
     title: "Product",
     links: [
-      { label: "Features", href: "#solution" },
-      { label: "Pricing", href: "#pricing" },
-      { label: "Use cases", href: "#use-cases" },
-      { label: "Documentation", href: "/docs" },
-      { label: "Roadmap", href: "/security#roadmap" },
+      { label: "How it works", href: "#how-it-works" },
+      { label: "Who it's for", href: "#who-its-for" },
+      { label: "Compare", href: "#compare" },
+      { label: "Pilot", href: "#pilot" },
+      { label: "ATS-1 spec", href: "/research#ats-1" },
     ],
   },
   {
     title: "Resources",
     links: [
-      { label: "Quickstart", href: "/docs#quickstart" },
-      { label: "Compare", href: "#compare" },
+      { label: "Documentation", href: "/docs" },
       { label: "Research", href: "/research" },
-      { label: "Changelog", href: "/docs#changelog" },
+      { label: "Security", href: "/security" },
+      { label: "GitHub", href: siteConfig.social.github, external: true },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "Security", href: "/security" },
-      { label: "Contact", href: "/contact" },
-      { label: "GitHub", href: siteConfig.social.github, external: true },
+      { label: "Contact", href: `mailto:${siteConfig.emails.founder}` },
       { label: "Twitter", href: siteConfig.social.twitter, external: true },
     ],
   },
@@ -36,7 +34,7 @@ const columns = [
     links: [
       { label: "Terms", href: "/legal/terms" },
       { label: "Privacy", href: "/legal/privacy" },
-      { label: "License (Apache 2.0)", href: "/legal/license" },
+      { label: "License (MIT)", href: "/legal/license" },
     ],
   },
 ];
@@ -53,8 +51,8 @@ export function Footer() {
             >
               <span className="text-lg">{siteConfig.name}</span>
             </Link>
-            <p className="mt-3 text-sm text-[var(--color-fg-muted)] max-w-[200px]">
-              The execution trust layer for AI-driven finance.
+            <p className="mt-3 text-sm text-[var(--color-fg-muted)] max-w-[220px] leading-relaxed">
+              Pre-execution verification for agents that move money.
             </p>
             <div className="mt-5 flex gap-3">
               <a
@@ -86,13 +84,14 @@ export function Footer() {
               <ul className="space-y-3">
                 {col.links.map((link) => {
                   const isExternal = "external" in link && link.external;
+                  const isMailto = link.href.startsWith("mailto:");
                   return (
                     <li key={link.label}>
-                      {isExternal ? (
+                      {isExternal || isMailto ? (
                         <a
                           href={link.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                          target={isExternal ? "_blank" : undefined}
+                          rel={isExternal ? "noopener noreferrer" : undefined}
                           className="text-sm text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] transition-colors"
                         >
                           {link.label}
@@ -115,13 +114,13 @@ export function Footer() {
 
         <div className="mt-14 pt-8 border-t border-[var(--color-border)] flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
           <p className="text-xs text-[var(--color-fg-subtle)]">
-            © {new Date().getFullYear()} {siteConfig.name}. Apache 2.0 licensed core.
+            © {new Date().getFullYear()} {siteConfig.name}. MIT licensed reference code.
           </p>
           <p className="text-xs text-[var(--color-fg-subtle)]">
-            Contact:{" "}
+            Pilot inquiries:{" "}
             <a
               className="hover:text-[var(--color-fg)]"
-              href={`mailto:${siteConfig.emails.founder}`}
+              href={siteConfig.cta.pilot}
             >
               {siteConfig.emails.founder}
             </a>

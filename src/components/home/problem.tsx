@@ -271,7 +271,7 @@ export function Problem() {
           Every existing solution — monitoring platforms, SIEM tools, compliance dashboards —
           acts after execution. They see what happened.{" "}
           <span className="text-[var(--color-fg-muted)]">
-            STVOR acts before. It sees what is about to happen.
+            Stvor acts before. It sees what is about to happen.
           </span>
         </motion.p>
       </div>

@@ -1,22 +1,18 @@
 export const siteConfig = {
   name: "Stvor",
-  title: "Stvor — The Execution Trust Layer for AI-Driven Finance",
-  shortTitle: "Stvor — Verify Before Execute",
+  title: "Stvor — Pre-execution verification for agents that move money",
+  shortTitle: "Stvor — Verify before execute",
   description:
-    "STVOR is the execution trust layer for AI agents, wallets, and payment systems. Every payment, transfer, and contract call is verified against a cryptographic commitment before it runs. Not after. Never after.",
+    "Stvor checks that what your agent is about to execute still matches what was committed at intent time — destination, payload, policy, counterparty trust. Any check fails → execution denied. Signed Trust Receipt after each action.",
   keywords: [
-    "execution trust layer",
-    "AI agent security",
     "pre-execution verification",
-    "payment security",
-    "wallet security",
-    "stablecoin infrastructure",
-    "crypto compliance",
+    "AI agent security",
+    "agent payments",
     "trust receipt",
-    "agent authorization",
-    "programmable finance",
-    "NIST FIPS 203",
-    "post-quantum",
+    "ATS-1",
+    "payload integrity",
+    "destination swap",
+    "prompt injection",
   ],
   url: "https://stvor.xyz",
 
@@ -30,25 +26,27 @@ export const siteConfig = {
   },
 
   cta: {
-    demo: "mailto:founder@stvor.xyz?subject=Demo%20Request%20—%20Stvor&body=Hi%2C%20I%27d%20like%20to%20book%20a%20demo.%0A%0ACompany%3A%0ARole%3A%0AUse%20case%3A%20%5BAA%20Wallet%20%2F%20AI%20Agent%20Platform%20%2F%20Other%5D%0A",
-    enterprise: "mailto:founder@stvor.xyz?subject=Enterprise%20Inquiry%20—%20Stvor",
-    pilot: "https://tally.so/r/Me80kk",
+    pilot:
+      "mailto:founder@stvor.xyz?subject=Paid%202-week%20pilot%20—%20Stvor&body=Hi%2C%0A%0AI%27d%20like%20to%20book%20the%20paid%202-week%20pilot.%0A%0AProduct%3A%0AWhat%20executes%20today%20(agent%2Fwallet%2Frail)%3A%0AVolume%20or%20treasury%20at%20risk%3A%0A",
+    pilotTally: "https://tally.so/r/Me80kk",
+    ats1: "/research#ats-1",
     docs: "/docs",
-    quickstart: "/docs#quickstart",
+    github: "https://github.com/stvor-hq",
   },
 
-  pricing: {
-    proCheckout:
-      "mailto:founder@stvor.xyz?subject=Stvor%20Pro%20%E2%80%94%20Early%20access%20request&body=Hi%2C%0A%0AI%27d%20like%20to%20get%20early%20access%20to%20the%20Stvor%20Pro%20tier.%0A%0ACompany%3A%0AAgents%20expected%3A%0AUse%20case%3A%0A",
-    businessCheckout:
-      "mailto:founder@stvor.xyz?subject=Stvor%20Business%20%E2%80%94%20Book%20a%20call&body=Hi%2C%0A%0AI%27d%20like%20to%20book%20a%20call%20about%20the%20Stvor%20Business%20tier.%0A%0ACompany%3A%0AAgents%20expected%3A%0ATimeline%3A%0AUse%20case%3A%0A",
+  pilot: {
+    price: "$500",
+    duration: "2 weeks",
+    headline: "Paid 2-week pilot",
+    summary:
+      "I stand up a Stvor checkpoint in front of your execution flow — verify intent, destination, and payload before execution → ALLOW or DENY — plus a signed Trust Receipt after each action. I do the integration. At the end it works and you keep going, or you pay nothing further.",
   },
 } as const;
 
 export const navItems = [
   { label: "How it works", href: "#how-it-works" },
-  { label: "Use cases", href: "#use-cases" },
+  { label: "Who it's for", href: "#who-its-for" },
   { label: "Compare", href: "#compare" },
-  { label: "Docs", href: "/docs" },
-  { label: "Security", href: "/security" },
+  { label: "ATS-1 spec", href: "/research#ats-1" },
+  { label: "GitHub", href: "https://github.com/stvor-hq" },
 ] as const;

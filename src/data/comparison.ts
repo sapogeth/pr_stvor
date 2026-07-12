@@ -60,7 +60,7 @@ export const comparisonRows: ComparisonRow[] = [
     blockaid:    "Partial",
     safe:        "Yes",
     monitoring:  "Partial",
-    stvor:       "Yes (Apache 2.0 core)",
+    stvor:       "Yes (MIT reference)",
   },
   {
     feature: "Open standard receipt format",

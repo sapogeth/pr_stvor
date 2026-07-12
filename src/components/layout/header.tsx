@@ -140,19 +140,17 @@ export function Header() {
         <nav className="hidden md:flex items-center gap-1">
           {navItems.map((item) => {
             const active = isActive(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "relative px-3.5 py-2 text-[13px] rounded-md font-medium",
-                  "transition-colors duration-200",
-                  active
-                    ? "text-[var(--color-fg)]"
-                    : "text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]"
-                )}
-              >
-                {active && (
+            const isExternal = item.href.startsWith("http");
+            const className = cn(
+              "relative px-3.5 py-2 text-[13px] rounded-md font-medium",
+              "transition-colors duration-200",
+              active
+                ? "text-[var(--color-fg)]"
+                : "text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]"
+            );
+            const inner = (
+              <>
+                {active && !isExternal && (
                   <motion.span
                     layoutId="nav-pill"
                     className="absolute inset-0 rounded-md bg-[var(--color-bg-elevated)]"
@@ -161,6 +159,21 @@ export function Header() {
                   />
                 )}
                 {item.label}
+              </>
+            );
+            return isExternal ? (
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={className}
+              >
+                {inner}
+              </a>
+            ) : (
+              <Link key={item.href} href={item.href} className={className}>
+                {inner}
               </Link>
             );
           })}
@@ -191,13 +204,7 @@ export function Header() {
           {/* Separator */}
           <div className="w-px h-4 bg-[var(--color-border-strong)] mx-0.5" />
 
-          {/* CTAs */}
-          <a
-            href={siteConfig.cta.demo}
-            className="px-3.5 py-1.5 text-[13px] font-medium text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] rounded-md transition-colors"
-          >
-            Book demo
-          </a>
+          {/* CTA */}
           <motion.a
             href={siteConfig.cta.pilot}
             className="px-4 py-1.5 text-[13px] font-semibold bg-[var(--color-fg)] text-[var(--color-bg)] rounded-[6px]"
@@ -205,7 +212,7 @@ export function Header() {
             whileTap={{ scale: 0.97 }}
             transition={{ type: "spring", stiffness: 500, damping: 28 }}
           >
-            Get started
+            Book the pilot
           </motion.a>
         </div>
 
@@ -256,22 +263,37 @@ export function Header() {
             className="md:hidden border-t border-[var(--color-border)] bg-[var(--color-bg)]/96 backdrop-blur-[20px]"
           >
             <div className="container-page py-5 flex flex-col gap-1">
-              {navItems.map((item) => (
-                <motion.div key={item.href} variants={mobileItemVariants}>
-                  <Link
-                    href={item.href}
-                    onClick={() => setMobileOpen(false)}
-                    className={cn(
-                      "block px-2 py-2.5 text-sm rounded-md transition-colors",
-                      isActive(item.href)
-                        ? "text-[var(--color-fg)] bg-[var(--color-bg-elevated)]"
-                        : "text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]"
+              {navItems.map((item) => {
+                const isExternal = item.href.startsWith("http");
+                return (
+                  <motion.div key={item.href} variants={mobileItemVariants}>
+                    {isExternal ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setMobileOpen(false)}
+                        className="block px-2 py-2.5 text-sm rounded-md text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] transition-colors"
+                      >
+                        {item.label}
+                      </a>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        onClick={() => setMobileOpen(false)}
+                        className={cn(
+                          "block px-2 py-2.5 text-sm rounded-md transition-colors",
+                          isActive(item.href)
+                            ? "text-[var(--color-fg)] bg-[var(--color-bg-elevated)]"
+                            : "text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]"
+                        )}
+                      >
+                        {item.label}
+                      </Link>
                     )}
-                  >
-                    {item.label}
-                  </Link>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
 
               {/* Social row */}
               <motion.div
@@ -299,23 +321,13 @@ export function Header() {
               </motion.div>
 
               {/* CTA buttons */}
-              <motion.div
-                variants={mobileItemVariants}
-                className="flex flex-col gap-2 mt-1"
-              >
-                <a
-                  href={siteConfig.cta.demo}
-                  onClick={() => setMobileOpen(false)}
-                  className="text-center py-2.5 text-sm font-medium text-[var(--color-fg-muted)] border border-[var(--color-border-strong)] rounded-[6px] hover:text-[var(--color-fg)] hover:border-[rgba(255,255,255,0.2)] transition-all"
-                >
-                  Book a demo
-                </a>
+              <motion.div variants={mobileItemVariants} className="mt-1">
                 <a
                   href={siteConfig.cta.pilot}
                   onClick={() => setMobileOpen(false)}
-                  className="text-center py-2.5 text-sm font-semibold bg-[var(--color-fg)] text-[var(--color-bg)] rounded-[6px]"
+                  className="block text-center py-2.5 text-sm font-semibold bg-[var(--color-fg)] text-[var(--color-bg)] rounded-[6px]"
                 >
-                  Get started
+                  Book the pilot — {siteConfig.pilot.price}
                 </a>
               </motion.div>
             </div>
