@@ -29,7 +29,7 @@ export const siteConfig = {
     pilot:
       "mailto:founder@stvor.xyz?subject=Paid%202-week%20pilot%20—%20Stvor&body=Hi%2C%0A%0AI%27d%20like%20to%20book%20the%20paid%202-week%20pilot.%0A%0AProduct%3A%0AWhat%20executes%20today%20(agent%2Fwallet%2Frail)%3A%0AVolume%20or%20treasury%20at%20risk%3A%0A",
     pilotTally: "https://tally.so/r/Me80kk",
-    ats1: "/research#ats-1",
+    ats1: "/docs/ats-1",
     docs: "/docs",
     github: "https://github.com/stvor-hq",
   },
@@ -45,8 +45,8 @@ export const siteConfig = {
 
 export const navItems = [
   { label: "How it works", href: "#how-it-works" },
-  { label: "Who it's for", href: "#who-its-for" },
+  { label: "Docs", href: "/docs" },
   { label: "Compare", href: "#compare" },
-  { label: "ATS-1 spec", href: "/research#ats-1" },
+  { label: "ATS-1", href: "/docs/ats-1" },
   { label: "GitHub", href: "https://github.com/stvor-hq" },
 ] as const;

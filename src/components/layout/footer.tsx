@@ -17,6 +17,8 @@ const columns = [
     title: "Resources",
     links: [
       { label: "Documentation", href: "/docs" },
+      { label: "ATS-1 spec", href: "/docs/ats-1" },
+      { label: "Integration guide", href: "/docs/integrate" },
       { label: "Research", href: "/research" },
       { label: "Security", href: "/security" },
       { label: "GitHub", href: siteConfig.social.github, external: true },

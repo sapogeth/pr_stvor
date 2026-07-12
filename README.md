@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# stvor-site
 
-## Getting Started
+Marketing site and technical documentation for [Stvor](https://stvor.xyz) — pre-execution verification for AI agents that move money.
 
-First, run the development server:
+**Production:** https://stvor.xyz  
+**Live reference build:** https://nous.stvor.xyz (Hermes hackathon demo — attack sim, agent arena, Stripe escrow)
+
+## What Stvor is
+
+Stvor sits between **intent** and **execution**. Before a payment, transfer, or tool call runs, it checks:
+
+1. **Destination match** — committed at intent, verified before execution  
+2. **Payload integrity** — `SHA-256(params) === committed_hash` via `crypto.timingSafeEqual()`  
+3. **Counterparty trust** — minimum trust score before transacting  
+4. **Policy check** — amount caps, allowlists, method gates  
+
+Any check fails → **DENIED**, no funds move. On success → **ECDSA P-256** signed Trust Receipt ([ATS-1](https://stvor.xyz/docs/ats-1) draft).
+
+There is no self-serve npm SDK today. Production integrations run through a **paid 2-week pilot** ($500 flat).
+
+## Site structure
+
+| Route | Purpose |
+|-------|---------|
+| `/` | Landing — pilot CTA, threat model, comparison |
+| `/docs` | Documentation index |
+| `/docs/how-it-works` | Four checks, attacks, cryptography, threat model |
+| `/docs/integrate` | Pilot onboarding, checkpoint wiring, rails |
+| `/docs/ats-1` | Trust Receipt spec (draft) |
+| `/demo` | Interactive verification demo |
+| `/research` | Research notes + ATS-1 pointer |
+| `/compare` | Competitor comparison |
+| `/security` | Security posture |
+
+Documentation layout mirrors [nous.stvor.xyz](https://nous.stvor.xyz): sidebar TOC, multi-page spec, integration guide, attack/defense pairs, code snippets.
+
+## Development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
+bun run dev      # http://localhost:3000
+bun run build
+bun run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Stack: **Next.js 16** (App Router), **TypeScript**, **Tailwind CSS**, **Framer Motion**.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Project layout
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+  app/                  # Routes (pages + metadata)
+  app/docs/             # Multi-page documentation
+  components/
+    docs/               # Docs shell, sidebar, UI primitives
+    home/               # Landing page sections
+    layout/             # Header, footer
+  data/                 # Comparison table, docs nav
+  lib/                  # site-config, shiki, utils
+```
 
-## Learn More
+### Key config
 
-To learn more about Next.js, take a look at the following resources:
+- `src/lib/site-config.ts` — URLs, CTAs, pilot copy, nav items  
+- `src/data/docs-nav.ts` — Documentation sidebar structure  
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Deployed on Vercel from `main`. Push triggers production build.
 
-## Deploy on Vercel
+```bash
+git push origin main
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Related repos
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Reference implementation / protocol:** https://github.com/stvor-hq  
+- **Hackathon deployment:** https://nous.stvor.xyz  
+
+## License
+
+Reference code is **MIT** licensed (see GitHub). Site content © Stvor.
+
+---
+
+**Contact:** founder@stvor.xyz  
+**Pilot:** [Book the pilot](mailto:founder@stvor.xyz?subject=Paid%202-week%20pilot%20—%20Stvor)

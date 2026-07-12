@@ -169,11 +169,8 @@ export default function ResearchPage() {
               with pilot engagements and on GitHub as they stabilize.
             </p>
             <div className="pt-2 flex flex-wrap gap-3">
-              <ButtonLink
-                href={siteConfig.cta.github}
-                variant="secondary"
-              >
-                View on GitHub
+              <ButtonLink href="/docs/ats-1" variant="secondary">
+                Read ATS-1 docs
               </ButtonLink>
               <ButtonLink
                 href={`mailto:${siteConfig.emails.founder}?subject=ATS-1%20spec%20draft%20request`}
