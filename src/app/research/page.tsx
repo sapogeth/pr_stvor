@@ -173,10 +173,10 @@ export default function ResearchPage() {
                 Read ATS-1 docs
               </ButtonLink>
               <ButtonLink
-                href={`mailto:${siteConfig.emails.founder}?subject=ATS-1%20spec%20draft%20request`}
+                href={siteConfig.cta.contact}
                 variant="secondary"
               >
-                Request draft
+                Request draft on Telegram
               </ButtonLink>
             </div>
           </div>

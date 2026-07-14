@@ -58,8 +58,8 @@ export function ContactForm() {
         <p className="text-sm text-[var(--color-fg-muted)] mb-5">
           The contact form is being configured. In the meantime, please reach out directly:
         </p>
-        <ButtonLink href={`mailto:${siteConfig.emails.founder}`} variant="primary" size="lg">
-          Email {siteConfig.emails.founder}
+        <ButtonLink href={siteConfig.cta.contact} variant="primary" size="lg">
+          Message {siteConfig.contact.handle}
         </ButtonLink>
       </div>
     );

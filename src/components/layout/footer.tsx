@@ -28,7 +28,7 @@ const columns = [
   {
     title: "Company",
     links: [
-      { label: "Contact", href: `mailto:${siteConfig.emails.founder}` },
+      { label: "Telegram", href: siteConfig.contact.telegram, external: true },
       { label: "Twitter", href: siteConfig.social.twitter, external: true },
     ],
   },
@@ -120,12 +120,14 @@ export function Footer() {
             © {new Date().getFullYear()} {siteConfig.name}. MIT licensed reference code.
           </p>
           <p className="text-xs text-[var(--color-fg-subtle)]">
-            Pilot inquiries:{" "}
+            Telegram:{" "}
             <a
               className="hover:text-[var(--color-fg)]"
-              href={siteConfig.cta.pilot}
+              href={siteConfig.contact.telegram}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              {siteConfig.emails.founder}
+              {siteConfig.contact.handle}
             </a>
           </p>
         </div>

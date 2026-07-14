@@ -65,8 +65,8 @@ export default function DemoPage() {
           </div>
           <p className="mt-6 text-[12px] text-[var(--color-fg-subtle)]">
             Production integration:{" "}
-            <a href={siteConfig.cta.pilot} className="underline underline-offset-2 hover:text-[var(--color-fg-muted)]">
-              Book the pilot ({siteConfig.pilot.price})
+            <a href={siteConfig.cta.pilot} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-[var(--color-fg-muted)]">
+              {siteConfig.contact.handle}
             </a>
           </p>
         </div>

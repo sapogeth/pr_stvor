@@ -18,9 +18,15 @@ export const siteConfig = {
     founder: "founder@stvor.xyz",
   },
 
+  contact: {
+    telegram: "https://t.me/kun_sapog",
+    handle: "@kun_sapog",
+  },
+
   social: {
     github: "https://github.com/stvor-hq",
     twitter: "https://x.com/hq_stvor",
+    telegram: "https://t.me/kun_sapog",
   },
 
   demo: {
@@ -31,9 +37,9 @@ export const siteConfig = {
   },
 
   cta: {
+    contact: "https://t.me/kun_sapog",
     pilot:
-      "mailto:founder@stvor.xyz?subject=Paid%202-week%20pilot%20—%20Stvor&body=Hi%2C%0A%0AI%27d%20like%20to%20book%20the%20paid%202-week%20pilot.%0A%0AProduct%3A%0AWhat%20executes%20today%20(agent%2Fwallet%2Frail)%3A%0AVolume%20or%20treasury%20at%20risk%3A%0A",
-    pilotTally: "https://tally.so/r/Me80kk",
+      "https://t.me/kun_sapog?text=Hi%2C%20I%27d%20like%20to%20talk%20about%20the%20Stvor%20pilot.%0A%0AWhat%20executes%20today%20(agent%2Fwallet%2Frail)%3A%0AVolume%20at%20risk%3A%0A",
     ats1: "/docs/ats-1",
     docs: "/docs",
     github: "https://github.com/stvor-hq",

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle, XCircle, AlertTriangle, Play, RotateCcw, ShieldCheck, Copy, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { siteConfig } from "@/lib/site-config";
 
 const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.32, 1];
 
@@ -541,8 +542,8 @@ export function VerificationDemo() {
           This demo simulates SDK behavior.
           All code is representative of the alpha API — signatures and hashes are illustrative.
           The SDK is in design-partner alpha;{" "}
-          <a href="mailto:founder@stvor.xyz" className="underline underline-offset-2 hover:text-[var(--color-fg-muted)]">
-            request access
+          <a href={siteConfig.cta.contact} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-[var(--color-fg-muted)]">
+            message {siteConfig.contact.handle}
           </a>{" "}
           to run against real payloads.
         </p>

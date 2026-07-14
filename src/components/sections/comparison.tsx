@@ -1,5 +1,6 @@
 import { Check, Minus, Info } from "lucide-react";
 import { Section } from "@/components/ui/section";
+import { siteConfig } from "@/lib/site-config";
 import { comparisonColumns, comparisonRows, type ComparisonRow } from "@/data/comparison";
 
 function CellContent({ value, highlight }: { value: string; highlight?: boolean }) {
@@ -140,10 +141,10 @@ export function Comparison() {
         Comparison reflects publicly documented behavior at time of writing (July 2026).
         Sources and corrections welcome —{" "}
         <a
-          href="mailto:founder@stvor.xyz?subject=Comparison%20feedback"
+          href={siteConfig.cta.contact}
           className="hover:text-[var(--color-fg-muted)] underline underline-offset-2"
         >
-          founder@stvor.xyz
+          {siteConfig.contact.handle}
         </a>
         .
       </p>

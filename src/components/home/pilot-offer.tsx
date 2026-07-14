@@ -51,17 +51,11 @@ export function PilotOffer() {
           <div className="flex flex-col sm:flex-row gap-3">
             <a
               href={siteConfig.cta.pilot}
-              className="inline-flex items-center justify-center px-7 py-3 bg-[var(--color-fg)] text-[var(--color-bg)] text-sm font-semibold rounded-[6px] hover:opacity-90 transition-opacity"
-            >
-              Book the pilot
-            </a>
-            <a
-              href={siteConfig.cta.pilotTally}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-7 py-3 border border-[var(--color-border-strong)] text-sm text-[var(--color-fg-muted)] rounded-[6px] hover:text-[var(--color-fg)] transition-colors"
+              className="inline-flex items-center justify-center px-7 py-3 bg-[var(--color-fg)] text-[var(--color-bg)] text-sm font-semibold rounded-[6px] hover:opacity-90 transition-opacity"
             >
-              Or use the form →
+              Message {siteConfig.contact.handle}
             </a>
           </div>
 

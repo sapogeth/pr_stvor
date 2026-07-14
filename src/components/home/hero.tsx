@@ -113,16 +113,12 @@ export function HomeHero() {
                 Docs
               </a>
               <a
-                href={siteConfig.cta.ats1}
+                href={siteConfig.cta.github}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-[var(--color-fg-subtle)] hover:text-[var(--color-fg-muted)] underline underline-offset-2"
               >
-                ATS-1 spec
-              </a>
-              <a
-                href={siteConfig.cta.pilot}
-                className="text-[var(--color-fg-subtle)] hover:text-[var(--color-fg-muted)] underline underline-offset-2"
-              >
-                Production pilot ({siteConfig.pilot.price}) →
+                GitHub
               </a>
             </motion.div>
           </motion.div>

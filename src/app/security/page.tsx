@@ -235,8 +235,8 @@ export default function SecurityPage() {
           </div>
 
           <div className="mt-12 text-center">
-            <ButtonLink href={`mailto:${siteConfig.emails.founder}`} variant="primary" size="lg">
-              Discuss your security requirements
+            <ButtonLink href={siteConfig.cta.contact} variant="primary" size="lg">
+              Message {siteConfig.contact.handle}
             </ButtonLink>
           </div>
         </Section>
