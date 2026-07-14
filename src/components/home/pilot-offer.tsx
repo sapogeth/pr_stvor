@@ -18,9 +18,13 @@ export function PilotOffer() {
             {siteConfig.pilot.headline}
           </p>
 
-          <h2 className="text-2xl md:text-3xl font-semibold tracking-[-0.025em] text-[var(--color-fg)] mb-5 max-w-2xl">
-            {siteConfig.pilot.price} flat · {siteConfig.pilot.duration}
+          <h2 className="text-2xl md:text-3xl font-semibold tracking-[-0.025em] text-[var(--color-fg)] mb-3 max-w-2xl">
+            Already tried the demo? Wire it in production.
           </h2>
+
+          <p className="text-[15px] text-[var(--color-fg-subtle)] mb-5 max-w-2xl">
+            {siteConfig.pilot.price} flat · {siteConfig.pilot.duration}
+          </p>
 
           <p className="text-[15px] text-[var(--color-fg-muted)] leading-[1.75] max-w-2xl mb-8">
             {siteConfig.pilot.summary}

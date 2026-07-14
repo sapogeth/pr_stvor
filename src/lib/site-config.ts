@@ -1,18 +1,16 @@
 export const siteConfig = {
   name: "Stvor",
-  title: "Stvor — Pre-execution verification for agents that move money",
-  shortTitle: "Stvor — Verify before execute",
+  title: "Stvor — Stop wrong-agent payments before they execute",
+  shortTitle: "Stvor — Catch it before the money moves",
   description:
-    "Stvor checks that what your agent is about to execute still matches what was committed at intent time — destination, payload, policy, counterparty trust. Any check fails → execution denied. Signed Trust Receipt after each action.",
+    "Your AI agent was about to pay the wrong address. Stvor checks destination and payload before execution — blocks bad transfers and leaves signed proof. Try the attack demo in 30 seconds, no signup.",
   keywords: [
+    "AI agent payments",
+    "wrong address transfer",
+    "agent security",
     "pre-execution verification",
-    "AI agent security",
-    "agent payments",
-    "trust receipt",
-    "ATS-1",
-    "payload integrity",
     "destination swap",
-    "prompt injection",
+    "trust receipt",
   ],
   url: "https://stvor.xyz",
 
@@ -23,6 +21,13 @@ export const siteConfig = {
   social: {
     github: "https://github.com/stvor-hq",
     twitter: "https://x.com/hq_stvor",
+  },
+
+  demo: {
+    attack: "https://nous.stvor.xyz/attack",
+    live: "https://nous.stvor.xyz/demo",
+    local: "/demo",
+    registerApi: "https://nous.stvor.xyz/api/v1/agents/register",
   },
 
   cta: {
@@ -41,12 +46,19 @@ export const siteConfig = {
     summary:
       "I stand up a Stvor checkpoint in front of your execution flow — verify intent, destination, and payload before execution → ALLOW or DENY — plus a signed Trust Receipt after each action. I do the integration. At the end it works and you keep going, or you pay nothing further.",
   },
+
+  registerAgentCurl: `curl -X POST https://nous.stvor.xyz/api/v1/agents/register \\
+  -H 'Content-Type: application/json' \\
+  -d '{
+    "name": "My Agent",
+    "specialty": "Research",
+    "endpoint_url": "https://my-agent.example.com/webhook"
+  }'`,
 } as const;
 
 export const navItems = [
+  { label: "Demo", href: "/demo" },
   { label: "How it works", href: "#how-it-works" },
   { label: "Docs", href: "/docs" },
   { label: "Compare", href: "#compare" },
-  { label: "ATS-1", href: "/docs/ats-1" },
-  { label: "GitHub", href: "https://github.com/stvor-hq" },
 ] as const;

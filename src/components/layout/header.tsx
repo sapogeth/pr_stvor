@@ -206,13 +206,13 @@ export function Header() {
 
           {/* CTA */}
           <motion.a
-            href={siteConfig.cta.pilot}
+            href={siteConfig.demo.local}
             className="px-4 py-1.5 text-[13px] font-semibold bg-[var(--color-fg)] text-[var(--color-bg)] rounded-[6px]"
             whileHover={{ scale: 1.03, opacity: 0.92 }}
             whileTap={{ scale: 0.97 }}
             transition={{ type: "spring", stiffness: 500, damping: 28 }}
           >
-            Book the pilot
+            Try demo
           </motion.a>
         </div>
 
@@ -321,13 +321,22 @@ export function Header() {
               </motion.div>
 
               {/* CTA buttons */}
-              <motion.div variants={mobileItemVariants} className="mt-1">
+              <motion.div variants={mobileItemVariants} className="mt-1 flex flex-col gap-2">
                 <a
-                  href={siteConfig.cta.pilot}
+                  href={siteConfig.demo.attack}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={() => setMobileOpen(false)}
                   className="block text-center py-2.5 text-sm font-semibold bg-[var(--color-fg)] text-[var(--color-bg)] rounded-[6px]"
                 >
-                  Book the pilot — {siteConfig.pilot.price}
+                  Watch attack sim →
+                </a>
+                <a
+                  href={siteConfig.demo.local}
+                  onClick={() => setMobileOpen(false)}
+                  className="block text-center py-2.5 text-sm border border-[var(--color-border-strong)] text-[var(--color-fg-muted)] rounded-[6px]"
+                >
+                  Try demo
                 </a>
               </motion.div>
             </div>

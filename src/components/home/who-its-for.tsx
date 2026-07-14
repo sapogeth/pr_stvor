@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { siteConfig } from "@/lib/site-config";
 
 const SEGMENTS = [
   {
@@ -76,25 +75,6 @@ export function WhoItsFor() {
             </motion.div>
           ))}
         </div>
-
-        <motion.div
-          className="mt-12 p-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-subtle)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-        >
-          <p className="text-[14px] text-[var(--color-fg-muted)] max-w-xl leading-relaxed">
-            Moving live funds with agents? Book a {siteConfig.pilot.duration} pilot — I
-            wire the checkpoint in your flow.
-          </p>
-          <a
-            href={siteConfig.cta.pilot}
-            className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold bg-[var(--color-fg)] text-[var(--color-bg)] rounded-[6px] hover:opacity-90 transition-opacity whitespace-nowrap"
-          >
-            Book the pilot — {siteConfig.pilot.price}
-          </a>
-        </motion.div>
       </div>
     </section>
   );

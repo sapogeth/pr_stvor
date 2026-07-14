@@ -9,7 +9,8 @@ const columns = [
       { label: "How it works", href: "#how-it-works" },
       { label: "Who it's for", href: "#who-its-for" },
       { label: "Compare", href: "#compare" },
-      { label: "Pilot", href: "#pilot" },
+      { label: "Demo", href: "/demo" },
+      { label: "Attack sim ↗", href: "https://nous.stvor.xyz/attack", external: true },
       { label: "ATS-1 spec", href: "/research#ats-1" },
     ],
   },
@@ -54,7 +55,7 @@ export function Footer() {
               <span className="text-lg">{siteConfig.name}</span>
             </Link>
             <p className="mt-3 text-sm text-[var(--color-fg-muted)] max-w-[220px] leading-relaxed">
-              Pre-execution verification for agents that move money.
+              Catch wrong-agent payments before they execute.
             </p>
             <div className="mt-5 flex gap-3">
               <a

@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { HomeHero } from "@/components/home/hero";
+import { TryNow } from "@/components/home/try-now";
 import { RealHacks } from "@/components/home/real-hacks";
 import { Problem } from "@/components/home/problem";
 import { HowItWorks } from "@/components/home/how-it-works";
@@ -25,6 +26,7 @@ export default function HomePage() {
       <Header />
       <main className="flex-1">
         <HomeHero />
+        <TryNow />
         <Divider />
         <RealHacks />
         <Divider />

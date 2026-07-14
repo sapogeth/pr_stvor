@@ -18,7 +18,7 @@ const ITEM_VARIANTS = {
 
 export function HomeHero() {
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden pt-20">
+    <section className="relative overflow-hidden pt-20">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
@@ -28,8 +28,8 @@ export function HomeHero() {
         }}
       />
 
-      <div className="container-page w-full py-16 lg:py-20">
-        <div className="flex flex-col lg:flex-row items-center gap-14 lg:gap-20">
+      <div className="container-page w-full py-14 lg:py-18">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
           <motion.div
             className="flex-1 min-w-0 text-center lg:text-left"
             variants={{ hidden: {}, show: {} }}
@@ -39,98 +39,91 @@ export function HomeHero() {
           >
             <motion.p
               variants={ITEM_VARIANTS}
-              className="text-[10px] tracking-[0.22em] uppercase text-[var(--color-accent)] mb-5 font-medium font-mono"
+              className="text-[10px] tracking-[0.22em] uppercase text-[var(--color-accent)] mb-4 font-medium"
             >
-              Pre-execution verification
+              For agents that move real money
             </motion.p>
 
             <motion.h1
               variants={ITEM_VARIANTS}
-              className="text-[2.2rem] md:text-[3.2rem] lg:text-[3.6rem] font-semibold tracking-[-0.035em] leading-[1.08] text-[var(--color-fg)] mb-5"
+              className="text-[2.1rem] md:text-[3rem] lg:text-[3.4rem] font-semibold tracking-[-0.035em] leading-[1.08] text-[var(--color-fg)] mb-5"
             >
-              Your agent executes
+              Wrong address?
               <br />
               <span className="text-[var(--color-fg-muted)] font-normal">
-                before it verifies.
+                Stvor blocks the payment before it goes out.
               </span>
             </motion.h1>
 
             <motion.p
               variants={ITEM_VARIANTS}
-              className="text-[15px] text-[var(--color-fg-muted)] leading-[1.7] mb-4 max-w-[520px] mx-auto lg:mx-0"
+              className="text-[16px] text-[var(--color-fg-muted)] leading-[1.65] mb-3 max-w-[540px] mx-auto lg:mx-0"
             >
-              Stvor sits between intent and execution. Before a payment, transfer, or
-              tool call runs, it checks destination, payload hash, counterparty trust,
-              and policy. Any mismatch →{" "}
-              <span className="text-[var(--color-fg)]">DENIED</span>, no funds move.
-              On success → ECDSA P-256 signed Trust Receipt (ATS-1 draft).
+              Your AI agent commits to pay vendor A. Something swaps the destination
+              to address B. Stvor catches the mismatch{" "}
+              <span className="text-[var(--color-fg)]">before any funds move</span> and
+              leaves a signed receipt you can show an auditor.
             </motion.p>
 
             <motion.p
               variants={ITEM_VARIANTS}
-              className="text-[13px] text-[var(--color-fg-subtle)] leading-relaxed mb-8 max-w-[520px] mx-auto lg:mx-0"
+              className="text-[13px] text-[var(--color-fg-subtle)] leading-relaxed mb-8 max-w-[540px] mx-auto lg:mx-0"
             >
-              Monitoring acts after. After is irreversible.
+              Monitoring tells you after. After is irreversible.
             </motion.p>
 
-            {/* Primary CTA */}
             <motion.div
               variants={ITEM_VARIANTS}
-              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-4"
+              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-3"
             >
               <a
-                href={siteConfig.cta.pilot}
+                href={siteConfig.demo.attack}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-[var(--color-fg)] text-[var(--color-bg)] text-sm font-semibold rounded-[6px] hover:opacity-90 transition-opacity"
               >
-                Book the pilot — {siteConfig.pilot.price} / {siteConfig.pilot.duration}
+                Watch $1.5B attack get blocked →
               </a>
               <a
-                href={siteConfig.cta.ats1}
+                href={siteConfig.demo.local}
                 className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 border border-[var(--color-border-strong)] text-sm text-[var(--color-fg-muted)] rounded-[6px] hover:text-[var(--color-fg)] hover:border-[rgba(255,255,255,0.2)] transition-all"
               >
-                Read the ATS-1 spec
+                Try interactive demo
               </a>
             </motion.div>
 
-            <motion.div
+            <motion.p
               variants={ITEM_VARIANTS}
-              className="flex items-center justify-center lg:justify-start gap-4 mb-8"
+              className="text-[11px] text-[var(--color-fg-subtle)] mb-8"
             >
-              <a
-                href={siteConfig.cta.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[12px] text-[var(--color-fg-subtle)] hover:text-[var(--color-fg-muted)] transition-colors font-mono"
-              >
-                GitHub →
-              </a>
-              <span className="text-[var(--color-border-strong)]">·</span>
-              <span className="text-[11px] text-[var(--color-fg-subtle)]">
-                Reference impl live (Stripe escrow). Pilot-based onboarding.
-              </span>
-            </motion.div>
+              No signup · No email · ~30 seconds
+            </motion.p>
 
             <motion.div
               variants={{
                 hidden: { opacity: 0 },
-                show: { opacity: 1, transition: { delay: 0.4, duration: 0.6 } },
+                show: { opacity: 1, transition: { delay: 0.35, duration: 0.5 } },
               }}
-              className="flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2"
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-2 text-[12px]"
             >
-              {[
-                "ECDSA P-256 receipts",
-                "MIT licensed",
-                "Custody-agnostic",
-                "Stripe reference (live)",
-              ].map((item) => (
-                <span key={item} className="flex items-center gap-2">
-                  <span
-                    className="w-1 h-1 rounded-full flex-shrink-0"
-                    style={{ background: "var(--color-accent)", opacity: 0.6 }}
-                  />
-                  <span className="text-[11px] text-[var(--color-fg-subtle)]">{item}</span>
-                </span>
-              ))}
+              <a
+                href={siteConfig.cta.docs}
+                className="text-[var(--color-fg-subtle)] hover:text-[var(--color-fg-muted)] underline underline-offset-2"
+              >
+                Docs
+              </a>
+              <a
+                href={siteConfig.cta.ats1}
+                className="text-[var(--color-fg-subtle)] hover:text-[var(--color-fg-muted)] underline underline-offset-2"
+              >
+                ATS-1 spec
+              </a>
+              <a
+                href={siteConfig.cta.pilot}
+                className="text-[var(--color-fg-subtle)] hover:text-[var(--color-fg-muted)] underline underline-offset-2"
+              >
+                Production pilot ({siteConfig.pilot.price}) →
+              </a>
             </motion.div>
           </motion.div>
 
