@@ -19,7 +19,7 @@ const HACKS = [
     loss: "$7.5M",
     mechanism:
       "Unknown counterparty accumulated token approvals over weeks, then drained the bot's wallet. No trust gate on who could receive outbound transfers.",
-    lesson: "Counterparty trust and policy gates matter as much as signing the right hash once.",
+    lesson: "Binding intent to execution matters as much as signing the right hash once — policy gates enforce who can receive funds.",
   },
 ];
 

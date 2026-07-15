@@ -9,15 +9,15 @@ import { siteConfig } from "@/lib/site-config";
 export const metadata: Metadata = {
   title: "Research — Stvor",
   description:
-    "The cryptographic foundations of Stvor's execution trust layer. Commitment anchoring with ed25519, SHA-256 canonical hashing, the Trust Receipt format, and the threat model it addresses.",
+    "The cryptographic foundations of Stvor's execution trust layer. Commitment anchoring with ES256 (P-256), SHA-256 canonical hashing, the Trust Receipt format, and the threat model it addresses.",
   alternates: { canonical: "/research" },
 };
 
 const references = [
   {
-    title: "ed25519: High-speed high-security signatures",
-    body: "Bernstein et al. (2011). The digital signature scheme Stvor uses for commitment signing. Chosen for speed (<2ms), small key size, and wide ecosystem support.",
-    href: "https://ed25519.cr.yp.to/ed25519-20110926.pdf",
+    title: "ECDSA P-256 / ES256 (IEEE P1363)",
+    body: "NIST-approved elliptic curve signature scheme. Stvor uses ES256 (secp256r1) for commitment and Trust Receipt signing — WebCrypto-native, widely supported in browsers and HSMs.",
+    href: "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-186.pdf",
   },
   {
     title: "SHA-2 (FIPS 180-4)",
@@ -60,11 +60,11 @@ const concepts = [
   {
     Icon: Lock,
     title: "Commitment anchoring",
-    body: `The core primitive. Before any transaction is built, the caller signs a structured intent object — destination, amount, method selector, agent identity, and TTL — using ed25519. The signature is the commitment. It cannot be changed after signing.
+    body: `The core primitive. Before any transaction is built, the caller commits a structured intent object — destination, amount, method selector, agent identity, and TTL — via POST /commitments. The payload hash is frozen; ES256 signs the receipt at verify time.
 
-When the transaction is ready to submit, stvor.verify() checks: does the live payload match the signed commitment? If yes, a Trust Receipt is issued. If no — field mismatch, method change, destination swap — a VerificationError is thrown and the transaction is NOT submitted.
+When the transaction is ready to submit, stvor.verify() checks: does the live payload match the committed hash and destination? If yes, settle and issue an ALLOW receipt. If no — field mismatch, destination swap — a signed DENY receipt is issued and the transaction is NOT submitted.
 
-This is pre-execution verification. It runs after signing, before broadcast.`,
+This is pre-execution verification: commit → verify → settle.`,
   },
   {
     Icon: ShieldCheck,
@@ -87,13 +87,13 @@ This prevents encoding-variant attacks: two different serializations of the same
 
 • id — globally unique receipt identifier
 • hash — SHA-256 canonical hash of the committed intent
-• signature — ed25519 signature over the hash
+• signature — ES256 (P-256) signature over the canonical body
 • fields — map of verified field names to their committed values
 • agent — identifier of the signing agent
 • issued_at — ISO 8601 timestamp
 • ttl — commitment time-to-live in seconds
 
-The receipt is verifiable offline using Stvor's published public key at /.well-known/jwks.json. No Stvor API call is required to verify a receipt — this is by design. An auditor, regulator, or counterparty can verify any historical receipt without a vendor relationship.`,
+The receipt is verifiable offline using Stvor's published public key at /.well-known/ats1-public-key. No Stvor API call is required to verify a receipt — this is by design. An auditor, regulator, or counterparty can verify any historical receipt without a vendor relationship.`,
   },
   {
     Icon: GitBranch,
@@ -124,9 +124,9 @@ export default function ResearchPage() {
             How Stvor works, cryptographically.
           </h1>
           <p className="text-[15px] text-[var(--color-fg-muted)] leading-[1.7] max-w-2xl mx-auto">
-            The cryptographic primitives are not novel — ed25519 and SHA-256 are industry
-            standard. What Stvor provides is the composition: a commitment anchoring scheme
-            designed specifically for the AI agent execution context, with a portable, offline-verifiable
+            The cryptographic primitives are not novel — ES256 (P-256) and SHA-256 are industry
+            standard. What Stvor provides is the composition: commit → verify → settle binding
+            designed for the AI agent execution context, with a portable, offline-verifiable
             receipt format.
           </p>
         </div>

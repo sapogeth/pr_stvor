@@ -51,7 +51,7 @@ export const comparisonRows: ComparisonRow[] = [
     blockaid:    "Simulation report",
     safe:        "Multisig signatures",
     monitoring:  "Alert log",
-    stvor:       "Signed Trust Receipt (ed25519)",
+    stvor:       "Signed Trust Receipt (ES256 P-256)",
     note: "Stvor issues a cryptographically signed receipt for every verified execution. The receipt is verifiable offline using the published public key — no Stvor API call required.",
   },
   {
@@ -69,7 +69,7 @@ export const comparisonRows: ComparisonRow[] = [
     safe:        "No",
     monitoring:  "No",
     stvor:       "Yes",
-    note: "Stvor's Trust Receipt is a portable, open-format JSON document signed with ed25519. Any auditor, regulator, or counterparty can verify it without a vendor relationship.",
+    note: "Stvor's Trust Receipt is a portable, open-format JSON document signed with ES256 (P-256). Any auditor, regulator, or counterparty can verify it offline without a vendor relationship.",
   },
   {
     feature: "Blocks payload manipulation",

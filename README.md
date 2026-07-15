@@ -3,36 +3,39 @@
 Marketing site and technical documentation for [Stvor](https://stvor.xyz) — pre-execution verification for AI agents that move money.
 
 **Production:** https://stvor.xyz  
-**Live reference build:** https://nous.stvor.xyz (Hermes hackathon demo — attack sim, agent arena, Stripe escrow)
+**API:** https://api.stvor.xyz (`POST /commitments`, `/verify`, `/receipt`)  
+**Hackathon reference:** https://nous.stvor.xyz (attack sim, agent arena, Stripe escrow — separate from production API)
 
 ## What Stvor is
 
-Stvor sits between **intent** and **execution**. Before a payment, transfer, or tool call runs, it checks:
+Stvor binds **intent to execution** before funds move:
 
-1. **Destination match** — committed at intent, verified before execution  
-2. **Payload integrity** — `SHA-256(params) === committed_hash` via `crypto.timingSafeEqual()`  
-3. **Counterparty trust** — minimum trust score before transacting  
-4. **Policy check** — amount caps, allowlists, method gates  
+```
+commit → verify → settle
+```
 
-Any check fails → **DENIED**, no funds move. On success → **ECDSA P-256** signed Trust Receipt ([ATS-1](https://stvor.xyz/docs/ats-1) draft).
+1. **commit** — `POST /commitments` freezes canonical params at intent time  
+2. **verify** — `POST /verify` compares live payload; swapped destination → signed **DENY**, not silent pass  
+3. **settle** — your rail fires only after ALLOW; `POST /receipt` issues ES256 (P-256) Trust Receipt for ALLOW **and** DENY  
 
-There is no self-serve npm SDK today. Production integrations run through a **paid 2-week pilot** ($500 flat).
+Verification checks: destination match, payload integrity (`timingSafeEqual`), policy gates.
+
+**Packages:** `@stvor/sdk` (client), `@stvor/core` (verification primitives).  
+**Proof:** [browser verifier](https://api.stvor.xyz/verifier/), [test vectors](https://github.com/stvor-hq/stvor/tree/main/fixtures), [ATS-1 spec](https://stvor.xyz/docs/ats-1).
 
 ## Site structure
 
 | Route | Purpose |
 |-------|---------|
-| `/` | Landing — pilot CTA, threat model, comparison |
+| `/` | Landing — demo-first, cryptographic binding, comparison |
 | `/docs` | Documentation index |
-| `/docs/how-it-works` | Four checks, attacks, cryptography, threat model |
-| `/docs/integrate` | Pilot onboarding, checkpoint wiring, rails |
+| `/docs/how-it-works` | commit → verify → settle, attacks, threat model |
+| `/docs/integrate` | SDK + API wiring, checkpoint placement |
 | `/docs/ats-1` | Trust Receipt spec (draft) |
 | `/demo` | Interactive verification demo |
-| `/research` | Research notes + ATS-1 pointer |
+| `/research` | Cryptography notes + ATS-1 pointer |
 | `/compare` | Competitor comparison |
 | `/security` | Security posture |
-
-Documentation layout mirrors [nous.stvor.xyz](https://nous.stvor.xyz): sidebar TOC, multi-page spec, integration guide, attack/defense pairs, code snippets.
 
 ## Development
 
@@ -45,22 +48,10 @@ bun run lint
 
 Stack: **Next.js 16** (App Router), **TypeScript**, **Tailwind CSS**, **Framer Motion**.
 
-### Project layout
-
-```
-src/
-  app/                  # Routes (pages + metadata)
-  app/docs/             # Multi-page documentation
-  components/
-    docs/               # Docs shell, sidebar, UI primitives
-    home/               # Landing page sections
-    layout/             # Header, footer
-  data/                 # Comparison table, docs nav
-  lib/                  # site-config, shiki, utils
-```
-
 ### Key config
 
+- `CONTRACT.md` — published API contract (source of truth for site copy)  
+- `src/lib/contract.ts` — API URLs, packages, curl snippets  
 - `src/lib/site-config.ts` — URLs, CTAs, pilot copy, nav items  
 - `src/data/docs-nav.ts` — Documentation sidebar structure  
 
@@ -68,13 +59,9 @@ src/
 
 Deployed on Vercel from `main`. Push triggers production build.
 
-```bash
-git push origin main
-```
-
 ## Related repos
 
-- **Reference implementation / protocol:** https://github.com/stvor-hq  
+- **SDK + API:** https://github.com/stvor-hq  
 - **Hackathon deployment:** https://nous.stvor.xyz  
 
 ## License
@@ -83,5 +70,4 @@ Reference code is **MIT** licensed (see GitHub). Site content © Stvor.
 
 ---
 
-**Contact:** founder@stvor.xyz  
-**Pilot:** [Book the pilot](mailto:founder@stvor.xyz?subject=Paid%202-week%20pilot%20—%20Stvor)
+**Contact:** [@kun_sapog](https://t.me/kun_sapog) on Telegram

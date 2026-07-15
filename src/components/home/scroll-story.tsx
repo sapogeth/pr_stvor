@@ -42,7 +42,7 @@ const STEPS = [
       '  hash:        "sha256:a3f7c291...",',
       '  destination: "0x7a3f91cd...4e",',
       "  amount:      50_000,",
-      '  signed:      "ed25519:7Kx2mN..."',
+      '  signed:      "es256:7Kx2mN..."',
       "}",
     ],
     active: "commitment" as const,
@@ -125,7 +125,7 @@ const STEPS = [
       "{",
       '  status:      "BLOCKED",',
       '  reason:      "DESTINATION_MISMATCH",',
-      '  receipt_sig: "ed25519:3mK9...",',
+      '  receipt_sig: "es256:3mK9...",',
       '  agent_id:    "agt_finance_agent_v1",',
       '  timestamp:   "2026-07-02T14:23:09Z"',
       "}",
@@ -387,7 +387,7 @@ function FlowDiagram({
           fill={step.showReceipt ? "rgba(16,185,129,0.6)" : "rgba(255,255,255,0.15)"}
           style={{ transition: "fill 0.3s" }}
         >
-          ed25519:3mK9pqR2...
+          es256:3mK9pqR2...
         </text>
       </motion.g>
     </svg>

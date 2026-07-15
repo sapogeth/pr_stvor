@@ -11,11 +11,12 @@ import {
   DocsP,
   DocsStep,
 } from "@/components/docs/docs-ui";
+import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "How it works",
   description:
-    "Technical deep dive: four pre-execution checks, payload attestation, counterparty trust, Stripe reference flow, and threat model.",
+    "Technical deep dive: commit → verify → settle, payload attestation, ES256 receipts, Stripe reference flow, and threat model.",
 };
 
 export default function HowItWorksDocsPage() {
@@ -29,10 +30,10 @@ export default function HowItWorksDocsPage() {
           How Stvor works
         </h1>
         <DocsP>
-          The $1.5B Bybit hack was a tampered payload. The $7.5M JaredFromSubway drain was an
-          unverified counterparty. Same root cause: execution happened before anyone verified the
-          live operation still matched intent. Stvor closes both gaps at the checkpoint — before
-          the payment rail fires.
+          The $1.5B Bybit hack was a tampered payload. Same root cause: execution happened before
+          anyone verified the live operation still matched intent. Stvor binds intent to execution at
+          the checkpoint — before the payment rail fires. A swapped destination is a signed DENY, not
+          a silent pass.
         </DocsP>
       </div>
 
@@ -41,28 +42,38 @@ export default function HowItWorksDocsPage() {
         Stvor is middleware between intent and execution. It does not replace custody, monitoring,
         or signing infrastructure. It answers:{" "}
         <em>does what is about to run still match what was committed?</em> Any check fails →{" "}
-        <DocsInlineCode>DENIED</DocsInlineCode>, no payment attempted.
+        <DocsInlineCode>DENIED</DocsInlineCode> with a signed receipt, no payment attempted.
       </DocsP>
 
-      <DocsH2 id="four-checks">01 · Four checks</DocsH2>
-      <DocsStep n="01" title="Destination match">
+      <DocsH2 id="flow">01 · commit → verify → settle</DocsH2>
+      <DocsStep n="commit" title="POST /commitments">
+        Canonical params hashed and stored at intent time. Intent is frozen before any transaction is
+        built.
+      </DocsStep>
+      <DocsStep n="verify" title="POST /verify">
+        Live payload compared to commitment with <DocsInlineCode>timingSafeEqual</DocsInlineCode>.
+        Destination swap or hash mismatch → DENY.
+      </DocsStep>
+      <DocsStep n="settle" title="Your execution rail">
+        Stripe capture, chain broadcast, or ledger write fires only after ALLOW. Then{" "}
+        <DocsInlineCode>POST /receipt</DocsInlineCode> — ES256 Trust Receipt for ALLOW or DENY.
+      </DocsStep>
+
+      <DocsH2 id="three-checks">02 · What verify checks</DocsH2>
+      <DocsStep n="A" title="Destination match">
         Destination is hash-committed at intent time. Before execution, compare live destination
         against commitment. UI swaps, injected addresses, and delegatecall redirects all fail here.
       </DocsStep>
-      <DocsStep n="02" title="Payload integrity">
+      <DocsStep n="B" title="Payload integrity">
         <DocsInlineCode>SHA-256(canonical params)</DocsInlineCode> must equal committed hash.
         Comparison uses <DocsInlineCode>crypto.timingSafeEqual()</DocsInlineCode>.
       </DocsStep>
-      <DocsStep n="03" title="Counterparty trust">
-        Minimum trust score on receiving address or entity. Unknown counterparties cannot receive
-        outbound transfers — blocks slow-accumulation approval attacks.
-      </DocsStep>
-      <DocsStep n="04" title="Policy check">
+      <DocsStep n="C" title="Policy check">
         Amount caps, method allowlists, recipient lists — evaluated against signed policy attached
         to the commitment.
       </DocsStep>
 
-      <DocsH2 id="payload-attestation">02 · Payload attestation</DocsH2>
+      <DocsH2 id="payload-attestation">03 · Payload attestation</DocsH2>
       <DocsP>
         Commit–reveal pattern: hash the canonical task payload at intent time. Before execution,
         re-hash the live payload and compare. A single byte change produces a different digest.
@@ -79,13 +90,13 @@ export default function HowItWorksDocsPage() {
           outcome: "✗ $1.5B transferred in one routine-looking operation",
         }}
         defense={{
-          title: "Blocked at attestation",
+          title: "Blocked at verify",
           steps: [
             "SHA-256(task_payload) committed at intent — immutable before UI renders",
             "timingSafeEqual(received_hash, committed_hash) before execution",
-            "Mismatch → DENIED. Stripe PaymentIntent.cancel() if escrowed.",
+            "Mismatch → signed DENY. Stripe PaymentIntent.cancel() if escrowed.",
           ],
-          outcome: "✓ Attacker gets nothing. No manual review required.",
+          outcome: "✓ Attacker gets nothing. Receipt proves the block.",
         }}
       />
 
@@ -110,10 +121,12 @@ function verifyPayload(
   return { allowed: true };
 }`}</DocsCode>
 
-      <DocsH2 id="counterparty-trust">03 · Counterparty trust</DocsH2>
+      <DocsH2 id="binding">04 · Intent-to-execution binding</DocsH2>
       <DocsP>
-        Signing authority is not the same as counterparty safety. Bots and agents can accumulate
-        approvals to unknown addresses over weeks without any single transaction looking suspicious.
+        Slow-accumulation attacks (fake tokens, approval farming) are a different class of problem
+        than payload swaps. Stvor&apos;s live gate answers: did this specific execution still match
+        the committed intent? Policy rules (recipient allowlists, amount caps) are the enforcement
+        mechanism for counterparties — there is no live trust-scoring engine today.
       </DocsP>
 
       <AttackDefense
@@ -127,21 +140,21 @@ function verifyPayload(
           outcome: "✗ $7.5M drained in one block",
         }}
         defense={{
-          title: "Blocked at trust gate",
+          title: "Policy + binding at execution",
           steps: [
-            "Counterparty trust score below threshold → interaction denied",
-            "Outbound transfer to unverified address → DENIED before approval path",
-            "Every attempt logged with agent identity",
+            "Recipient not on signed allowlist → DENY at verify",
+            "Outbound transfer hash mismatch → signed DENY before approval path",
+            "Every decision logged with agent identity in Trust Receipt",
           ],
-          outcome: "✓ Bot never interacts with unverified counterparty",
+          outcome: "✓ Unlisted counterparty never receives funds at execution time",
         }}
       />
 
-      <DocsH2 id="stripe-reference">04 · Stripe reference flow</DocsH2>
+      <DocsH2 id="stripe-reference">05 · Stripe reference flow</DocsH2>
       <DocsP>
         The live reference implementation uses Stripe{" "}
         <DocsInlineCode>capture_method: manual</DocsInlineCode>. Funds authorize at funding but
-        do not capture until attestation passes. This is one rail — not the product.
+        do not capture until verify returns ALLOW. This is one rail — not the product.
       </DocsP>
       <div className="my-6 flex flex-wrap gap-2 text-[11px] font-mono">
         {["OPEN", "FUNDED", "SUBMITTED", "VERIFIED", "COMPLETE"].map((s, i) => (
@@ -155,31 +168,38 @@ function verifyPayload(
       </div>
       <DocsNote type="info">
         See the interactive reference at{" "}
-        <a href="https://nous.stvor.xyz/demo" className="underline underline-offset-2" target="_blank" rel="noopener noreferrer">
+        <a href={siteConfig.demo.live} className="underline underline-offset-2" target="_blank" rel="noopener noreferrer">
           nous.stvor.xyz/demo
         </a>
-        . x402 and OrbWallet integrations are planned, not live on stvor.xyz.
+        . Production API:{" "}
+        <a href={siteConfig.api.base} className="underline underline-offset-2" target="_blank" rel="noopener noreferrer">
+          {siteConfig.api.base}
+        </a>
+        .
       </DocsNote>
 
-      <DocsH2 id="trust-receipt">05 · Trust Receipt</DocsH2>
+      <DocsH2 id="trust-receipt">06 · Trust Receipt</DocsH2>
       <DocsP>
-        After ALLOW, Stvor issues an ECDSA P-256 signed Trust Receipt (ATS-1 draft). Verifiable
-        offline with only the issuer&apos;s public key. No Stvor API call required to verify a
-        receipt you already hold.
+        After ALLOW or DENY, Stvor issues an ES256 (P-256, IEEE-P1363) signed Trust Receipt
+        (ATS-1 draft). Verifiable offline with only the issuer&apos;s public key —{" "}
+        <a href={siteConfig.api.verifier} className="underline underline-offset-2" target="_blank" rel="noopener noreferrer">
+          browser verifier
+        </a>
+        , CLI, or ~20 lines of WebCrypto.
       </DocsP>
       <DocsCode language="json" filename="receipt-sample.json">{`{
   "ats_version": "0.1.0-draft",
   "receipt_id": "ats1_01HXYZ...",
   "agent_id": "agt_finance_agent_v1",
   "decision": "ALLOWED",
-  "checks": ["destination", "payload", "trust", "policy"],
+  "checks_passed": ["destination", "payload", "policy"],
   "payload_hash": "sha256:a3f7c291...",
   "committed_at": "2026-07-12T09:41:02Z",
   "executed_at": "2026-07-12T09:41:03Z",
-  "signature": "ecdsa-p256:3mK9pqR2..."
+  "signature": "es256:3mK9pqR2..."
 }`}</DocsCode>
 
-      <DocsH2 id="threat-model">06 · Threat model</DocsH2>
+      <DocsH2 id="threat-model">07 · Threat model</DocsH2>
       <DocsH3 id="payload-manipulation">Payload manipulation</DocsH3>
       <DocsP>
         Attacker modifies destination, amount, or calldata between intent and submission. Stvor
@@ -188,20 +208,19 @@ function verifyPayload(
       <DocsH3 id="authorization-gap">Authorization gap</DocsH3>
       <DocsP>
         Agent was authorized for operation A, submits operation B, or runs on stale authorization.
-        Commitment binds specific fields — different operation → different hash → DENIED.
+        Commitment binds specific fields — different operation → different hash → DENY.
       </DocsP>
       <DocsH3 id="context-injection">Context injection</DocsH3>
       <DocsP>
-        Prompt injection causes agent to commit to a malicious operation. Policy gates and
-        counterparty trust reduce blast radius; they do not replace human review for high-value
-        flows.
+        Prompt injection causes agent to commit to a malicious operation. Policy gates reduce blast
+        radius; they do not replace human review for high-value flows.
       </DocsP>
       <DocsNote type="warn">
         Stvor does not solve key compromise, compromised signing infrastructure, or social
         engineering of human approvers who bypass the checkpoint entirely.
       </DocsNote>
 
-      <DocsH2 id="references">07 · References</DocsH2>
+      <DocsH2 id="references">08 · References</DocsH2>
       <ul className="space-y-3 text-[13px] text-[var(--color-fg-muted)]">
         <li>
           <a href="https://www.nccgroup.com/" className="underline underline-offset-2 hover:text-[var(--color-fg)]" target="_blank" rel="noopener noreferrer">
@@ -216,6 +235,11 @@ function verifyPayload(
         <li>
           <a href="/docs/ats-1" className="underline underline-offset-2 hover:text-[var(--color-fg)]">
             ATS-1 — Agent Trust Standard (draft) →
+          </a>
+        </li>
+        <li>
+          <a href={siteConfig.api.fixtures} className="underline underline-offset-2 hover:text-[var(--color-fg)]" target="_blank" rel="noopener noreferrer">
+            Published test vectors (fixtures/) ↗
           </a>
         </li>
       </ul>

@@ -18,7 +18,7 @@ const ALLOWED = {
   executed: "2026-07-12T09:41:03Z",
   status: "✓ ALLOWED",
   payloadHash: "sha256:a3f7c291...",
-  signature: "ecdsa-p256:3mK9pqR2...",
+  signature: "es256:3mK9pqR2...",
   statusClass: "receipt-executed",
 };
 

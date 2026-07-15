@@ -29,7 +29,7 @@ const TRUST_SIGNALS = [
   "Apache 2.0 open source",
   "No payload data leaves your infra",
   "NIST FIPS 203/204 algorithms",
-  "ed25519 signed receipts",
+  "ES256 signed receipts",
 ];
 
 export function FinalCTA() {

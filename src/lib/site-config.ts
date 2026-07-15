@@ -1,9 +1,17 @@
+import {
+  COMMIT_CURL,
+  STVOR_API_BASE,
+  STVOR_ENDPOINTS,
+  STVOR_FIXTURES_URL,
+  STVOR_VERIFIER_URL,
+} from "./contract";
+
 export const siteConfig = {
   name: "Stvor",
   title: "Stvor — Stop wrong-agent payments before they execute",
   shortTitle: "Stvor — Catch it before the money moves",
   description:
-    "Your AI agent was about to pay the wrong address. Stvor checks destination and payload before execution — blocks bad transfers and leaves signed proof. Try the attack demo in 30 seconds, no signup.",
+    "Your AI agent was about to pay the wrong address. Stvor binds intent to execution before funds move — swapped destination is a signed DENY, not a silent pass. Verify receipts offline. Try the demo in 30 seconds.",
   keywords: [
     "AI agent payments",
     "wrong address transfer",
@@ -13,6 +21,13 @@ export const siteConfig = {
     "trust receipt",
   ],
   url: "https://stvor.xyz",
+
+  api: {
+    base: STVOR_API_BASE,
+    endpoints: STVOR_ENDPOINTS,
+    verifier: STVOR_VERIFIER_URL,
+    fixtures: STVOR_FIXTURES_URL,
+  },
 
   emails: {
     founder: "founder@stvor.xyz",
@@ -33,7 +48,7 @@ export const siteConfig = {
     attack: "https://nous.stvor.xyz/attack",
     live: "https://nous.stvor.xyz/demo",
     local: "/demo",
-    registerApi: "https://nous.stvor.xyz/api/v1/agents/register",
+    verifier: STVOR_VERIFIER_URL,
   },
 
   cta: {
@@ -50,16 +65,10 @@ export const siteConfig = {
     duration: "2 weeks",
     headline: "Paid 2-week pilot",
     summary:
-      "I stand up a Stvor checkpoint in front of your execution flow — verify intent, destination, and payload before execution → ALLOW or DENY — plus a signed Trust Receipt after each action. I do the integration. At the end it works and you keep going, or you pay nothing further.",
+      "I stand up a Stvor checkpoint in front of your execution flow — commit intent, verify at execution, settle only on ALLOW — plus a signed Trust Receipt for every decision. I do the integration. At the end it works and you keep going, or you pay nothing further.",
   },
 
-  registerAgentCurl: `curl -X POST https://nous.stvor.xyz/api/v1/agents/register \\
-  -H 'Content-Type: application/json' \\
-  -d '{
-    "name": "My Agent",
-    "specialty": "Research",
-    "endpoint_url": "https://my-agent.example.com/webhook"
-  }'`,
+  commitCurl: COMMIT_CURL,
 } as const;
 
 export const navItems = [

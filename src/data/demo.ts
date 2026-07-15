@@ -58,7 +58,7 @@ export const demoChains: DemoChain[] = [
     label: "TON",
     file: "ton-session.ts",
     language: "typescript",
-    code: `import { StvorClient } from "@stvor/web3";
+    code: `import { StvorClient } from "@stvor/sdk";
 import { TonWallet } from "@stvor/ton";
 
 // 1. Connect TON Wallet v5
@@ -127,7 +127,7 @@ console.log("ML-KEM ciphertext:", ciphertext.slice(0, 32), "...");`,
     label: "ERC-4337",
     file: "erc4337-session.ts",
     language: "typescript",
-    code: `import { StvorClient } from "@stvor/web3";
+    code: `import { StvorClient } from "@stvor/sdk";
 import { ERC4337Provider } from "@stvor/evm";
 
 // 1. Wrap existing AA wallet (e.g. Safe, Biconomy)
@@ -285,7 +285,7 @@ console.log("Session:", transport.sessionId);`,
     label: "Node.js",
     file: "agent-messaging.ts",
     language: "typescript",
-    code: `import { StvorClient, Session } from "@stvor/web3";
+    code: `import { StvorClient, Session } from "@stvor/sdk";
 
 // 1. Initialise — no blockchain required
 const stvor = new StvorClient({
@@ -334,7 +334,7 @@ console.log("Session key fingerprint:", session.fingerprint);`,
         metric: "Integration effort",
         classic: "Custom crypto implementation",
         classicBad: true,
-        stvor: "npm install @stvor/web3 + 3 API calls",
+        stvor: "npm install @stvor/sdk + 3 API calls",
       },
       {
         metric: "Agent identity",

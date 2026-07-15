@@ -10,7 +10,7 @@ const ROADMAP = [
     items: [
       "Pre-execution verification for AI agent payments",
       "Signed commitment anchoring before any financial action",
-      "Cryptographic Trust Receipts with ed25519 signatures",
+      "Cryptographic Trust Receipts with ES256 (P-256) signatures",
       "Drop-in SDK for LangChain, OpenAI Agents, MCP",
     ],
   },

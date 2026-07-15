@@ -18,8 +18,8 @@ const primitives = [
   {
     icon: ShieldCheck,
     color: "var(--color-accent)",
-    title: "ed25519 commitment signing",
-    body: "Every intent commitment is signed with ed25519 before the transaction payload is built. Signing is <2ms on commodity hardware. The public key is published at /.well-known/jwks.json — receipts are verifiable offline, no API call required.",
+    title: "ES256 (P-256) commitment signing",
+    body: "Every intent commitment and Trust Receipt is signed with ES256 (secp256r1, IEEE-P1363) before the transaction payload is built. Signing is <2ms on commodity hardware. The public key is published at /.well-known/ats1-public-key — receipts are verifiable offline, no API call required.",
   },
   {
     icon: Lock,
@@ -31,7 +31,7 @@ const primitives = [
     icon: FileSearch,
     color: "var(--color-brand)",
     title: "No payload data leaves your infra",
-    body: "Stvor never sees transaction content. The commitment hash and ed25519 signature are sent to the Stvor API. The actual payload stays on your infrastructure. BYOK mode (bring-your-own-key) keeps your private key entirely local.",
+    body: "Stvor never sees transaction content. The commitment hash and ES256 signature are sent to the Stvor API. The actual payload stays on your infrastructure. BYOK mode (bring-your-own-key) keeps your private key entirely local.",
   },
   {
     icon: Bug,
@@ -61,7 +61,7 @@ const primitives = [
     icon: Clock,
     color: "var(--color-warn)",
     title: "Post-quantum migration — roadmap 2027",
-    body: "Current signing uses ed25519 (classical). NIST FIPS 203 (ML-KEM) and FIPS 204 (ML-DSA) migration tooling is planned for 2027. The SDK will provide a migration path that does not require re-anchoring existing commitments.",
+    body: "Current signing uses ES256 / P-256 (classical). NIST FIPS 203 (ML-KEM) and FIPS 204 (ML-DSA) migration tooling is planned for 2027. The SDK will provide a migration path that does not require re-anchoring existing commitments.",
   },
 ];
 
@@ -89,8 +89,8 @@ const roadmap = [
     phase: "Now",
     badge: "shipping" as const,
     items: [
-      "Apache 2.0 open-source SDK on GitHub",
-      "ed25519 commitment signing + SHA-256 canonical hashing",
+      "MIT-licensed @stvor/sdk + @stvor/core on GitHub",
+      "ES256 (P-256) commitment signing + SHA-256 canonical hashing",
       "Policy gates: maxAmount, allowedRecipients, allowedChains",
       "Offline receipt verification via published JWKS",
       "BYOK mode — private key never leaves your infrastructure",

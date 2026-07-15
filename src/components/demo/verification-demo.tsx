@@ -55,17 +55,17 @@ const SCENARIOS: Scenario[] = [
       {
         id: "sign",
         label: "1. Anchor intent commitment",
-        code: `const commitment = await stvor.sign({
+        code: `const commitment = await stvor.commit({
   from: "0xAgent...f47a",
   to:   "0xAlice...a9f2",
   amount: "50000000",          // 50 USDC (6 decimals)
   method: "transfer(address,uint256)",
 });
 // → commitment.hash (SHA-256 canonical)
-// → commitment.signature (ed25519)`,
+// → commitment.signature (ES256 P-256)`,
         output: `✓  Commitment anchored
 hash:      sha256:7e3a9f2b4d1c...
-signature: ed25519:3f8a2c1b9e4d...
+signature: es256:3f8a2c1b9e4d...
 issued_at: 2026-07-11T12:00:00Z`,
         duration: 600,
         status: "ok",
@@ -99,7 +99,7 @@ console.log(result.receipt);`,
   "id":        "trcpt_...",
   "status":    "verified",
   "hash":      "sha256:7e3a9f2b...",
-  "signature": "ed25519:3f8a2c1b...",
+  "signature": "es256:3f8a2c1b...",
   "fields":    { "to": "✓", "amount": "✓" },
   "issued_at": "2026-07-11T12:00:00.123Z"
 }`,

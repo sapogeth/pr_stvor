@@ -11,11 +11,19 @@ import {
   DocsStep,
 } from "@/components/docs/docs-ui";
 import { siteConfig } from "@/lib/site-config";
+import {
+  COMMIT_CURL,
+  SDK_INSTALL,
+  SDK_QUICKSTART,
+  STVOR_API_BASE,
+  STVOR_PACKAGES,
+  VERIFY_CURL,
+} from "@/lib/contract";
 
 export const metadata: Metadata = {
   title: "Integration guide",
   description:
-    "How to integrate Stvor via paid pilot: checkpoint placement, commitment flow, webhook pattern, and payment rails.",
+    "Integrate Stvor via @stvor/sdk: commit → verify → settle on api.stvor.xyz. Checkpoint placement, API reference, and payment rails.",
 };
 
 export default function IntegrateDocsPage() {
@@ -30,33 +38,61 @@ export default function IntegrateDocsPage() {
         </h1>
         <DocsP>
           Stvor integrates as a verification checkpoint before your payment rail, chain broadcast,
-          or internal ledger write. This is white-glove during the pilot — you bring the agent and
-          execution path; I place the gate and hand you a working flow.
+          or internal ledger write. Flow:{" "}
+          <DocsInlineCode>commit → verify → settle</DocsInlineCode> — with a signed Trust Receipt
+          for ALLOW and DENY.
         </DocsP>
         <div className="flex flex-wrap gap-2">
-          <DocsBadge color="amber">No self-serve SDK</DocsBadge>
-          <DocsBadge color="green">Stripe reference live</DocsBadge>
+          <DocsBadge color="green">{STVOR_PACKAGES.sdk} on npm</DocsBadge>
+          <DocsBadge color="green">API live — {STVOR_API_BASE}</DocsBadge>
         </div>
       </div>
 
       <DocsH2 id="overview">Overview</DocsH2>
       <DocsP>
-        Integration has three moving parts: (1) commit intent at the moment the user or agent
-        approves an operation, (2) verify live payload immediately before execution, (3) issue a
-        signed Trust Receipt on ALLOW. Deny path must never call the execution rail.
+        Three HTTP endpoints on a single origin — flat paths, no <DocsInlineCode>/api/v1</DocsInlineCode>:
       </DocsP>
+      <ul className="list-disc list-inside space-y-1 text-[13px] text-[var(--color-fg-muted)] mb-6">
+        <li>
+          <DocsInlineCode>POST /commitments</DocsInlineCode> — anchor intent at approval time
+        </li>
+        <li>
+          <DocsInlineCode>POST /verify</DocsInlineCode> — compare live payload to commitment → ALLOW or
+          DENY
+        </li>
+        <li>
+          <DocsInlineCode>POST /receipt</DocsInlineCode> — issue ES256 (P-256) Trust Receipt
+        </li>
+      </ul>
+      <DocsNote type="info">
+        There is no <DocsInlineCode>/agents/register</DocsInlineCode> endpoint. Self-check with{" "}
+        <a href={siteConfig.api.fixtures} className="underline underline-offset-2" target="_blank" rel="noopener noreferrer">
+          published test vectors
+        </a>{" "}
+        before writing client code. Verify receipts in the{" "}
+        <a href={siteConfig.api.verifier} className="underline underline-offset-2" target="_blank" rel="noopener noreferrer">
+          browser verifier
+        </a>
+        .
+      </DocsNote>
 
-      <DocsH2 id="pilot">01 · Pilot onboarding</DocsH2>
+      <DocsH2 id="sdk">01 · SDK install</DocsH2>
+      <DocsCode language="bash" filename="install.sh">{SDK_INSTALL}</DocsCode>
       <DocsP>
-        {siteConfig.pilot.summary}
+        Verification-only integrations can use <DocsInlineCode>{STVOR_PACKAGES.core}</DocsInlineCode>{" "}
+        for canonical hashing and offline receipt verification without the HTTP client.
       </DocsP>
+      <DocsCode language="typescript" filename="quickstart.ts">{SDK_QUICKSTART}</DocsCode>
+
+      <DocsH2 id="pilot">02 · Pilot onboarding (optional)</DocsH2>
+      <DocsP>{siteConfig.pilot.summary}</DocsP>
       <DocsStep n="Week 1" title="Map your execution path">
         Identify where money actually moves: Stripe capture, on-chain send, internal transfer API.
         Stvor sits immediately before that call.
       </DocsStep>
       <DocsStep n="Week 1–2" title="Wire checkpoint + receipts">
-        Commitment at intent, four-check verify gate, ATS-1 receipt on ALLOW. Test with tampered
-        payloads in staging.
+        Commit at intent, verify at execution, settle only on ALLOW. Test with tampered payloads in
+        staging. Every DENY gets a signed receipt too.
       </DocsStep>
       <DocsStep n="End" title="Handoff">
         Working checkpoint in your repo. You keep running it, or you pay nothing further beyond the
@@ -69,35 +105,32 @@ export default function IntegrateDocsPage() {
         Book the pilot — {siteConfig.pilot.price}
       </a>
 
-      <DocsH2 id="checkpoint">02 · Checkpoint placement</DocsH2>
+      <DocsH2 id="checkpoint">03 · Checkpoint placement</DocsH2>
       <DocsCode language="typescript" filename="execution-flow.ts">{`// WRONG — verify after payment
 await stripe.paymentIntents.capture(id);
 await stvor.verify(...); // too late
 
-// RIGHT — verify before any rail call
-const decision = await stvor.verify({ commitment, payload: liveParams });
+// RIGHT — commit → verify → settle
+const commitment = await stvor.commit({ agentId, payload: intent });
+// ... build live params ...
+const decision = await stvor.verify({ commitmentId: commitment.id, payload: live });
 if (!decision.allowed) {
   await stripe.paymentIntents.cancel(escrowId);
+  // signed DENY receipt in decision.receipt — do not settle
   throw new DeniedError(decision.reason);
 }
 await stripe.paymentIntents.capture(id);
-await stvor.issueReceipt(decision);`}</DocsCode>
+await settle(live);`}</DocsCode>
 
-      <DocsH2 id="commit-verify">03 · Commitment + verify</DocsH2>
+      <DocsH2 id="commit-verify">04 · API: commit + verify</DocsH2>
       <DocsP>
-        Commit at intent time — when the user confirms, when the agent proposes a tool call, or
-        when a contract is created. Store the commitment hash; do not mutate it.
+        Commit at intent time — when the user confirms, when the agent proposes a tool call, or when
+        a contract is created. Store the commitment id; do not mutate the committed hash.
       </DocsP>
-      <DocsCode language="typescript" filename="verify-gate.ts">{`type Commitment = {
-  destination: string;
-  payloadHash: string;   // sha256 hex of canonical params
-  policyId: string;
-  agentId: string;
-  signedAt: string;
-};
-
-async function gate(
-  commitment: Commitment,
+      <DocsCode language="bash" filename="commit.sh">{COMMIT_CURL}</DocsCode>
+      <DocsCode language="bash" filename="verify.sh">{VERIFY_CURL}</DocsCode>
+      <DocsCode language="typescript" filename="verify-gate.ts">{`async function gate(
+  commitment: { destination: string; payloadHash: string; policyId: string },
   liveParams: Record<string, unknown>,
 ) {
   if (liveParams.destination !== commitment.destination)
@@ -106,47 +139,17 @@ async function gate(
   const hashOk = timingSafeHashMatch(liveParams, commitment.payloadHash);
   if (!hashOk) return deny("PAYLOAD_MISMATCH");
 
-  if ((await trustScore(liveParams.destination)) < MIN_TRUST)
-    return deny("COUNTERPARTY_UNTRUSTED");
-
   if (!policyAllows(commitment.policyId, liveParams))
     return deny("POLICY_VIOLATION");
 
   return allow();
 }`}</DocsCode>
 
-      <DocsH2 id="webhook">04 · Webhook pattern</DocsH2>
-      <DocsP>
-        The reference marketplace at nous.stvor.xyz uses a webhook delivery model — no SDK
-        required for agents that expose an HTTP endpoint. Your production integration may differ;
-        the invariant is the same: committed hash before delivery, verify before execution.
-      </DocsP>
-      <DocsCode language="bash" filename="register-agent.sh">{`# Reference API (nous.stvor.xyz) — illustrative
-curl -X POST https://nous.stvor.xyz/api/v1/agents/register \\
-  -H 'Content-Type: application/json' \\
-  -d '{
-    "name": "My Agent",
-    "specialty": "Research",
-    "endpoint_url": "https://my-agent.example.com/webhook"
-  }'`}</DocsCode>
-      <DocsCode language="json" filename="webhook-payload.json">{`// Stvor POSTs to your endpoint_url
-{
-  "task": "Analyze DeFi risk for $ATOM...",
-  "taskHash": "sha256:a3f2c1d8...",
-  "budget": 10000
-}`}</DocsCode>
-      <DocsNote type="info">
-        The webhook register flow is live on{" "}
-        <a href="https://nous.stvor.xyz/integrate" className="underline underline-offset-2" target="_blank" rel="noopener noreferrer">
-          nous.stvor.xyz/integrate
-        </a>
-        . stvor.xyz pilots wire checkpoints in your own execution stack — not necessarily this API.
-      </DocsNote>
-
       <DocsH2 id="receipt">05 · Receipt issuance</DocsH2>
       <DocsP>
-        On ALLOW, sign the canonical receipt payload with ECDSA P-256. Publish your public key at{" "}
-        <DocsInlineCode>/.well-known/ats1-public-key</DocsInlineCode> so third parties can verify
+        On ALLOW and DENY, sign the canonical receipt payload with ES256 (P-256, IEEE-P1363).
+        Publish your public key at{" "}
+        <DocsInlineCode>/.well-known/ats1-public-key</DocsInlineCode> so third parties verify
         offline. See{" "}
         <a href="/docs/ats-1" className="underline underline-offset-2 text-[var(--color-fg)]">
           ATS-1 spec
@@ -157,8 +160,8 @@ curl -X POST https://nous.stvor.xyz/api/v1/agents/register \\
       <DocsH2 id="rails">06 · Payment rails</DocsH2>
       <DocsH3 id="stripe">Stripe (reference — live)</DocsH3>
       <DocsP>
-        Manual capture escrow: authorize at funding, capture only after attestation passes,
-        cancel on DENY. This is the demonstrated reference implementation.
+        Manual capture escrow: authorize at funding, capture only after verify returns ALLOW,
+        cancel on DENY. This is the demonstrated reference implementation on nous.stvor.xyz.
       </DocsP>
       <DocsH3 id="planned">Planned</DocsH3>
       <DocsP>

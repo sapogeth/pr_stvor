@@ -8,8 +8,8 @@ const STAGE = [
     status: "reference",
     items: [
       "Reference implementation: Stripe manual-capture escrow flow",
-      "Four-check verification gate (destination, payload, trust, policy)",
-      "ECDSA P-256 signed Trust Receipt output",
+      "Three-check verification gate (destination, payload, policy)",
+      "ES256 (P-256) signed Trust Receipt — ALLOW and DENY",
       "Built and demoed (NVIDIA judging, hackathon)",
     ],
   },

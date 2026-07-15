@@ -83,7 +83,7 @@ export default function Ats1DocsPage() {
   decision: "ALLOWED" | "DENIED";
   reason?: string;                // required when DENIED
   checks_passed: Array<
-    "destination" | "payload" | "trust" | "policy"
+    "destination" | "payload" | "policy"
   >;
   destination?: string;
   amount?: string;
@@ -110,11 +110,10 @@ export default function Ats1DocsPage() {
 }`}</DocsCode>
 
       <DocsH2 id="verification-gate">Verification gate</DocsH2>
-      <DocsP>Before any execution rail call, run all four checks:</DocsP>
+      <DocsP>Before any execution rail call, run these checks:</DocsP>
       <ol className="list-decimal list-inside space-y-2 text-[13px] text-[var(--color-fg-muted)] mb-6">
         <li>Destination match against commitment</li>
         <li>Payload hash match via timingSafeEqual</li>
-        <li>Counterparty trust ≥ minimum threshold</li>
         <li>Policy evaluation pass</li>
       </ol>
       <DocsP>

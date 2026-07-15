@@ -22,7 +22,7 @@ const PERSONAS = [
       "Pre-execution payload verification against signed commitments",
       "Cryptographic execution receipts for every agent action",
       "Agent identity and authorization chain validation",
-      "Audit-ready trails with ed25519 signatures",
+      "Audit-ready trails with es256 signatures",
     ],
     codeLines: [
       '// Verify before custody execution',
@@ -33,7 +33,7 @@ const PERSONAS = [
       '})',
       '',
       '// receipt.status: "VERIFIED" | "BLOCKED"',
-      '// receipt.sig:    "ed25519:3mK9..."',
+      '// receipt.sig:    "es256:3mK9..."',
     ],
   },
   {
@@ -93,7 +93,7 @@ const PERSONAS = [
       '  authorized:  ["cfo@corp.com", "treasury_agent"],',
       '  amount:      "5,000,000.00 USDC",',
       '  status:      "✓ EXECUTED",',
-      '  sig:         "ed25519:9xR2..."',
+      '  sig:         "es256:9xR2..."',
       '}',
     ],
   },
@@ -231,7 +231,7 @@ export function UseCases() {
                     style={{
                       color: line.startsWith("//")
                         ? "rgba(255,255,255,0.28)"
-                        : line.includes("✓") || line.includes("ed25519") || line.includes("sig")
+                        : line.includes("✓") || line.includes("es256") || line.includes("sig")
                         ? "rgba(16,185,129,0.85)"
                         : line === ""
                         ? "transparent"
