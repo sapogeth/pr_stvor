@@ -18,7 +18,8 @@ import {
   STVOR_API_BASE,
   STVOR_PACKAGES,
   STVOR_SANDBOX_API_KEY,
-  VERIFY_CURL,
+  VERIFY_ALLOW_CURL,
+  VERIFY_DENY_CURL,
 } from "@/lib/contract";
 
 export const metadata: Metadata = {
@@ -133,10 +134,13 @@ await settle(live);`}</DocsCode>
       <DocsNote type="info">
         Public sandbox key (test env, rate-limited):{" "}
         <DocsInlineCode>{STVOR_SANDBOX_API_KEY}</DocsInlineCode>. Required header:{" "}
-        <DocsInlineCode>Authorization: Bearer &lt;key&gt;</DocsInlineCode>.
+        <DocsInlineCode>Authorization: Bearer &lt;key&gt;</DocsInlineCode>. Use a fresh{" "}
+        <DocsInlineCode>nonce</DocsInlineCode> per commitment — duplicates return{" "}
+        <DocsInlineCode>409</DocsInlineCode>.
       </DocsNote>
       <DocsCode language="bash" filename="commit.sh">{COMMIT_CURL}</DocsCode>
-      <DocsCode language="bash" filename="verify.sh">{VERIFY_CURL}</DocsCode>
+      <DocsCode language="bash" filename="verify-allow.sh">{VERIFY_ALLOW_CURL}</DocsCode>
+      <DocsCode language="bash" filename="verify-deny.sh">{VERIFY_DENY_CURL}</DocsCode>
       <DocsCode language="typescript" filename="verify-gate.ts">{`async function gate(
   commitment: { payloadHash: string },
   liveParams: Record<string, unknown>,

@@ -5,7 +5,9 @@ import {
   STVOR_FIXTURES_URL,
   STVOR_SANDBOX_API_KEY,
   STVOR_VERIFIER_URL,
+  VERIFY_ALLOW_CURL,
   VERIFY_CURL,
+  VERIFY_DENY_CURL,
 } from "./contract";
 
 export const siteConfig = {
@@ -70,6 +72,8 @@ export const siteConfig = {
   },
 
   commitCurl: COMMIT_CURL,
+  verifyAllowCurl: VERIFY_ALLOW_CURL,
+  verifyDenyCurl: VERIFY_DENY_CURL,
   verifyCurl: VERIFY_CURL,
   sandboxApiKey: STVOR_SANDBOX_API_KEY,
 } as const;

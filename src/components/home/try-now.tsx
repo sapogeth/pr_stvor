@@ -75,9 +75,10 @@ export function TryNow() {
             Touch it before you email anyone.
           </h2>
           <p className="text-[15px] text-[var(--color-fg-muted)] leading-relaxed">
-            Verify a real blocked-attack receipt first. Then commit against{" "}
-            <code className="font-mono text-[12px]">{siteConfig.api.base}</code> with the
-            public sandbox key below — no email required.
+            Hash the payload yourself, commit with a fresh nonce, verify ALLOW with the same{" "}
+            <code className="font-mono text-[12px]">to</code>, then swap{" "}
+            <code className="font-mono text-[12px]">to</code> for DENY. Sandbox key below — no
+            email required.
           </p>
         </motion.div>
 
@@ -139,9 +140,10 @@ export function TryNow() {
         >
           <CopyBlock label={`Install ${STVOR_PACKAGES.sdk}`} code={SDK_INSTALL} />
           <CopyBlock label="POST /commitments" code={siteConfig.commitCurl} />
+          <CopyBlock label="POST /verify (same to → ALLOW)" code={siteConfig.verifyAllowCurl} />
           <CopyBlock
             label="POST /verify (swapped to → DENY)"
-            code={siteConfig.verifyCurl}
+            code={siteConfig.verifyDenyCurl}
           />
         </motion.div>
       </div>

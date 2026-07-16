@@ -35,21 +35,48 @@ export const DEMO_PAYMENT = {
   currency: "USDC",
 } as const;
 
+/** RFC 8785 canonical bytes for DEMO_PAYMENT (verify with your JCS library). */
+export const DEMO_PAYLOAD_CANONICAL = `{"amount":"${DEMO_PAYMENT.amount}","currency":"${DEMO_PAYMENT.currency}","to":"${DEMO_PAYMENT.to}"}`;
+
 export const DEMO_PAYLOAD_HASH =
   "b36c8892571afafab33f0f389c62293948a7ff61f3064eca12700582756cda78";
 
-export const COMMIT_CURL = `curl -X POST ${STVOR_API_BASE}/commitments \\
+const DEMO_PAYLOAD_COMMENT = `# Payment payload (RFC 8785 — hash the canonical bytes, not this comment block):
+# ${DEMO_PAYLOAD_CANONICAL}
+# payloadHash = SHA-256(canonical) = ${DEMO_PAYLOAD_HASH}
+# (agentId, nonce) must be unique per commitment — use a fresh nonce every time.`;
+
+export const COMMIT_CURL = `${DEMO_PAYLOAD_COMMENT}
+
+curl -X POST ${STVOR_API_BASE}/commitments \\
   -H 'Content-Type: application/json' \\
   -H 'Authorization: Bearer ${STVOR_SANDBOX_API_KEY}' \\
   -d '{
     "agentId": "agt_sandbox_demo",
     "payloadHash": "${DEMO_PAYLOAD_HASH}",
     "alg": "sha256",
-    "nonce": "sandbox-demo-001",
+    "nonce": "<any-unique-string>",
     "expiresAt": "2026-12-31T23:59:59.000Z"
   }'`;
 
-export const VERIFY_CURL = `curl -X POST ${STVOR_API_BASE}/verify \\
+export const VERIFY_ALLOW_CURL = `# Same to / amount / currency as the committed payload → ALLOW
+
+curl -X POST ${STVOR_API_BASE}/verify \\
+  -H 'Content-Type: application/json' \\
+  -H 'Authorization: Bearer ${STVOR_SANDBOX_API_KEY}' \\
+  -d '{
+    "commitmentId": "cmt_FROM_COMMIT_RESPONSE",
+    "intent": {
+      "from": "agt_sandbox_demo",
+      "to": "${DEMO_PAYMENT.to}",
+      "amount": "${DEMO_PAYMENT.amount}",
+      "currency": "${DEMO_PAYMENT.currency}"
+    }
+  }'`;
+
+export const VERIFY_DENY_CURL = `# Swap to after commit → PAYLOAD_MISMATCH → signed DENY
+
+curl -X POST ${STVOR_API_BASE}/verify \\
   -H 'Content-Type: application/json' \\
   -H 'Authorization: Bearer ${STVOR_SANDBOX_API_KEY}' \\
   -d '{
@@ -57,10 +84,13 @@ export const VERIFY_CURL = `curl -X POST ${STVOR_API_BASE}/verify \\
     "intent": {
       "from": "agt_sandbox_demo",
       "to": "0x9d0000000000000000000000000000000000000001",
-      "amount": "50000.00",
-      "currency": "USDC"
+      "amount": "${DEMO_PAYMENT.amount}",
+      "currency": "${DEMO_PAYMENT.currency}"
     }
   }'`;
+
+/** @deprecated use VERIFY_DENY_CURL */
+export const VERIFY_CURL = VERIFY_DENY_CURL;
 
 export const SDK_INSTALL = `npm install ${STVOR_PACKAGES.sdk}`;
 
@@ -68,7 +98,7 @@ export const SDK_QUICKSTART = `import { StvorClient } from "${STVOR_PACKAGES.sdk
 
 const stvor = new StvorClient({
   baseUrl: "${STVOR_API_BASE}",
-  apiKey: process.env.STVOR_KEY, // sandbox key on stvor.xyz/try-now
+  apiKey: process.env.STVOR_KEY, // sandbox key on stvor.xyz/#try-now
 });
 
 // payment payload — only { to, amount?, currency?, chain?, asset? }
@@ -78,10 +108,11 @@ const payload = {
   currency: "${DEMO_PAYMENT.currency}",
 };
 
-// 1. commit — freeze intent (posts payloadHash, not raw payload)
+// 1. commit — freeze intent (posts payloadHash, not raw payload; fresh nonce each time)
 const commitment = await stvor.commit({
   agentId: "agt_sandbox_demo",
   payload,
+  nonce: crypto.randomUUID(),
 });
 
 // 2. verify — compare live intent to commitment

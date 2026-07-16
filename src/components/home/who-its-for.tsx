@@ -10,8 +10,8 @@ const SEGMENTS = [
   },
   {
     title: "DeFi / trading bots with treasury at risk",
-    body: "Your bot holds hot wallet balances and executes strategies 24/7. Approvals accumulate. Counterparties change. You need a gate before every outbound transfer, not a dashboard after the drain.",
-    signals: ["MEV / arb / market-making bots", "Multi-chain execution", "Approval and allowance risk"],
+    body: "Your bot holds hot wallet balances and executes strategies 24/7. A destination swap between your strategy's decision and the broadcast is the failure mode Stvor catches — not slow approval farming or counterparty trust scoring.",
+    signals: ["MEV / arb / market-making bots", "Multi-chain execution", "Swap between decision and broadcast"],
   },
   {
     title: "Agent platforms where customers bring their own keys",
@@ -40,8 +40,9 @@ export function WhoItsFor() {
           <p className="text-[15px] text-[var(--color-fg-muted)] leading-relaxed">
             Written for a technical founder or eng lead — not a CISO buying a dashboard.
             If you are still in prototype with no live money, the pilot is probably early.
-            If funds move today and you worry about destination-swap, prompt injection, or
-            post-authorization tampering, read on.
+            If funds move today and you worry about a destination swap or tampering{" "}
+            <em>after</em> commit, read on. Stvor compares hash at execution — not poisoned
+            commits from prompt injection.
           </p>
         </motion.div>
 
