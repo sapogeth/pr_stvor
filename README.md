@@ -14,11 +14,11 @@ Stvor binds **intent to execution** before funds move:
 commit → verify → settle
 ```
 
-1. **commit** — `POST /commitments` freezes canonical params at intent time  
-2. **verify** — `POST /verify` compares live payload; swapped destination → signed **DENY**, not silent pass  
-3. **settle** — your rail fires only after ALLOW; `POST /receipt` issues ES256 (P-256) Trust Receipt for ALLOW **and** DENY  
+1. **commit** — `POST /commitments` posts `payloadHash` (SHA-256 of RFC 8785 payment payload) at intent time  
+2. **verify** — `POST /verify` compares live payment payload hash; mismatch → signed **DENY**, not silent pass  
+3. **settle** — your rail fires only after ALLOW; receipt inline on both ALLOW and DENY  
 
-Verification checks: destination match, payload integrity (`timingSafeEqual`), policy gates.
+Auth: `Authorization: Bearer <STVOR_KEY>` required in production. Public sandbox key on [stvor.xyz](https://stvor.xyz/#try-now).
 
 **Packages:** `@stvor/sdk` (client), `@stvor/core` (verification primitives).  
 **Proof:** [browser verifier](https://api.stvor.xyz/verifier/), [test vectors](https://github.com/stvor-hq/stvor/tree/main/fixtures), [ATS-1 spec](https://stvor.xyz/docs/ats-1).

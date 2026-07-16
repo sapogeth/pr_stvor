@@ -60,18 +60,15 @@ export default function HowItWorksDocsPage() {
       </DocsStep>
 
       <DocsH2 id="three-checks">02 · What verify checks</DocsH2>
-      <DocsStep n="A" title="Destination match">
-        Destination is hash-committed at intent time. Before execution, compare live destination
-        against commitment. UI swaps, injected addresses, and delegatecall redirects all fail here.
-      </DocsStep>
-      <DocsStep n="B" title="Payload integrity">
-        <DocsInlineCode>SHA-256(canonical params)</DocsInlineCode> must equal committed hash.
-        Comparison uses <DocsInlineCode>crypto.timingSafeEqual()</DocsInlineCode>.
-      </DocsStep>
-      <DocsStep n="C" title="Policy check">
-        Amount caps, method allowlists, recipient lists — evaluated against signed policy attached
-        to the commitment.
-      </DocsStep>
+      <DocsP>
+        One gate: <DocsInlineCode>SHA-256(JCS(live payment payload))</DocsInlineCode> compared
+        to the stored <DocsInlineCode>payloadHash</DocsInlineCode> with{" "}
+        <DocsInlineCode>crypto.timingSafeEqual()</DocsInlineCode>. Payment payload fields are{" "}
+        <DocsInlineCode>to</DocsInlineCode>, <DocsInlineCode>amount</DocsInlineCode>,{" "}
+        <DocsInlineCode>currency</DocsInlineCode>, and optional <DocsInlineCode>chain</DocsInlineCode>
+        / <DocsInlineCode>asset</DocsInlineCode>. Swap the destination or amount after commit →
+        signed DENY.
+      </DocsP>
 
       <DocsH2 id="payload-attestation">03 · Payload attestation</DocsH2>
       <DocsP>
@@ -124,31 +121,9 @@ function verifyPayload(
       <DocsH2 id="binding">04 · Intent-to-execution binding</DocsH2>
       <DocsP>
         Slow-accumulation attacks (fake tokens, approval farming) are a different class of problem
-        than payload swaps. Stvor&apos;s live gate answers: did this specific execution still match
-        the committed intent? Policy rules (recipient allowlists, amount caps) are the enforcement
-        mechanism for counterparties — there is no live trust-scoring engine today.
+        than payload swaps. Stvor&apos;s live gate answers one question: did this specific
+        execution still match the committed payment payload?
       </DocsP>
-
-      <AttackDefense
-        attack={{
-          title: "JaredFromSubway — $7.5M — 2024",
-          steps: [
-            "66 fake token contracts mimicking WETH/USDC/USDT",
-            "MEV bot approved helper contracts over weeks",
-            "Single sweep tx drained all real balances",
-          ],
-          outcome: "✗ $7.5M drained in one block",
-        }}
-        defense={{
-          title: "Policy + binding at execution",
-          steps: [
-            "Recipient not on signed allowlist → DENY at verify",
-            "Outbound transfer hash mismatch → signed DENY before approval path",
-            "Every decision logged with agent identity in Trust Receipt",
-          ],
-          outcome: "✓ Unlisted counterparty never receives funds at execution time",
-        }}
-      />
 
       <DocsH2 id="stripe-reference">05 · Stripe reference flow</DocsH2>
       <DocsP>
@@ -192,7 +167,7 @@ function verifyPayload(
   "receipt_id": "ats1_01HXYZ...",
   "agent_id": "agt_finance_agent_v1",
   "decision": "ALLOWED",
-  "checks_passed": ["destination", "payload", "policy"],
+  "checks_passed": ["payload_hash_match"],
   "payload_hash": "sha256:a3f7c291...",
   "committed_at": "2026-07-12T09:41:02Z",
   "executed_at": "2026-07-12T09:41:03Z",
@@ -200,20 +175,17 @@ function verifyPayload(
 }`}</DocsCode>
 
       <DocsH2 id="threat-model">07 · Threat model</DocsH2>
-      <DocsH3 id="payload-manipulation">Payload manipulation</DocsH3>
+      <DocsH3 id="payload-manipulation">Payload manipulation (in scope)</DocsH3>
       <DocsP>
-        Attacker modifies destination, amount, or calldata between intent and submission. Stvor
-        catches this because the modified payload produces a different SHA-256 digest.
+        Attacker modifies destination, amount, or currency between commit and execution. Stvor
+        catches this because the modified payload produces a different SHA-256 digest → signed
+        DENY before settlement.
       </DocsP>
-      <DocsH3 id="authorization-gap">Authorization gap</DocsH3>
+      <DocsH3 id="out-of-scope">Out of scope</DocsH3>
       <DocsP>
-        Agent was authorized for operation A, submits operation B, or runs on stale authorization.
-        Commitment binds specific fields — different operation → different hash → DENY.
-      </DocsP>
-      <DocsH3 id="context-injection">Context injection</DocsH3>
-      <DocsP>
-        Prompt injection causes agent to commit to a malicious operation. Policy gates reduce blast
-        radius; they do not replace human review for high-value flows.
+        Scope revocation (authorization expired in March, execution in April), slow approval
+        farming, prompt injection that poisons the commit itself, key compromise, and humans who
+        bypass the checkpoint entirely.
       </DocsP>
       <DocsNote type="warn">
         Stvor does not solve key compromise, compromised signing infrastructure, or social
@@ -225,11 +197,6 @@ function verifyPayload(
         <li>
           <a href="https://www.nccgroup.com/" className="underline underline-offset-2 hover:text-[var(--color-fg)]" target="_blank" rel="noopener noreferrer">
             NCC Group — Bybit hack technical analysis (Feb 2025) ↗
-          </a>
-        </li>
-        <li>
-          <a href="https://cointelegraph.com/" className="underline underline-offset-2 hover:text-[var(--color-fg)]" target="_blank" rel="noopener noreferrer">
-            CoinTelegraph — JaredFromSubway MEV bot $7.5M drain ↗
           </a>
         </li>
         <li>

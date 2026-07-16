@@ -3,7 +3,9 @@ import {
   STVOR_API_BASE,
   STVOR_ENDPOINTS,
   STVOR_FIXTURES_URL,
+  STVOR_SANDBOX_API_KEY,
   STVOR_VERIFIER_URL,
+  VERIFY_CURL,
 } from "./contract";
 
 export const siteConfig = {
@@ -68,6 +70,8 @@ export const siteConfig = {
   },
 
   commitCurl: COMMIT_CURL,
+  verifyCurl: VERIFY_CURL,
+  sandboxApiKey: STVOR_SANDBOX_API_KEY,
 } as const;
 
 export const navItems = [

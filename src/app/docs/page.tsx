@@ -27,10 +27,9 @@ export default function DocsOverviewPage() {
           Stvor technical docs
         </h1>
         <DocsP>
-          Pre-execution verification that binds intent to execution. Stvor checks destination,
-          payload hash, and policy before any funds move — swapped destination → signed DENY, not a
-          silent pass. Every decision gets an ES256 (P-256) Trust Receipt verifiable offline (ATS-1
-          draft).
+          Pre-execution verification that binds intent to execution. One gate: canonical payload
+          hash compare at verify time — swapped destination → signed DENY, not a silent pass. Every
+          decision gets an ES256 (P-256) Trust Receipt verifiable offline (ATS-1 draft).
         </DocsP>
         <div className="flex flex-wrap gap-2">
           <DocsBadge color="green">{STVOR_PACKAGES.sdk} on npm</DocsBadge>

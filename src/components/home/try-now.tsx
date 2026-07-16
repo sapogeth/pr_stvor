@@ -75,12 +75,34 @@ export function TryNow() {
             Touch it before you email anyone.
           </h2>
           <p className="text-[15px] text-[var(--color-fg-muted)] leading-relaxed">
-            Verify a real blocked-attack receipt first. Then commit an intent against{" "}
-            <code className="font-mono text-[12px]">{siteConfig.api.base}</code>.
+            Verify a real blocked-attack receipt first. Then commit against{" "}
+            <code className="font-mono text-[12px]">{siteConfig.api.base}</code> with the
+            public sandbox key below — no email required.
           </p>
         </motion.div>
 
         <VerifierDemo />
+
+        <motion.div
+          className="my-10 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-5"
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.45, delay: 0.05 }}
+        >
+          <p className="text-[10px] tracking-[0.14em] uppercase text-[var(--color-fg-subtle)] font-mono mb-2">
+            Public sandbox key
+          </p>
+          <p className="text-[13px] text-[var(--color-fg-muted)] leading-relaxed mb-3">
+            Test environment, rate-limited, revocable. Paste into{" "}
+            <code className="font-mono text-[12px]">Authorization: Bearer</code> or{" "}
+            <code className="font-mono text-[12px]">STVOR_KEY</code>. Production keys still
+            require a message to {siteConfig.contact.handle}.
+          </p>
+          <code className="block text-[12px] font-mono text-[var(--color-fg)] break-all">
+            {siteConfig.sandboxApiKey}
+          </code>
+        </motion.div>
 
         <div className="grid md:grid-cols-2 gap-4 my-10">
           {TRY_CARDS.map((card, i) => (
@@ -117,6 +139,10 @@ export function TryNow() {
         >
           <CopyBlock label={`Install ${STVOR_PACKAGES.sdk}`} code={SDK_INSTALL} />
           <CopyBlock label="POST /commitments" code={siteConfig.commitCurl} />
+          <CopyBlock
+            label="POST /verify (swapped to → DENY)"
+            code={siteConfig.verifyCurl}
+          />
         </motion.div>
       </div>
     </section>

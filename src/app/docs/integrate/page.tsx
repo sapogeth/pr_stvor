@@ -17,6 +17,7 @@ import {
   SDK_QUICKSTART,
   STVOR_API_BASE,
   STVOR_PACKAGES,
+  STVOR_SANDBOX_API_KEY,
   VERIFY_CURL,
 } from "@/lib/contract";
 
@@ -125,8 +126,15 @@ await settle(live);`}</DocsCode>
       <DocsH2 id="commit-verify">04 · API: commit + verify</DocsH2>
       <DocsP>
         Commit at intent time — when the user confirms, when the agent proposes a tool call, or when
-        a contract is created. Store the commitment id; do not mutate the committed hash.
+        a contract is created. POST <DocsInlineCode>/commitments</DocsInlineCode> takes{" "}
+        <DocsInlineCode>payloadHash</DocsInlineCode> (SHA-256 of RFC 8785 payment payload), not raw
+        payload. Store the commitment id; do not mutate the committed hash.
       </DocsP>
+      <DocsNote type="info">
+        Public sandbox key (test env, rate-limited):{" "}
+        <DocsInlineCode>{STVOR_SANDBOX_API_KEY}</DocsInlineCode>. Required header:{" "}
+        <DocsInlineCode>Authorization: Bearer &lt;key&gt;</DocsInlineCode>.
+      </DocsNote>
       <DocsCode language="bash" filename="commit.sh">{COMMIT_CURL}</DocsCode>
       <DocsCode language="bash" filename="verify.sh">{VERIFY_CURL}</DocsCode>
       <DocsCode language="typescript" filename="verify-gate.ts">{`async function gate(
