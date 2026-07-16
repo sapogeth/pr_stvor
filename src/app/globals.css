@@ -300,7 +300,10 @@ main {
   font-size: 9px;
   color: rgba(16, 185, 129, 0.7);
   text-shadow: 0 0 18px rgba(16, 185, 129, 0.25);
+  word-break: break-all;
+  line-height: 1.5;
 }
+.receipt-sig--full { font-size: 8px; }
 
 .receipt-verify {
   font-size: 9px;

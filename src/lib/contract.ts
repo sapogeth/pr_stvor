@@ -13,10 +13,12 @@ export const STVOR_PACKAGES = {
   core: "@stvor/core",
 } as const;
 
-export const STVOR_VERIFIER_URL = `${STVOR_API_BASE}/verifier/`;
+export const STVOR_GITHUB_CORE = "https://github.com/stvor-hq/core";
+
+export const STVOR_VERIFIER_URL = "https://stvor.xyz/verifier/";
 
 export const STVOR_FIXTURES_URL =
-  "https://github.com/stvor-hq/stvor/tree/main/fixtures";
+  "https://github.com/stvor-hq/core/tree/main/fixtures";
 
 export const STVOR_CRYPTO = {
   hash: "SHA-256",

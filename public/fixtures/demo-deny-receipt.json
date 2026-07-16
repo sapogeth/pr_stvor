@@ -1,0 +1,51 @@
+{
+  "name": "demo-deny-blocked-attack",
+  "description": "Agent committed 50000.00 USDC to vendor 0x4c1b82f7…; execution attempted swapped destination. DENY receipt is offline-verifiable.",
+  "committed": {
+    "to": "0x4c1b82f71a9e3d0c8b5e6f2a1d4c7b9e0f3a8c1d",
+    "amount": "50000.00",
+    "currency": "USDC"
+  },
+  "attempted": {
+    "to": "0x8f3a2c91d4e7b0a6c5d8f1e2a4b7c9d0e3f6a8c1d",
+    "amount": "50000.00",
+    "currency": "USDC"
+  },
+  "receipt": {
+    "receiptId": "rec_demo_blocked_001",
+    "verificationId": "ver_demo_blocked_001",
+    "binding": "agent-committed",
+    "agentId": "agent_finance_ops_v1",
+    "to": "0x8f3a2c91d4e7b0a6c5d8f1e2a4b7c9d0e3f6a8c1d",
+    "amount": "50000.00",
+    "currency": "USDC",
+    "nonce": "nonce_demo_blocked_001",
+    "decision": "DENY",
+    "reason": "PAYLOAD_MISMATCH",
+    "issuedAt": "2026-07-16T12:00:05.000Z",
+    "expiresAt": "2026-07-16T12:00:00.000Z",
+    "kid": "key_4Cogca7EFBUMJSPM",
+    "commitmentId": "cmt_demo_blocked_001",
+    "agentKeyThumbprint": "C8_lN68Hxyywz1kAiNDJq3fQ0lHTe1pEKhklRaG9y7g",
+    "agentSignature": "4-zKiETwZWXIlwpWgNvZxGgkHWkbrXUJwj43Lv9OjZt03zDIc6VsWGSvecz1mSs5xmKx58twG2x13aRiMRLL-A",
+    "signature": "8GXaDbb0KsYJfDyFImg3qGAcg4UI5_eKq-1hgLLODpHAdX5FEHFg15gdJxUmwDK5994q4ahDlRSNSWfflMC36Q"
+  },
+  "keyset": {
+    "keys": [
+      {
+        "kid": "key_4Cogca7EFBUMJSPM",
+        "jwk": {
+          "kty": "EC",
+          "crv": "P-256",
+          "x": "gag-xR341GmQaE03537RFXn-h6G2qn8JxNbY40kZYsA",
+          "y": "iTKytk16gA-y6EWFnqt99924kfmHMWPJKR4bMDyzEC8",
+          "kid": "key_4Cogca7EFBUMJSPM",
+          "use": "sig",
+          "alg": "ES256"
+        },
+        "notBefore": "2026-01-01T00:00:00.000Z"
+      }
+    ]
+  },
+  "expected": "OK"
+}

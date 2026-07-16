@@ -8,9 +8,10 @@ const ROADMAP = [
     label: "Now",
     title: "Agent-money verification",
     items: [
-      "Pilot-based integrations (white-glove)",
+      "OrbWallet integration (in progress)",
+      "x402 payment rail",
       "ATS-1 Trust Receipt spec publication",
-      "Additional execution rails beyond Stripe reference",
+      "Design partner integrations",
     ],
   },
   {
@@ -18,8 +19,7 @@ const ROADMAP = [
     label: "Planned",
     title: "Broader rails + registry",
     items: [
-      "x402 payment rail (planned)",
-      "OrbWallet integration (planned)",
+      "Additional execution rails beyond payment verify",
       "Evaluate on-chain receipt registry for composability",
     ],
   },

@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# test issuer key for fixture generation only
+/scripts/fixtures-gen/

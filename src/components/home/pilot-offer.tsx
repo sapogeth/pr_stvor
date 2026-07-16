@@ -15,16 +15,12 @@ export function PilotOffer() {
           transition={{ duration: 0.5 }}
         >
           <p className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-accent)] mb-4 font-medium font-mono">
-            {siteConfig.pilot.headline}
+            Design partner
           </p>
 
           <h2 className="text-2xl md:text-3xl font-semibold tracking-[-0.025em] text-[var(--color-fg)] mb-3 max-w-2xl">
-            Already tried the demo? Wire it in production.
+            Already verified the receipt? Wire it in production.
           </h2>
-
-          <p className="text-[15px] text-[var(--color-fg-subtle)] mb-5 max-w-2xl">
-            {siteConfig.pilot.price} flat · {siteConfig.pilot.duration}
-          </p>
 
           <p className="text-[15px] text-[var(--color-fg-muted)] leading-[1.75] max-w-2xl mb-8">
             {siteConfig.pilot.summary}
@@ -33,10 +29,9 @@ export function PilotOffer() {
           <ul className="space-y-3 mb-10 max-w-xl">
             {[
               "Checkpoint wired in front of your live execution flow",
-              "Destination + payload + trust + policy checks on every action",
-              "Signed Trust Receipt (ATS-1) after each ALLOW",
+              "Commit → verify gate with canonical payload hash compare on every payment",
+              "Signed Trust Receipt (ALLOW and DENY) after each decision",
               "I do the integration — you bring the agent and the rail",
-              "Works at end of pilot, or you pay nothing further",
             ].map((item) => (
               <li key={item} className="flex items-start gap-3 text-[13px] text-[var(--color-fg-muted)]">
                 <span

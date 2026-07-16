@@ -11,7 +11,7 @@ const columns = [
       { label: "Compare", href: "#compare" },
       { label: "Demo", href: "/demo" },
       { label: "Attack sim ↗", href: "https://nous.stvor.xyz/attack", external: true },
-      { label: "ATS-1 spec", href: "/research#ats-1" },
+      { label: "ATS-1 spec", href: "/docs/ats-1" },
     ],
   },
   {

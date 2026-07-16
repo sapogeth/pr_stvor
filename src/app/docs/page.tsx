@@ -113,7 +113,7 @@ export default function DocsOverviewPage() {
           href={siteConfig.cta.pilot}
           className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold bg-[var(--color-fg)] text-[var(--color-bg)] rounded-[6px] hover:opacity-90 transition-opacity"
         >
-          Book the pilot — {siteConfig.pilot.price}
+          Message {siteConfig.contact.handle}
         </a>
       </div>
     </DocsPageShell>

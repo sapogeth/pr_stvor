@@ -5,36 +5,36 @@ import { motion } from "framer-motion";
 const STAGE = [
   {
     label: "Live today",
-    status: "reference",
+    status: "live",
     items: [
-      "Reference implementation: Stripe manual-capture escrow flow",
-      "Three-check verification gate (destination, payload, policy)",
-      "ES256 (P-256) signed Trust Receipt — ALLOW and DENY",
-      "Built and demoed (NVIDIA judging, hackathon)",
+      "Production API at api.stvor.xyz — /commitments, /verify, /receipt",
+      "Public @stvor/core + @stvor/sdk on GitHub",
+      "Commit → verify gate: RFC 8785 canonical payload hash compare",
+      "ES256 signed Trust Receipt for ALLOW and DENY",
+      "Browser verifier + published demo fixture at stvor.xyz/verifier",
     ],
   },
   {
     label: "In progress",
     status: "active",
     items: [
+      "OrbWallet integration (design partner)",
       "ATS-1 receipt format spec (draft, open)",
-      "Pilot integrations with design partners — white-glove, not self-serve",
-      "MIT-licensed reference code on GitHub",
+      "White-glove pilot integrations",
     ],
   },
   {
     label: "Planned rails",
     status: "planned",
     items: [
-      "x402 payment rail integration",
-      "OrbWallet integration",
+      "x402 payment rail (2026)",
       "On-chain receipt registry (evaluating necessity)",
     ],
   },
 ];
 
 const STATUS_STYLE: Record<string, { color: string; badge: string }> = {
-  reference: { color: "var(--color-accent)", badge: "Reference impl" },
+  live: { color: "var(--color-accent)", badge: "Production" },
   active: { color: "rgba(99,102,241,0.9)", badge: "Now" },
   planned: { color: "rgba(255,255,255,0.35)", badge: "Planned" },
 };
@@ -57,10 +57,9 @@ export function CurrentStage() {
             Honest about where this is.
           </h2>
           <p className="text-[15px] text-[var(--color-fg-muted)] leading-relaxed">
-            Reference implementation is live and demonstrable. Production integrations happen
-            through paid pilots — I stand up the checkpoint in your flow with you. No
-            customer logos, no ARR, no user counts on this page until you see them elsewhere
-            with a source.
+            Live production API, public repo, published test vectors, and a receipt you can
+            verify in your browser right now. Hackathon Stripe demo on nous.stvor.xyz is a
+            separate reference build — not the production surface.
           </p>
         </motion.div>
 
@@ -105,17 +104,6 @@ export function CurrentStage() {
             );
           })}
         </div>
-
-        <motion.p
-          className="mt-8 text-[12px] text-[var(--color-fg-subtle)] font-mono"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-        >
-          Latency: &lt;2ms per check in reference implementation on commodity hardware — not
-          a production SLA until measured in your environment.
-        </motion.p>
       </div>
     </section>
   );

@@ -1,72 +1,58 @@
 "use client";
 
 import { motion } from "framer-motion";
+import {
+  DEMO_COMMITTED_TO,
+  DEMO_DENY_RECEIPT,
+  shortenHex,
+} from "@/data/demo-receipt";
 
-export type TrustReceiptVariant = "hero" | "blocked" | "inline";
+export type TrustReceiptVariant = "hero" | "inline";
 
 interface Props {
   variant?: TrustReceiptVariant;
 }
 
-const ALLOWED = {
-  receiptId: "ats1_sample_001",
-  agent: "agt_finance_agent_v1",
-  action: "payment.execute",
-  destination: "0x7a3f91cd...4e",
-  amount: "50.00 USDC",
-  committed: "2026-07-12T09:41:02Z",
-  executed: "2026-07-12T09:41:03Z",
-  status: "✓ ALLOWED",
-  payloadHash: "sha256:a3f7c291...",
-  signature: "es256:3mK9pqR2...",
-  statusClass: "receipt-executed",
-};
-
-const BLOCKED = {
-  ...ALLOWED,
-  executed: "—",
-  status: "✗ DENIED",
-  reason: "DESTINATION_MISMATCH",
-  statusClass: "receipt-blocked",
-};
-
 export function TrustReceipt({ variant = "hero" }: Props) {
-  const data = variant === "blocked" ? BLOCKED : ALLOWED;
+  const r = DEMO_DENY_RECEIPT;
   const isHero = variant === "hero";
 
   const card = (
     <div className={`receipt-card ${isHero ? "receipt-card--hero" : "receipt-card--inline"}`}>
       <div className="receipt-header">
         <span className="receipt-brand">STVOR TRUST RECEIPT</span>
-        <span className="receipt-ver">ATS-1 draft</span>
+        <span className="receipt-ver">offline-verifiable</span>
       </div>
 
       <div className="receipt-rule" />
 
       <div className="receipt-fields">
-        <Row k="RECEIPT ID" v={data.receiptId} />
-        <Row k="AGENT" v={data.agent} />
-        <Row k="ACTION" v={data.action} />
-        <Row k="DESTINATION" v={data.destination} />
-        <Row k="AMOUNT" v={data.amount} />
-        <Row k="COMMITTED" v={data.committed} />
-        <Row k="EXECUTED" v={data.executed} />
-        <Row k="DECISION" v={data.status} cls={data.statusClass} />
-        {variant === "blocked" && (
-          <Row k="REASON" v={BLOCKED.reason} cls="receipt-blocked" />
-        )}
+        <Row k="DECISION" v="✗ DENIED" cls="receipt-blocked" />
+        <Row k="REASON" v={r.reason} cls="receipt-blocked" />
+        <Row k="BINDING" v={r.binding} />
+        <Row
+          k="TO"
+          v={`${shortenHex(r.to)} ← swapped`}
+          title={`Attempted at execution (committed: ${shortenHex(DEMO_COMMITTED_TO)})`}
+        />
+        <Row k="AMOUNT" v={`${r.amount} ${r.currency}`} />
+        <Row k="AGENT" v={r.agentId} />
+        <Row k="KID" v={r.kid} />
       </div>
 
       <div className="receipt-rule" />
 
       <div className="receipt-fields">
-        <Row k="PAYLOAD HASH" v={data.payloadHash} cls="receipt-hash" />
-        <Row k="SIGNATURE" v={data.signature} cls="receipt-sig" />
+        <Row k="SIGNATURE" v={r.signature} cls="receipt-sig receipt-sig--full" title={r.signature} />
       </div>
 
       <div className="receipt-rule" />
 
-      <div className="receipt-verify">Verify offline · issuer public key only</div>
+      <div className="receipt-verify">
+        <a href="/verifier/" className="hover:text-[var(--color-fg-subtle)] transition-colors">
+          Verify offline · issuer public key only →
+        </a>
+      </div>
     </div>
   );
 
@@ -95,11 +81,23 @@ export function TrustReceipt({ variant = "hero" }: Props) {
   );
 }
 
-function Row({ k, v, cls = "" }: { k: string; v: string; cls?: string }) {
+function Row({
+  k,
+  v,
+  cls = "",
+  title,
+}: {
+  k: string;
+  v: string;
+  cls?: string;
+  title?: string;
+}) {
   return (
     <div className="receipt-row">
       <span className="receipt-key">{k}</span>
-      <span className={`receipt-val ${cls}`}>{v}</span>
+      <span className={`receipt-val ${cls}`} title={title}>
+        {v}
+      </span>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Check, Copy } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
 import { SDK_INSTALL, STVOR_PACKAGES } from "@/lib/contract";
+import { VerifierDemo } from "./verifier-demo";
 
 function CopyBlock({ label, code }: { label: string; code: string }) {
   const [copied, setCopied] = useState(false);
@@ -39,14 +40,6 @@ function CopyBlock({ label, code }: { label: string; code: string }) {
 
 const TRY_CARDS = [
   {
-    title: "Verify a receipt in the browser",
-    body: "Paste an ATS-1 Trust Receipt — ALLOW or DENY — and verify the ES256 signature with only the published key. No account.",
-    cta: "Open verifier →",
-    href: siteConfig.api.verifier,
-    external: true,
-    badge: "api.stvor.xyz",
-  },
-  {
     title: "Step through commit → verify",
     body: "Pick a scenario: commit intent, tamper payload or destination, watch ALLOW vs signed DENY. Runs in your browser.",
     cta: "Open interactive demo →",
@@ -56,7 +49,7 @@ const TRY_CARDS = [
   },
   {
     title: "Self-check with test vectors",
-    body: "Published fixtures in the repo — run them against your client before you write a line against the API.",
+    body: "Published fixtures in the core repo — run them against your client before you write a line against the API.",
     cta: "Browse fixtures →",
     href: siteConfig.api.fixtures,
     external: true,
@@ -69,7 +62,7 @@ export function TryNow() {
     <section className="section-y pt-4" id="try-now">
       <div className="container-page">
         <motion.div
-          className="mb-10 max-w-2xl"
+          className="mb-8 max-w-2xl"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -82,13 +75,14 @@ export function TryNow() {
             Touch it before you email anyone.
           </h2>
           <p className="text-[15px] text-[var(--color-fg-muted)] leading-relaxed">
-            Developers don&apos;t write to ask permission. They run something — verify a
-            receipt, commit an intent, read the spec. All against{" "}
+            Verify a real blocked-attack receipt first. Then commit an intent against{" "}
             <code className="font-mono text-[12px]">{siteConfig.api.base}</code>.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-4 mb-10">
+        <VerifierDemo />
+
+        <div className="grid md:grid-cols-2 gap-4 my-10">
           {TRY_CARDS.map((card, i) => (
             <motion.a
               key={card.title}
@@ -123,24 +117,6 @@ export function TryNow() {
         >
           <CopyBlock label={`Install ${STVOR_PACKAGES.sdk}`} code={SDK_INSTALL} />
           <CopyBlock label="POST /commitments" code={siteConfig.commitCurl} />
-          <p className="text-[12px] text-[var(--color-fg-subtle)] leading-relaxed">
-            Flat paths on{" "}
-            <a
-              href={siteConfig.api.base}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-2 hover:text-[var(--color-fg-muted)]"
-            >
-              {siteConfig.api.base}
-            </a>
-            : <code className="font-mono text-[11px]">/commitments</code>,{" "}
-            <code className="font-mono text-[11px]">/verify</code>,{" "}
-            <code className="font-mono text-[11px]">/receipt</code>. Verification-only?{" "}
-            <code className="font-mono text-[11px]">{STVOR_PACKAGES.core}</code>.{" "}
-            <a href="/docs/integrate" className="underline underline-offset-2 hover:text-[var(--color-fg-muted)]">
-              Full integration guide →
-            </a>
-          </p>
         </motion.div>
       </div>
     </section>

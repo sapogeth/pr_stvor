@@ -7,42 +7,22 @@ const FLOW = [
   {
     n: "01",
     title: "commit",
-    body: "POST /commitments — canonical params hashed and stored. Intent is frozen before any transaction is built.",
+    body: "POST /commitments — payment payload canonicalized (RFC 8785) and hashed. Intent frozen before any transaction is built.",
   },
   {
     n: "02",
     title: "verify",
-    body: "POST /verify — live payload compared to commitment with timingSafeEqual. Destination swap or hash mismatch → signed DENY, not a silent pass.",
+    body: "POST /verify — live payload re-canonicalized and compared with timingSafeEqual on the hash. Destination swap or any field change → signed DENY.",
   },
   {
     n: "03",
     title: "settle",
-    body: "Your execution rail (Stripe, chain, internal ledger) fires only after ALLOW. Then POST /receipt — ES256 Trust Receipt for ALLOW or DENY.",
-  },
-];
-
-const CHECKS = [
-  {
-    n: "A",
-    title: "Destination match",
-    body: "Destination is hash-committed at intent time. Before execution, Stvor compares the live destination against the commitment. Swap → DENY.",
-  },
-  {
-    n: "B",
-    title: "Payload integrity",
-    body: "SHA-256(canonical params) must equal the committed hash. Comparison uses crypto.timingSafeEqual() — no early exit on byte differences.",
-  },
-  {
-    n: "C",
-    title: "Policy check",
-    body: "Amount caps, allowed methods, recipient allowlists — evaluated against the signed policy attached to the commitment. Violation → DENY.",
+    body: "Your execution rail fires only after ALLOW. POST /receipt issues an ES256 Trust Receipt for ALLOW or DENY.",
   },
 ];
 
 const VERIFY_CODE = `// commit → verify → settle
 const commitment = await stvor.commit({ agentId, payload: intent });
-
-// ... agent builds live params ...
 
 const decision = await stvor.verify({
   commitmentId: commitment.id,
@@ -54,20 +34,21 @@ if (!decision.allowed) {
   throw new DeniedError(decision.reason);
 }
 
-await settle(liveParams);
-// decision.receipt — ES256 P-256 (ATS-1), verifiable offline`;
+await settle(liveParams);`;
 
-const HASH_CODE = `const canonical = sortKeys(trim(params));
-const hash = crypto.createHash("sha256")
-  .update(JSON.stringify(canonical))
-  .digest("hex");
+const CANONICAL_CODE = `// stvor-core/src/canonical.ts — RFC 8785 via canonicalize
+import jcs from "canonicalize";
 
-const match = crypto.timingSafeEqual(
-  Buffer.from(hash, "hex"),
-  Buffer.from(commitment.payloadHash, "hex"),
-);
+export function canonicalize(value: unknown): string {
+  const out = jcs(value);
+  if (typeof out !== "string") {
+    throw new Error("canonicalize: value is not JSON-serializable");
+  }
+  return out;
+}
 
-if (!match) return { allowed: false, reason: "PAYLOAD_MISMATCH" };`;
+// verify compares SHA-256(canonical live) vs committed hash
+// one check: { to, amount, currency, chain?, asset? } → single digest`;
 
 export function HowItWorks() {
   return (
@@ -87,8 +68,8 @@ export function HowItWorks() {
             commit → verify → settle
           </h2>
           <p className="text-[15px] text-[var(--color-fg-muted)] leading-relaxed">
-            Stvor binds intent to execution before funds move. Every decision — ALLOW or
-            DENY — gets an offline-verifiable Trust Receipt signed with ES256 (P-256).
+            One gate: canonical payload hash compare. Destination, amount, and currency are
+            all in the digest — a swapped address changes the hash and produces a signed DENY.
           </p>
         </motion.div>
 
@@ -123,31 +104,6 @@ export function HowItWorks() {
                 </motion.div>
               ))}
             </div>
-
-            <div>
-              <p className="text-[10px] tracking-[0.14em] uppercase text-[var(--color-fg-subtle)] font-mono mb-3">
-                What verify checks
-              </p>
-              <div className="space-y-3">
-                {CHECKS.map((check, i) => (
-                  <motion.div
-                    key={check.n}
-                    className="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3"
-                    initial={{ opacity: 0, y: 8 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.1 }}
-                    transition={{ duration: 0.35, delay: i * 0.04 }}
-                  >
-                    <h4 className="text-[13px] font-semibold text-[var(--color-fg)] mb-1">
-                      {check.title}
-                    </h4>
-                    <p className="text-[12px] text-[var(--color-fg-muted)] leading-relaxed">
-                      {check.body}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
           </div>
 
           <div className="space-y-6">
@@ -166,19 +122,18 @@ export function HowItWorks() {
             <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] overflow-hidden">
               <div className="px-4 py-3 border-b border-[var(--color-border)]">
                 <span className="text-[10px] tracking-[0.14em] uppercase text-[var(--color-fg-subtle)] font-mono">
-                  Payload hash compare
+                  Canonical hash (RFC 8785)
                 </span>
               </div>
               <pre className="p-5 text-[11.5px] leading-[1.75] font-mono text-[var(--color-fg-muted)] overflow-x-auto">
-                {HASH_CODE}
+                {CANONICAL_CODE}
               </pre>
             </div>
 
             <div>
               <p className="text-[12px] text-[var(--color-fg-subtle)] mb-4 leading-relaxed">
-                ALLOW and DENY both produce a portable Trust Receipt. Verify offline with
-                only the issuer&apos;s public key — browser verifier, CLI, or WebCrypto.
-                Format: ATS-1 (draft).
+                This DENY receipt is real — load it in the verifier above. ES256 signature,
+                full bytes, offline check with only the published key.
               </p>
               <TrustReceipt variant="inline" />
             </div>

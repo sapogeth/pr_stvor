@@ -36,7 +36,7 @@ export const DOCS_SIDEBAR: Record<string, DocsNavGroup[]> = {
         { label: "Test vectors", href: siteConfig.api.fixtures, external: true },
         { label: "Research", href: "/research" },
         { label: "Security", href: "/security" },
-        { label: "GitHub", href: "https://github.com/stvor-hq", external: true },
+        { label: "GitHub", href: "https://github.com/stvor-hq/core", external: true },
         { label: "Hackathon ref (nous)", href: "https://nous.stvor.xyz", external: true },
       ],
     },

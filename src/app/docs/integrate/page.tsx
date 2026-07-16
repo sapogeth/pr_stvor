@@ -102,7 +102,7 @@ export default function IntegrateDocsPage() {
         href={siteConfig.cta.pilot}
         className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold bg-[var(--color-fg)] text-[var(--color-bg)] rounded-[6px] hover:opacity-90 transition-opacity mt-4"
       >
-        Book the pilot — {siteConfig.pilot.price}
+        Message {siteConfig.contact.handle}
       </a>
 
       <DocsH2 id="checkpoint">03 · Checkpoint placement</DocsH2>
@@ -130,18 +130,11 @@ await settle(live);`}</DocsCode>
       <DocsCode language="bash" filename="commit.sh">{COMMIT_CURL}</DocsCode>
       <DocsCode language="bash" filename="verify.sh">{VERIFY_CURL}</DocsCode>
       <DocsCode language="typescript" filename="verify-gate.ts">{`async function gate(
-  commitment: { destination: string; payloadHash: string; policyId: string },
+  commitment: { payloadHash: string },
   liveParams: Record<string, unknown>,
 ) {
-  if (liveParams.destination !== commitment.destination)
-    return deny("DESTINATION_MISMATCH");
-
   const hashOk = timingSafeHashMatch(liveParams, commitment.payloadHash);
   if (!hashOk) return deny("PAYLOAD_MISMATCH");
-
-  if (!policyAllows(commitment.policyId, liveParams))
-    return deny("POLICY_VIOLATION");
-
   return allow();
 }`}</DocsCode>
 

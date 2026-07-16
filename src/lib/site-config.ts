@@ -39,7 +39,7 @@ export const siteConfig = {
   },
 
   social: {
-    github: "https://github.com/stvor-hq",
+    github: "https://github.com/stvor-hq/core",
     twitter: "https://x.com/hq_stvor",
     telegram: "https://t.me/kun_sapog",
   },
@@ -57,13 +57,12 @@ export const siteConfig = {
       "https://t.me/kun_sapog?text=Hi%2C%20I%27d%20like%20to%20talk%20about%20the%20Stvor%20pilot.%0A%0AWhat%20executes%20today%20(agent%2Fwallet%2Frail)%3A%0AVolume%20at%20risk%3A%0A",
     ats1: "/docs/ats-1",
     docs: "/docs",
-    github: "https://github.com/stvor-hq",
+    github: "https://github.com/stvor-hq/core",
   },
 
   pilot: {
-    price: "$500",
     duration: "2 weeks",
-    headline: "Paid 2-week pilot",
+    headline: "Design partner",
     summary:
       "I stand up a Stvor checkpoint in front of your execution flow — commit intent, verify at execution, settle only on ALLOW — plus a signed Trust Receipt for every decision. I do the integration. At the end it works and you keep going, or you pay nothing further.",
   },

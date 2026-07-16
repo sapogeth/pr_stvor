@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "fixtures:demo": "bun run scripts/gen-demo-receipt.ts"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
