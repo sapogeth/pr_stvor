@@ -137,7 +137,7 @@ export function HomeHero() {
           </motion.div>
 
           <motion.div
-            className="flex-shrink-0"
+            className="flex-shrink-0 w-full max-w-[340px] mx-auto lg:mx-0"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ ...SPRING, delay: 0.15 }}

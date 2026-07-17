@@ -12,7 +12,7 @@ export const solutionBlocks: SolutionBlock[] = [
     title: "Cryptographic Agent Identity",
     body: "Derive an agent identity from any wallet plus an explicit delegation policy. Scope, value caps, and expiry are baked into the key material — not enforced by middleware.",
     language: "ts",
-    code: `import { StvorClient } from '@stvor/sdk';
+    code: `import { Stvor } from '@stvor/client';
 
 const agent = await Stvor.createAgent({
   wallet: userWallet,

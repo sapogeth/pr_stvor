@@ -22,7 +22,7 @@ export const pricingTiers: PricingTier[] = [
     pricePrefix: "$",
     tagline: "Self-hosted, full features",
     features: [
-      "Apache 2.0 licensed core",
+      "MIT licensed core",
       "Unlimited agents (self-hosted)",
       "Community support (Discord / GitHub)",
       "All cryptographic primitives",

@@ -101,24 +101,23 @@ export default function Ats1DocsPage() {
         in stable JSON order — no <DocsInlineCode>signature</DocsInlineCode> field in the signed
         body.
       </DocsP>
-      <DocsCode language="http" filename="well-known">{`GET /.well-known/ats1-public-key
+      <DocsCode language="http" filename="well-known">{`GET /.well-known/public-key
+GET /.well-known/stvor-keys.json
 
 {
-  "publicKeyB64": "...",
-  "algorithm": "EC P-256",
-  "format": "SPKI DER"
+  "keys": [{ "kid": "...", "kty": "EC", "crv": "P-256", ... }]
 }`}</DocsCode>
 
       <DocsH2 id="verification-gate">Verification gate</DocsH2>
       <DocsP>Before any execution rail call, run these checks:</DocsP>
       <ol className="list-decimal list-inside space-y-2 text-[13px] text-[var(--color-fg-muted)] mb-6">
-        <li>Destination match against commitment</li>
-        <li>Payload hash match via timingSafeEqual</li>
-        <li>Policy evaluation pass</li>
+        <li>Canonicalize live payment payload (RFC 8785)</li>
+        <li>SHA-256 hash compare via timingSafeEqual against committed payloadHash</li>
       </ol>
       <DocsP>
-        Any failure → <DocsInlineCode>decision: DENIED</DocsInlineCode>, execution rail MUST NOT be
-        called, receipt SHOULD still be issued for audit.
+        Mismatch → <DocsInlineCode>decision: DENY</DocsInlineCode>, execution rail MUST NOT be
+        called. Signed receipt returned inline from <DocsInlineCode>POST /verify</DocsInlineCode> for
+        audit.
       </DocsP>
 
       <DocsH2 id="escrow">Escrow lifecycle</DocsH2>

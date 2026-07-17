@@ -18,7 +18,7 @@ type Scenario = {
     from: string;
     to: string;
     amount: string;
-    method: string;
+    currency: string;
   };
   attack?: {
     to: string;
@@ -40,69 +40,62 @@ const SCENARIOS: Scenario[] = [
   {
     id: "transfer",
     label: "USDC transfer",
-    description: "An AI agent commits to transfer 50 USDC to a specific address. Stvor anchors the commitment before the tx is built.",
+    description: "An AI agent commits to transfer 50 USDC to a specific address. Stvor anchors the payload hash before settlement.",
     intent: {
-      from: "0xAgent...f47a",
+      from: "agt_sandbox_demo",
       to: "0xAlice...a9f2",
       amount: "50.00 USDC",
-      method: "transfer(address,uint256)",
-    },
-    attack: {
-      to: "0xAttck...b13e",
-      description: "Payload manipulation: destination swapped after commitment",
+      currency: "USDC",
     },
     steps: [
       {
-        id: "sign",
-        label: "1. Anchor intent commitment",
-        code: `const commitment = await stvor.commit({
-  from: "0xAgent...f47a",
-  to:   "0xAlice...a9f2",
-  amount: "50000000",          // 50 USDC (6 decimals)
-  method: "transfer(address,uint256)",
+        id: "commit",
+        label: "1. Commit payload hash",
+        code: `const payment = {
+  to: "0xAlice...a9f2",
+  amount: "50.00",
+  currency: "USDC",
+};
+
+const commitment = await stvor.commit(payment, {
+  agentId: "agt_sandbox_demo",
+  nonce: crypto.randomUUID(),
 });
-// → commitment.hash (SHA-256 canonical)
-// → commitment.signature (ES256 P-256)`,
-        output: `✓  Commitment anchored
-hash:      sha256:7e3a9f2b4d1c...
-signature: es256:3f8a2c1b9e4d...
-issued_at: 2026-07-11T12:00:00Z`,
+// → commitment.commitmentId + payloadHash`,
+        output: `✓  Commitment created
+commitmentId: cmt_...
+payloadHash:  b36c8892...`,
         duration: 600,
         status: "ok",
       },
       {
         id: "verify",
-        label: "2. Verify before execution",
-        code: `// Just before submitting the tx:
-const result = await stvor.verify({
-  commitment,
-  payload: {
-    to:     "0xAlice...a9f2",  // must match
-    amount: "50000000",
-    method: "transfer(address,uint256)",
-  },
-});`,
-        output: `✓  Verification passed
-  to      ✓  matches commitment
-  amount  ✓  matches commitment
-  method  ✓  matches commitment
-  age     ✓  within ttl (1800s)`,
+        label: "2. Verify before settlement",
+        code: `const result = await stvor.verify(
+  { from: "agt_sandbox_demo", ...payment },
+  { commitmentId: commitment.commitmentId },
+);
+
+if (result.decision !== "ALLOW") {
+  // signed DENY in result.receipt
+  return;
+}`,
+        output: `✓  decision: ALLOW
+  to       ✓  hash match
+  amount   ✓  hash match
+  currency ✓  hash match
+receipt: es256 signed (inline)`,
         duration: 400,
         status: "ok",
       },
       {
-        id: "receipt",
-        label: "3. Trust Receipt issued",
-        code: `// result.receipt — signed, verifiable offline
-console.log(result.receipt);`,
-        output: `{
-  "id":        "trcpt_...",
-  "status":    "verified",
-  "hash":      "sha256:7e3a9f2b...",
-  "signature": "es256:3f8a2c1b...",
-  "fields":    { "to": "✓", "amount": "✓" },
-  "issued_at": "2026-07-11T12:00:00.123Z"
-}`,
+        id: "settle",
+        label: "3. Settle on rail",
+        code: `await settleOnYourRail(payment);
+// optional: await stvor.settle(result.id!, txHash);`,
+        output: `✓  Payment captured
+Trust Receipt verifiable offline
+→ stvor.xyz/verifier`,
         duration: 300,
         status: "ok",
       },
@@ -111,42 +104,50 @@ console.log(result.receipt);`,
   {
     id: "attack",
     label: "Attack blocked",
-    description: "Same transfer — but an attacker swaps the destination address after commitment is signed. Stvor catches the mismatch and throws.",
+    description: "Same transfer — but the destination is swapped after commit. Verify returns DENY with a signed receipt.",
     intent: {
-      from: "0xAgent...f47a",
+      from: "agt_sandbox_demo",
       to: "0xAlice...a9f2",
       amount: "50.00 USDC",
-      method: "transfer(address,uint256)",
+      currency: "USDC",
     },
     attack: {
       to: "0xAttck...b13e",
-      description: "Destination replaced in payload between commitment and execution",
+      description: "Destination replaced between commit and execution",
     },
     steps: [
       {
-        id: "sign",
-        label: "1. Anchor intent commitment",
-        code: `const commitment = await stvor.sign({
-  from: "0xAgent...f47a",
-  to:   "0xAlice...a9f2",   // ← committed destination
-  amount: "50000000",
-  method: "transfer(address,uint256)",
+        id: "commit",
+        label: "1. Commit payload hash",
+        code: `const payment = {
+  to: "0xAlice...a9f2",   // ← committed destination
+  amount: "50.00",
+  currency: "USDC",
+};
+
+const commitment = await stvor.commit(payment, {
+  agentId: "agt_sandbox_demo",
+  nonce: crypto.randomUUID(),
 });`,
-        output: `✓  Commitment anchored
-hash:      sha256:7e3a9f2b4d1c...
-to:        0xAlice...a9f2 (committed)`,
+        output: `✓  Commitment created
+to (committed): 0xAlice...a9f2`,
         duration: 600,
         status: "ok",
       },
       {
         id: "tamper",
         label: "2. Attacker swaps destination",
-        code: `// ⚠ Payload manipulation happens here
-// (context injection, prompt hijack, MITM)
-payload.to = "0xAttck...b13e";  // attacker address
-//
-// Agent calls stvor.verify() unaware of the swap...`,
-        output: `⚠  Payload modified in-flight
+        code: `// Payload manipulation in-flight
+const tampered = {
+  ...payment,
+  to: "0xAttck...b13e",  // attacker address
+};
+
+await stvor.verify(
+  { from: "agt_sandbox_demo", ...tampered },
+  { commitmentId: commitment.commitmentId },
+);`,
+        output: `⚠  Live payload differs from commitment
   committed: 0xAlice...a9f2
   received:  0xAttck...b13e`,
         duration: 500,
@@ -154,86 +155,75 @@ payload.to = "0xAttck...b13e";  // attacker address
       },
       {
         id: "blocked",
-        label: "3. Execution blocked",
-        code: `// stvor.verify() runs before tx is submitted:
-const result = await stvor.verify({
-  commitment,
-  payload: { to: "0xAttck...b13e", ... },
-});
-// → throws VerificationError`,
-        output: `✗  VerificationError: commitment mismatch
-  field:     to
-  committed: 0xAlice...a9f2
-  received:  0xAttck...b13e
+        label: "3. DENY — do not settle",
+        code: `// result.decision === "DENY"
+// result.reason === "PAYLOAD_MISMATCH"
+// result.receipt — signed DENY, verify offline`,
+        output: `✗  decision: DENY
+  reason:   PAYLOAD_MISMATCH
 
-Transaction NOT submitted.
-Receipt NOT issued.`,
+Settlement NOT executed.
+Signed DENY receipt in response.`,
         duration: 400,
         status: "error",
       },
     ],
   },
   {
-    id: "agent",
-    label: "AI agent payment",
-    description: "An AI agent with a capped spending limit commits to pay an API invoice. Stvor enforces the policy gate and issues a receipt.",
+    id: "invoice",
+    label: "API invoice",
+    description: "Agent pays an API invoice — same commit → verify → settle gate, hash compare only.",
     intent: {
-      from: "0xAgent...f47a",
-      to:   "0xAPI...c9d1",
+      from: "agt_api_worker",
+      to: "0xAPI...c9d1",
       amount: "12.50 USDC",
-      method: "payInvoice(bytes32)",
+      currency: "USDC",
     },
     steps: [
       {
-        id: "policy",
-        label: "1. Policy gate check",
-        code: `const commitment = await stvor.sign({
-  from:   "0xAgent...f47a",
-  to:     "0xAPI...c9d1",
-  amount: "12500000",         // 12.50 USDC
-  method: "payInvoice(bytes32)",
-  policy: {
-    maxAmount: "100000000",   // 100 USDC cap
-    allowedMethods: ["payInvoice(bytes32)"],
-  },
+        id: "commit",
+        label: "1. Commit at approval",
+        code: `const payment = {
+  to: "0xAPI...c9d1",
+  amount: "12.50",
+  currency: "USDC",
+};
+
+const commitment = await stvor.commit(payment, {
+  agentId: "agt_api_worker",
+  nonce: crypto.randomUUID(),
 });`,
-        output: `✓  Policy gate passed
-  amount  ✓  12.50 ≤ 100.00 USDC cap
-  method  ✓  in allowedMethods
-Commitment anchored.`,
+        output: `✓  Commitment anchored
+amount: 12.50 USDC`,
         duration: 500,
         status: "ok",
       },
       {
         id: "verify",
-        label: "2. Verify + execute",
-        code: `const result = await stvor.verify({
-  commitment,
-  payload: {
-    to:     "0xAPI...c9d1",
-    amount: "12500000",
-    method: "payInvoice(bytes32)",
-  },
-});
-await wallet.sendTransaction(txPayload);`,
-        output: `✓  Verification passed (1.4ms)
-✓  Transaction submitted
-  txHash: 0x4f2a...`,
+        label: "2. Verify + settle",
+        code: `const result = await stvor.verify(
+  { from: "agt_api_worker", ...payment },
+  { commitmentId: commitment.commitmentId },
+);
+
+if (result.decision === "ALLOW") {
+  await settleOnYourRail(payment);
+}`,
+        output: `✓  decision: ALLOW
+✓  Settlement executed`,
         duration: 700,
         status: "ok",
       },
       {
         id: "receipt",
-        label: "3. Audit receipt",
-        code: `// result.receipt is stored for compliance
-// Verifiable offline — no API call needed
-stvor.verifyReceiptOffline(receipt, pubkey);`,
+        label: "3. Offline audit",
+        code: `// result.receipt — verify with @stvor/core
+import { verifyReceipt } from "@stvor/core";`,
         output: `✓  Receipt verified (offline)
-  agent:   0xAgent...f47a
+  agent:   agt_api_worker
   payee:   0xAPI...c9d1
   amount:  12.50 USDC
-  policy:  maxAmount=100 USDC
-  status:  verified`,
+  decision: ALLOW`,
         duration: 300,
         status: "ok",
       },

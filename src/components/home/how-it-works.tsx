@@ -17,24 +17,27 @@ const FLOW = [
   {
     n: "03",
     title: "settle",
-    body: "Your execution rail fires only after ALLOW. POST /receipt issues an ES256 Trust Receipt for ALLOW or DENY.",
+    body: "Your execution rail fires only after ALLOW. Signed Trust Receipt comes inline from POST /verify. POST /receipt is optional — attach txHash after settlement.",
   },
 ];
 
 const VERIFY_CODE = `// commit → verify → settle
-const commitment = await stvor.commit({ agentId, payload: intent });
-
-const decision = await stvor.verify({
-  commitmentId: commitment.id,
-  payload: liveParams,
+const commitment = await stvor.commit(payment, {
+  agentId,
+  nonce: crypto.randomUUID(),
 });
 
-if (!decision.allowed) {
-  // signed DENY receipt — verify offline, do not settle
-  throw new DeniedError(decision.reason);
+const result = await stvor.verify(
+  { from: agentId, ...payment },
+  { commitmentId: commitment.commitmentId },
+);
+
+if (result.decision !== "ALLOW") {
+  // signed DENY in result.receipt — verify offline, do not settle
+  throw new Error(result.reason);
 }
 
-await settle(liveParams);`;
+await settleOnYourRail(payment);`;
 
 const CANONICAL_CODE = `// stvor-core/src/canonical.ts — RFC 8785 via canonicalize
 import jcs from "canonicalize";

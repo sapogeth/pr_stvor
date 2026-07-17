@@ -13,7 +13,7 @@ function tokenize(line: string): { text: string; cls: string }[] {
     { re: /^("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)/, cls: "text-[#a5d6ff]" }, // string
     { re: /^(import|export|from|const|let|async|await|new|return|if|for|of|true|false|null|undefined|type|interface)\b/, cls: "text-[#ff7b72]" }, // keyword
     { re: /^(function|class|extends|implements|constructor|void|string|number|boolean|Promise)\b/, cls: "text-[#ff7b72]" }, // type keyword
-    { re: /^(StvorClient|StvorMCPTransport|TonWallet|ERC4337Provider|McpServer|Session)\b/, cls: "text-[#d2a8ff]" }, // class names
+    { re: /^(Stvor|StvorMCPTransport|TonWallet|ERC4337Provider|McpServer|Session)\b/, cls: "text-[#d2a8ff]" }, // class names
     { re: /^([a-zA-Z_$][a-zA-Z0-9_$]*)\s*(?=\()/, cls: "text-[#d2a8ff]" }, // function call
     { re: /^([a-zA-Z_$][a-zA-Z0-9_$]*)(?=\s*:)/, cls: "text-[#79c0ff]" }, // object key
     { re: /^(0x[0-9a-fA-F]+|\d+)/, cls: "text-[#f8c555]" },              // number/hex

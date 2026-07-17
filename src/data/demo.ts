@@ -58,7 +58,7 @@ export const demoChains: DemoChain[] = [
     label: "TON",
     file: "ton-session.ts",
     language: "typescript",
-    code: `import { StvorClient } from "@stvor/sdk";
+    code: `import { Stvor } from "@stvor/client";
 import { TonWallet } from "@stvor/ton";
 
 // 1. Connect TON Wallet v5
@@ -68,7 +68,7 @@ const wallet = await TonWallet.connect({
 });
 
 // 2. Init Stvor with TON provider
-const stvor = new StvorClient({
+const stvor = new Stvor({
   chain: "ton",
   registry: "EQCregistryAddressOnTON",
   wallet,
@@ -127,7 +127,7 @@ console.log("ML-KEM ciphertext:", ciphertext.slice(0, 32), "...");`,
     label: "ERC-4337",
     file: "erc4337-session.ts",
     language: "typescript",
-    code: `import { StvorClient } from "@stvor/sdk";
+    code: `import { Stvor } from "@stvor/client";
 import { ERC4337Provider } from "@stvor/evm";
 
 // 1. Wrap existing AA wallet (e.g. Safe, Biconomy)
@@ -138,7 +138,7 @@ const provider = await ERC4337Provider.fromSigner({
 });
 
 // 2. Init Stvor with EVM provider
-const stvor = new StvorClient({
+const stvor = new Stvor({
   chain: "evm",
   registry: "0xStvorRegistryAddress",
   provider,
@@ -285,10 +285,10 @@ console.log("Session:", transport.sessionId);`,
     label: "Node.js",
     file: "agent-messaging.ts",
     language: "typescript",
-    code: `import { StvorClient, Session } from "@stvor/sdk";
+    code: `import { Stvor, Session } from "@stvor/client";
 
 // 1. Initialise — no blockchain required
-const stvor = new StvorClient({
+const stvor = new Stvor({
   agentId: "agent:data-processor:v1",
   // Keys are generated locally, registered
   // on the Stvor off-chain relay
@@ -334,7 +334,7 @@ console.log("Session key fingerprint:", session.fingerprint);`,
         metric: "Integration effort",
         classic: "Custom crypto implementation",
         classicBad: true,
-        stvor: "npm install @stvor/sdk + 3 API calls",
+        stvor: "npm install @stvor/client + 3 API calls",
       },
       {
         metric: "Agent identity",

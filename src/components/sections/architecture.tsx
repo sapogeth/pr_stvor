@@ -25,7 +25,7 @@ export function Architecture() {
           </div>
         </StackLayer>
 
-        <StackConnector label="npm install @stvor/sdk  ·  3 API calls  ·  &lt;1 day to production" />
+        <StackConnector label="npm install @stvor/client  ·  3 API calls  ·  &lt;1 day to production" />
 
         {/* Layer 2 — Stvor SDK */}
         <StackLayer

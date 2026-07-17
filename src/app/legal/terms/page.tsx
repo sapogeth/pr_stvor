@@ -18,10 +18,10 @@ export default function TermsPage() {
 
       <h2>1. The Services</h2>
       <p>
-        Stvor provides cryptographic infrastructure for autonomous AI agents and
-        account-abstraction wallets. The open-source SDK is licensed under Apache 2.0; the
-        hosted registry is offered under separate commercial terms reflected in your
-        subscription tier.
+        Stvor provides pre-execution verification for AI agents that move money. The open-source
+        packages (<code className="font-mono text-sm">@stvor/client</code>,{" "}
+        <code className="font-mono text-sm">@stvor/core</code>) are licensed under MIT; the hosted
+        API is offered under separate commercial terms reflected in your subscription tier.
       </p>
 
       <h2>2. Early access</h2>

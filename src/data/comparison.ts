@@ -78,7 +78,7 @@ export const comparisonRows: ComparisonRow[] = [
     safe:        "Signers must notice",
     monitoring:  "Alerts after",
     stvor:       "Yes — commitment mismatch halts execution",
-    note: "If the destination, amount, or method selector changes between commitment and execution, Stvor throws a VerificationError before the transaction is broadcast.",
+    note: "If the destination, amount, or currency changes between commitment and execution, POST /verify returns decision DENY with a signed receipt — execution must not proceed.",
   },
   {
     feature: "SDK integration time",

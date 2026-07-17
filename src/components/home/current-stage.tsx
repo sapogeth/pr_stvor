@@ -8,7 +8,7 @@ const STAGE = [
     status: "live",
     items: [
       "Production API at api.stvor.xyz — /commitments, /verify, /receipt",
-      "Public @stvor/core + @stvor/sdk on GitHub",
+      "Public @stvor/core + @stvor/client on GitHub (npm)",
       "Commit → verify gate: RFC 8785 canonical payload hash compare",
       "ES256 signed Trust Receipt for ALLOW and DENY",
       "Browser verifier + published demo fixture at stvor.xyz/verifier",

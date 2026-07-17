@@ -13,11 +13,13 @@ import {
 import { siteConfig } from "@/lib/site-config";
 import {
   COMMIT_CURL,
+  SDK_CHECKPOINT,
   SDK_INSTALL,
   SDK_QUICKSTART,
   STVOR_API_BASE,
   STVOR_PACKAGES,
   STVOR_SANDBOX_API_KEY,
+  STVOR_WELL_KNOWN,
   VERIFY_ALLOW_CURL,
   VERIFY_DENY_CURL,
 } from "@/lib/contract";
@@ -25,7 +27,7 @@ import {
 export const metadata: Metadata = {
   title: "Integration guide",
   description:
-    "Integrate Stvor via @stvor/sdk: commit → verify → settle on api.stvor.xyz. Checkpoint placement, API reference, and payment rails.",
+    "Integrate Stvor via @stvor/client: commit → verify → settle on api.stvor.xyz. Checkpoint placement, API reference, and payment rails.",
 };
 
 export default function IntegrateDocsPage() {
@@ -42,10 +44,10 @@ export default function IntegrateDocsPage() {
           Stvor integrates as a verification checkpoint before your payment rail, chain broadcast,
           or internal ledger write. Flow:{" "}
           <DocsInlineCode>commit → verify → settle</DocsInlineCode> — with a signed Trust Receipt
-          for ALLOW and DENY.
+          inline from <DocsInlineCode>POST /verify</DocsInlineCode> for ALLOW and DENY.
         </DocsP>
         <div className="flex flex-wrap gap-2">
-          <DocsBadge color="green">{STVOR_PACKAGES.sdk} on npm</DocsBadge>
+          <DocsBadge color="green">{STVOR_PACKAGES.client} on npm</DocsBadge>
           <DocsBadge color="green">API live — {STVOR_API_BASE}</DocsBadge>
         </div>
       </div>
@@ -56,18 +58,22 @@ export default function IntegrateDocsPage() {
       </DocsP>
       <ul className="list-disc list-inside space-y-1 text-[13px] text-[var(--color-fg-muted)] mb-6">
         <li>
-          <DocsInlineCode>POST /commitments</DocsInlineCode> — anchor intent at approval time
+          <DocsInlineCode>POST /commitments</DocsInlineCode> — anchor intent at approval time (
+          <DocsInlineCode>payloadHash</DocsInlineCode>, not raw payload)
         </li>
         <li>
-          <DocsInlineCode>POST /verify</DocsInlineCode> — compare live payload to commitment → ALLOW or
-          DENY
+          <DocsInlineCode>POST /verify</DocsInlineCode> — compare live payment hash → ALLOW or DENY
+          + signed receipt inline
         </li>
         <li>
-          <DocsInlineCode>POST /receipt</DocsInlineCode> — issue ES256 (P-256) Trust Receipt
+          <DocsInlineCode>POST /receipt</DocsInlineCode> — optional settlement: attach{" "}
+          <DocsInlineCode>txHash</DocsInlineCode> after ALLOW only
         </li>
       </ul>
       <DocsNote type="info">
-        There is no <DocsInlineCode>/agents/register</DocsInlineCode> endpoint. Self-check with{" "}
+        There is no <DocsInlineCode>/agents/register</DocsInlineCode> endpoint. Do not install{" "}
+        <DocsInlineCode>@stvor/sdk</DocsInlineCode> — that is an unrelated legacy library. Self-check
+        with{" "}
         <a href={siteConfig.api.fixtures} className="underline underline-offset-2" target="_blank" rel="noopener noreferrer">
           published test vectors
         </a>{" "}
@@ -108,28 +114,15 @@ export default function IntegrateDocsPage() {
       </a>
 
       <DocsH2 id="checkpoint">03 · Checkpoint placement</DocsH2>
-      <DocsCode language="typescript" filename="execution-flow.ts">{`// WRONG — verify after payment
-await stripe.paymentIntents.capture(id);
-await stvor.verify(...); // too late
-
-// RIGHT — commit → verify → settle
-const commitment = await stvor.commit({ agentId, payload: intent });
-// ... build live params ...
-const decision = await stvor.verify({ commitmentId: commitment.id, payload: live });
-if (!decision.allowed) {
-  await stripe.paymentIntents.cancel(escrowId);
-  // signed DENY receipt in decision.receipt — do not settle
-  throw new DeniedError(decision.reason);
-}
-await stripe.paymentIntents.capture(id);
-await settle(live);`}</DocsCode>
+      <DocsCode language="typescript" filename="execution-flow.ts">{SDK_CHECKPOINT}</DocsCode>
 
       <DocsH2 id="commit-verify">04 · API: commit + verify</DocsH2>
       <DocsP>
         Commit at intent time — when the user confirms, when the agent proposes a tool call, or when
         a contract is created. POST <DocsInlineCode>/commitments</DocsInlineCode> takes{" "}
         <DocsInlineCode>payloadHash</DocsInlineCode> (SHA-256 of RFC 8785 payment payload), not raw
-        payload. Store the commitment id; do not mutate the committed hash.
+        payload. Store the <DocsInlineCode>commitmentId</DocsInlineCode>; do not mutate the committed
+        hash.
       </DocsP>
       <DocsNote type="info">
         Public sandbox key (test env, rate-limited):{" "}
@@ -150,16 +143,22 @@ await settle(live);`}</DocsCode>
   return allow();
 }`}</DocsCode>
 
-      <DocsH2 id="receipt">05 · Receipt issuance</DocsH2>
+      <DocsH2 id="receipt">05 · Trust Receipt</DocsH2>
       <DocsP>
-        On ALLOW and DENY, sign the canonical receipt payload with ES256 (P-256, IEEE-P1363).
-        Publish your public key at{" "}
-        <DocsInlineCode>/.well-known/ats1-public-key</DocsInlineCode> so third parties verify
-        offline. See{" "}
+        On ALLOW and DENY, <DocsInlineCode>POST /verify</DocsInlineCode> returns a signed ES256 (P-256)
+        Trust Receipt inline in the response. Publish keys at{" "}
+        <DocsInlineCode>{STVOR_WELL_KNOWN.publicKey.replace(STVOR_API_BASE, "")}</DocsInlineCode>{" "}
+        and{" "}
+        <DocsInlineCode>{STVOR_WELL_KNOWN.keyset.replace(STVOR_API_BASE, "")}</DocsInlineCode> so
+        third parties verify offline. See{" "}
         <a href="/docs/ats-1" className="underline underline-offset-2 text-[var(--color-fg)]">
           ATS-1 spec
         </a>
         .
+      </DocsP>
+      <DocsP>
+        After settlement on ALLOW, optionally call <DocsInlineCode>POST /receipt</DocsInlineCode> with{" "}
+        <DocsInlineCode>txHash</DocsInlineCode> to attach on-chain proof. DENY paths do not settle.
       </DocsP>
 
       <DocsH2 id="rails">06 · Payment rails</DocsH2>

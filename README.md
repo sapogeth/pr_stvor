@@ -20,8 +20,8 @@ commit → verify → settle
 
 Auth: `Authorization: Bearer <STVOR_KEY>` required in production. Public sandbox key on [stvor.xyz](https://stvor.xyz/#try-now).
 
-**Packages:** `@stvor/sdk` (client), `@stvor/core` (verification primitives).  
-**Proof:** [browser verifier](https://api.stvor.xyz/verifier/), [test vectors](https://github.com/stvor-hq/stvor/tree/main/fixtures), [ATS-1 spec](https://stvor.xyz/docs/ats-1).
+**Packages:** `@stvor/client` (HTTP client), `@stvor/core` (verification primitives). Do not use `@stvor/sdk` — unrelated legacy library.  
+**Proof:** [browser verifier](https://stvor.xyz/verifier/), [test vectors](https://github.com/stvor-hq/core/tree/main/fixtures), [ATS-1 spec](https://stvor.xyz/docs/ats-1).
 
 ## Site structure
 

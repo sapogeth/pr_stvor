@@ -91,7 +91,7 @@ export function SocialProof() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-1">
-                <p className="text-[13px] font-semibold text-[var(--color-fg)]">Apache 2.0 — fully open source</p>
+                <p className="text-[13px] font-semibold text-[var(--color-fg)]">MIT — fully open source</p>
                 <ExternalLink size={12} className="text-[var(--color-fg-subtle)] group-hover:text-[var(--color-fg-muted)] transition-colors shrink-0 ml-2" />
               </div>
               <p className="text-[12px] text-[var(--color-fg-muted)] leading-relaxed">

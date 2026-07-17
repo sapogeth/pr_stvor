@@ -21,7 +21,7 @@ export function Hero() {
           <div className="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-subtle)] px-4 py-1.5 mb-8">
             <span className="size-1.5 rounded-full bg-[var(--color-accent)]" />
             <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-fg-muted)]">
-              Apache 2.0 · NIST FIPS 203/204 algorithms
+              MIT · ES256 signed receipts
             </span>
           </div>
 

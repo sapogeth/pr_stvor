@@ -138,7 +138,7 @@ export function TryNow() {
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.45, delay: 0.1 }}
         >
-          <CopyBlock label={`Install ${STVOR_PACKAGES.sdk}`} code={SDK_INSTALL} />
+          <CopyBlock label={`Install ${STVOR_PACKAGES.client}`} code={SDK_INSTALL} />
           <CopyBlock label="POST /commitments" code={siteConfig.commitCurl} />
           <CopyBlock label="POST /verify (same to → ALLOW)" code={siteConfig.verifyAllowCurl} />
           <CopyBlock

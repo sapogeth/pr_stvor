@@ -5,11 +5,10 @@ import { motion } from "framer-motion";
 const ITEMS = [
   { label: "OrbServ", note: "Design partner", href: "https://orbserv.co" },
   { label: "OrbWallet", note: "Design partner", href: "https://orbserv.co" },
-  { label: "NIST FIPS 203/204", note: "Algorithms" },
   { label: "ES256 P-256", note: "Signed receipts" },
-  { label: "<2ms", note: "Verification" },
-  { label: "Apache 2.0", note: "Open source core" },
-  { label: "No payload data", note: "Leaves your infra" },
+  { label: "RFC 8785", note: "Canonical hash" },
+  { label: "MIT", note: "Open source core" },
+  { label: "@stvor/client", note: "npm package" },
 ];
 
 export function TrustBar() {

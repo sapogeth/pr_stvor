@@ -32,7 +32,7 @@ export default function DocsOverviewPage() {
           decision gets an ES256 (P-256) Trust Receipt verifiable offline (ATS-1 draft).
         </DocsP>
         <div className="flex flex-wrap gap-2">
-          <DocsBadge color="green">{STVOR_PACKAGES.sdk} on npm</DocsBadge>
+          <DocsBadge color="green">{STVOR_PACKAGES.client} on npm</DocsBadge>
           <DocsBadge color="indigo">MIT licensed</DocsBadge>
           <DocsBadge color="muted">Pilot onboarding</DocsBadge>
         </div>
@@ -49,7 +49,7 @@ export default function DocsOverviewPage() {
         <DocsCardLink
           href="/docs/integrate"
           title="Integration guide"
-          description={`${STVOR_PACKAGES.sdk} quickstart, api.stvor.xyz endpoints, checkpoint placement, payment rails.`}
+          description={`${STVOR_PACKAGES.client} quickstart, api.stvor.xyz endpoints, checkpoint placement, payment rails.`}
         />
         <DocsCardLink
           href="/docs/ats-1"

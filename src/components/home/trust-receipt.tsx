@@ -27,7 +27,7 @@ export function TrustReceipt({ variant = "hero" }: Props) {
       <div className="receipt-rule" />
 
       <div className="receipt-fields">
-        <Row k="DECISION" v="✗ DENIED" cls="receipt-blocked" />
+        <Row k="DECISION" v="✗ DENY" cls="receipt-blocked" />
         <Row k="REASON" v={r.reason} cls="receipt-blocked" />
         <Row k="BINDING" v={r.binding} />
         <Row

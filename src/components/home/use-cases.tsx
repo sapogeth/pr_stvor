@@ -57,7 +57,7 @@ const PERSONAS = [
     ],
     codeLines: [
       '// Drop in before any financial tool call',
-      'import { stvor } from "@stvor/sdk"',
+      'import { stvor } from "@stvor/client"',
       '',
       'const result = await stvor.execute({',
       '  action: "payment.send",',

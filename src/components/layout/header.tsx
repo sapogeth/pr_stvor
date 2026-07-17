@@ -206,13 +206,13 @@ export function Header() {
 
           {/* CTA */}
           <motion.a
-            href={siteConfig.demo.local}
+            href="#try-now"
             className="px-4 py-1.5 text-[13px] font-semibold bg-[var(--color-fg)] text-[var(--color-bg)] rounded-[6px]"
             whileHover={{ scale: 1.03, opacity: 0.92 }}
             whileTap={{ scale: 0.97 }}
             transition={{ type: "spring", stiffness: 500, damping: 28 }}
           >
-            Try demo
+            Try API
           </motion.a>
         </div>
 
@@ -323,20 +323,18 @@ export function Header() {
               {/* CTA buttons */}
               <motion.div variants={mobileItemVariants} className="mt-1 flex flex-col gap-2">
                 <a
-                  href={siteConfig.demo.attack}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="#try-now"
                   onClick={() => setMobileOpen(false)}
                   className="block text-center py-2.5 text-sm font-semibold bg-[var(--color-fg)] text-[var(--color-bg)] rounded-[6px]"
                 >
-                  Watch attack sim →
+                  Run API curl →
                 </a>
                 <a
                   href={siteConfig.demo.local}
                   onClick={() => setMobileOpen(false)}
                   className="block text-center py-2.5 text-sm border border-[var(--color-border-strong)] text-[var(--color-fg-muted)] rounded-[6px]"
                 >
-                  Try demo
+                  Interactive demo
                 </a>
               </motion.div>
             </div>

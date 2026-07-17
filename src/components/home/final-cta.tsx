@@ -26,10 +26,10 @@ const PATHS = [
 ];
 
 const TRUST_SIGNALS = [
-  "Apache 2.0 open source",
-  "No payload data leaves your infra",
-  "NIST FIPS 203/204 algorithms",
+  "MIT open source (@stvor/client + @stvor/core)",
+  "Receipt inline from POST /verify",
   "ES256 signed receipts",
+  "Offline verify at stvor.xyz/verifier",
 ];
 
 export function FinalCTA() {
@@ -133,9 +133,9 @@ export function FinalCTA() {
             <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed mb-8 max-w-sm">
               The Trust Receipt is a cryptographically signed, immutable record of what
               was verified, what was executed, and when. Show it to compliance teams.
-              Show it to auditors. Show it to your board. It is self-verifying at{" "}
+              Show it to auditors.               Show it to your board. Verify offline at{" "}
               <span className="font-mono text-[var(--color-fg-subtle)]">
-                receipts.stvor.io
+                stvor.xyz/verifier
               </span>
             </p>
 

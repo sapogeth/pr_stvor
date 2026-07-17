@@ -4,7 +4,7 @@ import { siteConfig } from "@/lib/site-config";
 export const runtime = "edge";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Stvor — Cryptographic infrastructure for autonomous agents and AA wallets";
+export const alt = siteConfig.shortTitle;
 
 export default async function OGImage() {
   return new ImageResponse(
@@ -15,11 +15,10 @@ export default async function OGImage() {
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          background:
-            "linear-gradient(135deg, #07090c 0%, #0d1219 60%, #0a0f17 100%)",
+          background: "linear-gradient(135deg, #06060a 0%, #0e0e14 60%, #06060a 100%)",
           padding: "72px",
           fontFamily: "Inter, sans-serif",
-          color: "#f4f6f8",
+          color: "#f0f1f5",
           position: "relative",
         }}
       >
@@ -31,7 +30,7 @@ export default async function OGImage() {
             width: "640px",
             height: "640px",
             background:
-              "radial-gradient(closest-side, rgba(64, 169, 255, 0.18), transparent 70%)",
+              "radial-gradient(closest-side, rgba(16, 185, 129, 0.12), transparent 70%)",
           }}
         />
         <div
@@ -47,7 +46,7 @@ export default async function OGImage() {
               width: 44,
               height: 44,
               borderRadius: 12,
-              background: "linear-gradient(135deg, #2b8aff, #1763d1)",
+              background: "rgba(255,255,255,0.08)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -70,36 +69,35 @@ export default async function OGImage() {
               fontWeight: 600,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: "#7d8896",
+              color: "#10b981",
               marginBottom: "20px",
             }}
           >
-            Post-quantum • E2EE • Account abstraction
+            commit → verify → settle
           </div>
           <div
             style={{
               display: "flex",
-              fontSize: 64,
+              fontSize: 58,
               fontWeight: 700,
-              lineHeight: 1.05,
-              letterSpacing: "-0.02em",
+              lineHeight: 1.08,
+              letterSpacing: "-0.03em",
               maxWidth: 980,
               marginBottom: "24px",
             }}
           >
-            Cryptographic infrastructure for autonomous agents and AA wallets.
+            Stop wrong-agent payments before they execute.
           </div>
           <div
             style={{
               display: "flex",
               fontSize: 24,
-              color: "#a4adb8",
+              color: "#8e95a3",
               maxWidth: 900,
-              lineHeight: 1.3,
+              lineHeight: 1.35,
             }}
           >
-            Hybrid X3DH (ECDH P-256 + ML-KEM-768) • UserOp-bound sessions •
-            ERC-4337 & TON
+            One gate: RFC 8785 payload hash compare. Swapped destination → signed DENY.
           </div>
         </div>
 
@@ -112,11 +110,11 @@ export default async function OGImage() {
             paddingTop: "20px",
             borderTop: "1px solid rgba(255,255,255,0.08)",
             fontSize: 18,
-            color: "#7d8896",
+            color: "#5a6070",
           }}
         >
-          <span style={{ display: "flex" }}>stvor.dev</span>
-          <span style={{ display: "flex" }}>NIST FIPS 203/204 • Apache 2.0</span>
+          <span style={{ display: "flex" }}>stvor.xyz</span>
+          <span style={{ display: "flex" }}>@stvor/client • MIT</span>
         </div>
       </div>
     ),

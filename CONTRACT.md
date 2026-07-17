@@ -1,21 +1,10 @@
-# Stvor public contract
+# Stvor public contract (site mirror)
 
-Source of truth for published API surface, packages, and cryptography.
-Marketing site and docs must match this file.
+**Source of truth:** `platofrm/CONTRACT.md` v0.2. If this file disagrees with platofrm, platofrm wins.
 
 ## Base URL
 
-`https://api.stvor.xyz` — SDK default `baseUrl`, docs, and curl examples.
-
-## HTTP endpoints (flat paths, no `/api/v1`)
-
-| Method | Path | Purpose |
-|--------|------|---------|
-| POST | `/commitments` | Anchor intent — freeze payload hash at commit time |
-| POST | `/verify` | Compare live payload to commitment → ALLOW or DENY |
-| POST | `/receipt` | Issue signed Trust Receipt (ALLOW **and** DENY) |
-
-There is **no** `/agents/register` endpoint.
+`https://api.stvor.xyz` — flat paths, no `/api/v1`.
 
 ## Flow
 
@@ -23,38 +12,46 @@ There is **no** `/agents/register` endpoint.
 commit → verify → settle
 ```
 
-1. **commit** — canonical params hashed and stored; intent frozen
-2. **verify** — `timingSafeEqual` on payload hash + destination match; swapped destination → signed DENY, not silent pass
-3. **settle** — execution rail fires only after ALLOW
-4. **receipt** — offline-verifiable ES256 (P-256, IEEE-P1363) for both ALLOW and DENY
+1. **commit** — `POST /commitments` with `payloadHash` (SHA-256 of RFC 8785 payment payload)
+2. **verify** — `POST /verify` compares live payment hash → signed Trust Receipt **inline** for ALLOW and DENY
+3. **settle** — your rail fires only after ALLOW
+4. **optional** — `POST /receipt` attaches on-chain `txHash` after settlement (ALLOW only)
+
+There is **no** `/agents/register` endpoint.
 
 ## Packages (npm)
 
 | Package | Role |
 |---------|------|
-| `@stvor/sdk` | HTTP client — `commit()`, `verify()`, `receipt()` |
-| `@stvor/core` | Verification primitives — canonical hash, compare |
+| `@stvor/client` | HTTP client — `commit()`, `verify()`, `settle()` |
+| `@stvor/core` | RFC 8785 hash, offline receipt verification |
+| `@stvor/verify` | CLI verifier |
 
-Do **not** reference `@stvor/web3` (does not exist).
+**Do not** `npm install @stvor/sdk` — unrelated legacy E2EE library.
 
 ## Cryptography
 
-- Payload hash: **SHA-256** over canonical JSON
-- Compare: **`crypto.timingSafeEqual()`**
-- Receipt signature: **ES256 / P-256** (IEEE-P1363)
-- **Not** ed25519 — remove all ed25519 mentions from published surfaces
+- Payload hash: SHA-256 over RFC 8785 (JCS) canonical JSON
+- Compare: `crypto.timingSafeEqual()` on hash bytes
+- Receipt signature: ES256 / P-256 / IEEE-P1363
+- Payment payload fields: `{ to, amount?, currency?, chain?, asset? }` — only `to` required
+
+## Auth
+
+`Authorization: Bearer <STVOR_KEY>` required in production.
+
+Public sandbox key published on [stvor.xyz/#try-now](https://stvor.xyz/#try-now).
+
+## Well-known keys
+
+- `GET /.well-known/public-key` — current signing JWK
+- `GET /.well-known/stvor-keys.json` — append-only keyset for offline verify
 
 ## Verifier & fixtures
 
-- Browser verifier: `https://api.stvor.xyz/verifier/` (`verifier/index.html`)
-- Test vectors: `fixtures/` in the SDK repo (integrators self-check before writing code)
+- Browser verifier: `https://stvor.xyz/verifier/`
+- Test vectors: `https://github.com/stvor-hq/core/tree/main/fixtures`
 
-## §7 — Not implemented (do not claim on site)
+## License
 
-- Counterparty **trust scoring** — engine is a stub; do not list as a live check
-
-## Lead with (all demonstrable today)
-
-1. Pre-execution binding — swapped destination → signed DENY
-2. Trust Receipt verifiable offline (CLI, browser verifier, ~20 lines WebCrypto)
-3. Published test vectors in `fixtures/`
+`@stvor/core` and `@stvor/client` are **MIT** licensed.

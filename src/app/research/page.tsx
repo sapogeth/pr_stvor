@@ -60,53 +60,44 @@ const concepts = [
   {
     Icon: Lock,
     title: "Commitment anchoring",
-    body: `The core primitive. Before any transaction is built, the caller commits a structured intent object — destination, amount, method selector, agent identity, and TTL — via POST /commitments. The payload hash is frozen; ES256 signs the receipt at verify time.
+    body: `The core primitive. Before any transaction is built, the caller commits a payment payload hash via POST /commitments — destination, amount, currency frozen as SHA-256(RFC 8785 canonical JSON).
 
-When the transaction is ready to submit, stvor.verify() checks: does the live payload match the committed hash and destination? If yes, settle and issue an ALLOW receipt. If no — field mismatch, destination swap — a signed DENY receipt is issued and the transaction is NOT submitted.
+When execution is ready, POST /verify re-canonicalizes the live payment and compares hashes. Match → decision ALLOW + signed receipt. Destination swap or field change → decision DENY + signed receipt. Settlement fires only on ALLOW.
 
 This is pre-execution verification: commit → verify → settle.`,
   },
   {
     Icon: ShieldCheck,
     title: "Canonical hash construction",
-    body: `To make the commitment hash deterministic across languages and platforms, Stvor canonicalizes the intent object before hashing:
+    body: `To make the commitment hash deterministic across languages and platforms, Stvor canonicalizes the payment object before hashing:
 
-1. Sort all keys alphabetically (RFC 8785)
-2. Normalize amounts to 18 decimal places (no floating point)
-3. Lowercase all address fields
-4. Strip trailing whitespace
-5. Serialize to UTF-8 JSON without whitespace
-6. SHA-256 hash the result
+1. RFC 8785 (JCS) canonical JSON serialization
+2. SHA-256 hash of the canonical bytes
+3. Compare with crypto.timingSafeEqual at verify time
 
-This prevents encoding-variant attacks: two different serializations of the same intent produce the same hash. The canonical spec is open and language-agnostic — any SDK implementation can be verified against a reference vector.`,
+Payment fields: { to, amount?, currency?, chain?, asset? } — only to is required. The canonical spec is open — verify against published fixtures in stvor-hq/core.`,
   },
   {
     Icon: FileText,
     title: "Trust Receipt format",
-    body: `A Trust Receipt is a signed JSON document issued by Stvor after a successful verification. It contains:
+    body: `A Trust Receipt is a signed JSON document returned inline from POST /verify (ALLOW and DENY). It contains:
 
-• id — globally unique receipt identifier
-• hash — SHA-256 canonical hash of the committed intent
-• signature — ES256 (P-256) signature over the canonical body
-• fields — map of verified field names to their committed values
-• agent — identifier of the signing agent
-• issued_at — ISO 8601 timestamp
-• ttl — commitment time-to-live in seconds
+• decision — ALLOW or DENY
+• reason — e.g. PAYLOAD_MISMATCH on DENY
+• payload hash and verified fields
+• agent identity and timestamps
+• signature — ES256 (P-256) over the canonical body
 
-The receipt is verifiable offline using Stvor's published public key at /.well-known/ats1-public-key. No Stvor API call is required to verify a receipt — this is by design. An auditor, regulator, or counterparty can verify any historical receipt without a vendor relationship.`,
+The receipt is verifiable offline using Stvor's published public key at /.well-known/public-key (or the keyset at /.well-known/stvor-keys.json). No Stvor API call is required to verify a receipt.`,
   },
   {
     Icon: GitBranch,
     title: "Threat model",
-    body: `Stvor addresses three attack classes in the AI agent finance context:
+    body: `Stvor addresses payload manipulation in the AI agent finance context:
 
-Payload manipulation — the transaction payload is modified between intent and execution. Stvor's commitment comparison catches destination swaps, amount changes, and method selector changes before submission.
+Payload swap — the payment destination or amount is modified between commit and execution. Stvor's hash compare catches this before settlement.
 
-Context injection — a malicious prompt or tool response causes an agent to authorize a different operation than intended. Stvor's commitment was signed before the injection can affect the payload.
-
-Authorization gap — an agent operates beyond its delegated scope. Stvor's policy gate compares the intent against a declared policy (maxAmount, allowedMethods, allowedRecipients) before anchoring the commitment.
-
-What Stvor does NOT address: private key compromise, malicious agent code, or attacks at the smart contract level. These require additional controls. See the security page for the full honest scope.`,
+What Stvor does NOT address today: policy gates (maxAmount, allowlists — planned, not shipped), private key compromise, malicious agent code, or smart contract-level attacks. These require additional controls. See the security page for the full honest scope.`,
   },
 ];
 

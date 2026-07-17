@@ -49,7 +49,7 @@ export default function DemoPage() {
         <div className="py-16 text-center px-4 border-t border-[var(--color-border)]">
           <p className="text-sm text-[var(--color-fg-muted)] mb-5 max-w-md mx-auto">
             Wiring this in front of your production flow? Install{" "}
-            <code className="font-mono text-[12px]">@stvor/sdk</code> against{" "}
+            <code className="font-mono text-[12px]">@stvor/client</code> against{" "}
             <code className="font-mono text-[12px]">{siteConfig.api.base}</code>, or book the
             paid pilot for white-glove integration.
           </p>

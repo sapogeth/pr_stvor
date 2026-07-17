@@ -12,7 +12,7 @@ const signals = [
   },
   {
     icon: GithubIcon,
-    title: "Apache 2.0 — open source",
+    title: "MIT — open source",
     body: "Core SDK, contracts, and reference relays are public from day one.",
     href: siteConfig.social.github,
   },

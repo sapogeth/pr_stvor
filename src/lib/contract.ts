@@ -1,6 +1,11 @@
-/** Published contract — keep in sync with CONTRACT.md */
+/** Published contract — keep in sync with platofrm/CONTRACT.md v0.2 */
 
 export const STVOR_API_BASE = "https://api.stvor.xyz";
+
+export const STVOR_WELL_KNOWN = {
+  publicKey: `${STVOR_API_BASE}/.well-known/public-key`,
+  keyset: `${STVOR_API_BASE}/.well-known/stvor-keys.json`,
+} as const;
 
 export const STVOR_ENDPOINTS = {
   commitments: `${STVOR_API_BASE}/commitments`,
@@ -8,9 +13,11 @@ export const STVOR_ENDPOINTS = {
   receipt: `${STVOR_API_BASE}/receipt`,
 } as const;
 
+/** npm packages — do NOT use @stvor/sdk (unrelated legacy E2EE library). */
 export const STVOR_PACKAGES = {
-  sdk: "@stvor/sdk",
+  client: "@stvor/client",
   core: "@stvor/core",
+  verify: "@stvor/verify",
 } as const;
 
 export const STVOR_GITHUB_CORE = "https://github.com/stvor-hq/core";
@@ -23,6 +30,7 @@ export const STVOR_FIXTURES_URL =
 export const STVOR_CRYPTO = {
   hash: "SHA-256",
   signature: "ES256 (P-256, IEEE-P1363)",
+  license: "MIT",
 } as const;
 
 /** Public sandbox key — test env, rate-limited, revocable at any time. */
@@ -35,7 +43,6 @@ export const DEMO_PAYMENT = {
   currency: "USDC",
 } as const;
 
-/** RFC 8785 canonical bytes for DEMO_PAYMENT (verify with your JCS library). */
 export const DEMO_PAYLOAD_CANONICAL = `{"amount":"${DEMO_PAYMENT.amount}","currency":"${DEMO_PAYMENT.currency}","to":"${DEMO_PAYMENT.to}"}`;
 
 export const DEMO_PAYLOAD_HASH =
@@ -59,7 +66,7 @@ curl -X POST ${STVOR_API_BASE}/commitments \\
     "expiresAt": "2026-12-31T23:59:59.000Z"
   }'`;
 
-export const VERIFY_ALLOW_CURL = `# Same to / amount / currency as the committed payload → ALLOW
+export const VERIFY_ALLOW_CURL = `# Same to / amount / currency as the committed payload → ALLOW (+ signed receipt inline)
 
 curl -X POST ${STVOR_API_BASE}/verify \\
   -H 'Content-Type: application/json' \\
@@ -92,41 +99,73 @@ curl -X POST ${STVOR_API_BASE}/verify \\
 /** @deprecated use VERIFY_DENY_CURL */
 export const VERIFY_CURL = VERIFY_DENY_CURL;
 
-export const SDK_INSTALL = `npm install ${STVOR_PACKAGES.sdk}`;
+export const SDK_INSTALL = `npm install ${STVOR_PACKAGES.client}`;
 
-export const SDK_QUICKSTART = `import { StvorClient } from "${STVOR_PACKAGES.sdk}";
+export const SDK_QUICKSTART = `import { Stvor } from "${STVOR_PACKAGES.client}";
 
-const stvor = new StvorClient({
+const stvor = new Stvor({
   baseUrl: "${STVOR_API_BASE}",
-  apiKey: process.env.STVOR_KEY, // sandbox key on stvor.xyz/#try-now
+  apiKey: process.env.STVOR_KEY!, // sandbox key on stvor.xyz/#try-now
 });
 
-// payment payload — only { to, amount?, currency?, chain?, asset? }
-const payload = {
+const payment = {
   to: "${DEMO_PAYMENT.to}",
   amount: "${DEMO_PAYMENT.amount}",
   currency: "${DEMO_PAYMENT.currency}",
 };
 
-// 1. commit — freeze intent (posts payloadHash, not raw payload; fresh nonce each time)
-const commitment = await stvor.commit({
+// 1. commit — posts payloadHash (fresh nonce each time)
+const commitment = await stvor.commit(payment, {
   agentId: "agt_sandbox_demo",
-  payload,
   nonce: crypto.randomUUID(),
 });
 
-// 2. verify — compare live intent to commitment
-const decision = await stvor.verify({
-  commitmentId: commitment.id,
-  intent: payload,
-});
+// 2. verify — signed receipt inline for ALLOW and DENY
+const result = await stvor.verify(
+  { from: "agt_sandbox_demo", ...payment },
+  { commitmentId: commitment.commitmentId },
+);
 
-if (!decision.allowed) {
-  // signed DENY receipt — verify offline; do not settle
+if (result.decision !== "ALLOW") {
+  // result.receipt is a signed DENY — verify offline; do not settle
   return;
 }
 
-// 3. settle — your rail (Stripe, chain, etc.)
-await settle(payload);
+// 3. settle on your rail, then optionally attach txHash
+await settleOnYourRail(payment);
+// await stvor.settle(result.id!, txHash);`;
 
-console.log(decision.receipt);`;
+export const SDK_CHECKPOINT = `// WRONG — verify after payment
+await stripe.paymentIntents.capture(id);
+await stvor.verify(...); // too late
+
+// RIGHT — commit → verify → settle
+const payment = { to: "0xVendor...", amount: "50.00", currency: "USDC" };
+const commitment = await stvor.commit(payment, { agentId: "agt_01", nonce: crypto.randomUUID() });
+
+const result = await stvor.verify(
+  { from: "agt_01", ...payment },
+  { commitmentId: commitment.commitmentId },
+);
+
+if (result.decision !== "ALLOW") {
+  await stripe.paymentIntents.cancel(escrowId);
+  // signed DENY in result.receipt
+  throw new Error(result.reason);
+}
+
+await stripe.paymentIntents.capture(id);`;
+
+export const SDK_FLOW_SNIPPET = `const commitment = await stvor.commit(payment, { agentId, nonce: crypto.randomUUID() });
+
+const result = await stvor.verify(
+  { from: agentId, ...payment },
+  { commitmentId: commitment.commitmentId },
+);
+
+if (result.decision !== "ALLOW") {
+  // signed DENY receipt in result.receipt
+  return;
+}
+
+await settleOnYourRail(payment);`;

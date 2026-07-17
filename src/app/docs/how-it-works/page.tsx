@@ -42,7 +42,8 @@ export default function HowItWorksDocsPage() {
         Stvor is middleware between intent and execution. It does not replace custody, monitoring,
         or signing infrastructure. It answers:{" "}
         <em>does what is about to run still match what was committed?</em> Any check fails →{" "}
-        <DocsInlineCode>DENIED</DocsInlineCode> with a signed receipt, no payment attempted.
+        <DocsInlineCode>DENY</DocsInlineCode> with a signed receipt inline from{" "}
+        <DocsInlineCode>POST /verify</DocsInlineCode>, no payment attempted.
       </DocsP>
 
       <DocsH2 id="flow">01 · commit → verify → settle</DocsH2>
@@ -55,8 +56,10 @@ export default function HowItWorksDocsPage() {
         Destination swap or hash mismatch → DENY.
       </DocsStep>
       <DocsStep n="settle" title="Your execution rail">
-        Stripe capture, chain broadcast, or ledger write fires only after ALLOW. Then{" "}
-        <DocsInlineCode>POST /receipt</DocsInlineCode> — ES256 Trust Receipt for ALLOW or DENY.
+        Stripe capture, chain broadcast, or ledger write fires only after ALLOW. Signed Trust
+        Receipt is returned inline from <DocsInlineCode>POST /verify</DocsInlineCode>. Optionally
+        call <DocsInlineCode>POST /receipt</DocsInlineCode> with <DocsInlineCode>txHash</DocsInlineCode>{" "}
+        after settlement.
       </DocsStep>
 
       <DocsH2 id="three-checks">02 · What verify checks</DocsH2>
@@ -113,9 +116,9 @@ function verifyPayload(
 
   const a = Buffer.from(hash, "hex");
   const b = Buffer.from(commitment.payloadHash, "hex");
-  if (a.length !== b.length) return { allowed: false, reason: "PAYLOAD_MISMATCH" };
-  if (!crypto.timingSafeEqual(a, b)) return { allowed: false, reason: "PAYLOAD_MISMATCH" };
-  return { allowed: true };
+  if (a.length !== b.length) return { decision: "DENY", reason: "PAYLOAD_MISMATCH" };
+  if (!crypto.timingSafeEqual(a, b)) return { decision: "DENY", reason: "PAYLOAD_MISMATCH" };
+  return { decision: "ALLOW" };
 }`}</DocsCode>
 
       <DocsH2 id="binding">04 · Intent-to-execution binding</DocsH2>
@@ -155,8 +158,9 @@ function verifyPayload(
 
       <DocsH2 id="trust-receipt">06 · Trust Receipt</DocsH2>
       <DocsP>
-        After ALLOW or DENY, Stvor issues an ES256 (P-256, IEEE-P1363) signed Trust Receipt
-        (ATS-1 draft). Verifiable offline with only the issuer&apos;s public key —{" "}
+        After ALLOW or DENY, <DocsInlineCode>POST /verify</DocsInlineCode> returns an ES256 (P-256,
+        IEEE-P1363) signed Trust Receipt inline (ATS-1 draft). Verifiable offline with only the
+        issuer&apos;s public key —{" "}
         <a href={siteConfig.api.verifier} className="underline underline-offset-2" target="_blank" rel="noopener noreferrer">
           browser verifier
         </a>
@@ -166,7 +170,7 @@ function verifyPayload(
   "ats_version": "0.1.0-draft",
   "receipt_id": "ats1_01HXYZ...",
   "agent_id": "agt_finance_agent_v1",
-  "decision": "ALLOWED",
+  "decision": "ALLOW",
   "checks_passed": ["payload_hash_match"],
   "payload_hash": "sha256:a3f7c291...",
   "committed_at": "2026-07-12T09:41:02Z",
