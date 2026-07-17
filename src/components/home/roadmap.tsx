@@ -8,7 +8,7 @@ const ROADMAP = [
     label: "Now",
     title: "Agent-money verification",
     items: [
-      "OrbWallet integration (in progress)",
+      "OrbServ / OrbWallet integration (in progress)",
       "x402 payment rail",
       "ATS-1 Trust Receipt spec publication",
       "Design partner integrations",

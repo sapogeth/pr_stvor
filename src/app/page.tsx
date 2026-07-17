@@ -2,7 +2,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { HomeHero } from "@/components/home/hero";
 import { TryNow } from "@/components/home/try-now";
-import { RealHacks } from "@/components/home/real-hacks";
+import { AgentEconomy } from "@/components/home/agent-economy";
 import { Problem } from "@/components/home/problem";
 import { HowItWorks } from "@/components/home/how-it-works";
 import { WhoItsFor } from "@/components/home/who-its-for";
@@ -28,7 +28,7 @@ export default function HomePage() {
         <HomeHero />
         <TryNow />
         <Divider />
-        <RealHacks />
+        <AgentEconomy />
         <Divider />
         <Problem />
         <Divider />

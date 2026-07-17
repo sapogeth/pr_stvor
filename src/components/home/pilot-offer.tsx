@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { siteConfig } from "@/lib/site-config";
+import { designPartners, siteConfig } from "@/lib/site-config";
 
 export function PilotOffer() {
   return (
@@ -53,6 +53,23 @@ export function PilotOffer() {
               Message {siteConfig.contact.handle}
             </a>
           </div>
+
+          <p className="mt-8 pt-6 border-t border-[var(--color-border)] text-[12px] text-[var(--color-fg-subtle)]">
+            Current design partners:{" "}
+            {designPartners.map((partner, i) => (
+              <span key={partner.name}>
+                {i > 0 && " · "}
+                <a
+                  href={partner.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[var(--color-fg-muted)] underline underline-offset-2 hover:text-[var(--color-fg)] transition-colors"
+                >
+                  {partner.name}
+                </a>
+              </span>
+            ))}
+          </p>
 
           <p className="mt-6 text-[12px] text-[var(--color-fg-subtle)]">
             Technical crowd:{" "}

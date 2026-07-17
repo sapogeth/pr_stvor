@@ -18,7 +18,7 @@ const STAGE = [
     label: "In progress",
     status: "active",
     items: [
-      "OrbWallet integration (design partner)",
+      "OrbServ / OrbWallet integration (design partner — orbserv.co)",
       "ATS-1 receipt format spec (draft, open)",
       "White-glove pilot integrations",
     ],

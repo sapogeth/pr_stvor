@@ -78,6 +78,20 @@ export const siteConfig = {
   sandboxApiKey: STVOR_SANDBOX_API_KEY,
 } as const;
 
+/** Live design partner integrations — named only with permission. */
+export const designPartners = [
+  {
+    name: "OrbServ",
+    url: "https://orbserv.co",
+    note: "Agent financial ecosystem",
+  },
+  {
+    name: "OrbWallet",
+    url: "https://orbserv.co",
+    note: "Wallet rail integration",
+  },
+] as const;
+
 export const navItems = [
   { label: "Demo", href: "/demo" },
   { label: "How it works", href: "#how-it-works" },

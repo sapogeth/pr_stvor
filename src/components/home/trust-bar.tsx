@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 
 const ITEMS = [
-  { label: "OrbWallet", note: "Design partner" },
+  { label: "OrbServ", note: "Design partner", href: "https://orbserv.co" },
+  { label: "OrbWallet", note: "Design partner", href: "https://orbserv.co" },
   { label: "NIST FIPS 203/204", note: "Algorithms" },
   { label: "ES256 P-256", note: "Signed receipts" },
   { label: "<2ms", note: "Verification" },
@@ -26,9 +27,20 @@ export function TrustBar() {
               key={item.label}
               className="flex items-center gap-2 px-5 py-3.5 first:pl-0 last:pr-0"
             >
-              <span className="text-[11px] font-mono font-medium text-[var(--color-fg-muted)] whitespace-nowrap">
-                {item.label}
-              </span>
+              {"href" in item && item.href ? (
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] font-mono font-medium text-[var(--color-fg-muted)] whitespace-nowrap hover:text-[var(--color-fg)] transition-colors"
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <span className="text-[11px] font-mono font-medium text-[var(--color-fg-muted)] whitespace-nowrap">
+                  {item.label}
+                </span>
+              )}
               <span className="text-[10px] text-[var(--color-fg-subtle)] whitespace-nowrap hidden sm:inline">
                 {item.note}
               </span>

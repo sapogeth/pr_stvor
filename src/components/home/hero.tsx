@@ -67,28 +67,41 @@ export function HomeHero() {
 
             <motion.p
               variants={ITEM_VARIANTS}
-              className="text-[13px] text-[var(--color-fg-subtle)] leading-relaxed mb-8 max-w-[540px] mx-auto lg:mx-0"
+              className="text-[13px] text-[var(--color-fg-subtle)] leading-relaxed mb-6 max-w-[540px] mx-auto lg:mx-0"
             >
               Monitoring tells you after. After is irreversible.
             </motion.p>
 
             <motion.div
               variants={ITEM_VARIANTS}
+              className="mb-8 max-w-[540px] mx-auto lg:mx-0 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-3.5"
+            >
+              <p className="text-[10px] tracking-[0.14em] uppercase text-[var(--color-accent)] font-mono mb-2">
+                x402 on Base · Chainalysis
+              </p>
+              <p className="text-[13px] text-[var(--color-fg-muted)] leading-relaxed">
+                Share of <span className="text-[var(--color-fg)]">value</span> from payments $1+
+                rose <span className="font-mono">49% → 95%</span> in one year. The 10¢–$1 band fell{" "}
+                <span className="font-mono">46% → 4%</span>. Agents are moving real money — now, not
+                in three years.
+              </p>
+            </motion.div>
+
+            <motion.div
+              variants={ITEM_VARIANTS}
               className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-3"
             >
               <a
-                href={siteConfig.demo.attack}
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#try-now"
                 className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-[var(--color-fg)] text-[var(--color-bg)] text-sm font-semibold rounded-[6px] hover:opacity-90 transition-opacity"
               >
-                Watch $1.5B attack get blocked →
+                Run the API curl →
               </a>
               <a
                 href={siteConfig.demo.local}
                 className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 border border-[var(--color-border-strong)] text-sm text-[var(--color-fg-muted)] rounded-[6px] hover:text-[var(--color-fg)] hover:border-[rgba(255,255,255,0.2)] transition-all"
               >
-                Try interactive demo
+                Interactive demo
               </a>
             </motion.div>
 
