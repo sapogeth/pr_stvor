@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { DEMO_DENY_RECEIPT } from "@/data/demo-receipt";
 import { TrustReceipt } from "./trust-receipt";
 
 const FLOW = [
@@ -135,8 +136,8 @@ export function HowItWorks() {
 
             <div>
               <p className="text-[12px] text-[var(--color-fg-subtle)] mb-4 leading-relaxed">
-                This DENY receipt is real — load it in the verifier above. ES256 signature,
-                full bytes, offline check with only the published key.
+                This DENY receipt is real ({DEMO_DENY_RECEIPT.receiptId}) — click
+                &quot;Load the real blocked-attack receipt&quot; in Try now to verify ES256 in your browser.
               </p>
               <TrustReceipt variant="inline" />
             </div>

@@ -51,8 +51,8 @@
     <textarea id="keys" spellcheck="false" placeholder='{ "keys": [ { "kid": "...", "jwk": { ... } } ] }'></textarea>
 
     <div class="row">
-      <button id="verify">Verify offline</button>
-      <button id="demo" class="secondary" type="button">Load the real blocked-attack receipt</button>
+      <button id="demo" type="button">Load the real blocked-attack receipt</button>
+      <button id="verify" class="secondary">Verify pasted JSON</button>
     </div>
 
     <div id="verdict"></div>
@@ -65,6 +65,7 @@
 
     <script type="module">
       import { verifyReceiptOffline } from './stvor-core.js'
+      import { DEMO_DENY_FIXTURE } from './demo-fixture.js'
 
       const $ = (id) => document.getElementById(id)
       const verdict = $('verdict')
@@ -75,7 +76,7 @@
         if (detail) html += `<span class="detail">${detail}</span>`
         if (ok && receipt) {
           const f = (k) => (receipt[k] == null ? '' : `<dt>${k}</dt><dd>${String(receipt[k])}</dd>`)
-          html += '<dl>' + ['decision','binding','to','amount','currency','reason','agentId','kid','commitmentId']
+          html += '<dl>' + ['decision','binding','to','amount','currency','reason','agentId','kid','commitmentId','receiptId']
             .map(f).join('') + '</dl>'
         }
         verdict.innerHTML = html
@@ -97,9 +98,8 @@
       $('verify').addEventListener('click', runVerify)
 
       async function loadDemo(autoVerify) {
-        const demo = await fetch('/fixtures/demo-deny-receipt.json').then((r) => r.json())
-        $('receipt').value = JSON.stringify(demo.receipt, null, 2)
-        $('keys').value = JSON.stringify(demo.keyset, null, 2)
+        $('receipt').value = JSON.stringify(DEMO_DENY_FIXTURE.receipt, null, 2)
+        $('keys').value = JSON.stringify(DEMO_DENY_FIXTURE.keyset, null, 2)
         if (autoVerify) await runVerify()
       }
 

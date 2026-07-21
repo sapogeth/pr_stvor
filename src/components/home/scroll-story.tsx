@@ -120,14 +120,14 @@ const STEPS = [
     n: 6,
     label: "06 — Trust Receipt",
     title: "A cryptographically signed receipt is issued. Permanent proof.",
-    sub: "Immutable record of the blocked execution. Verifiable at receipts.stvor.io. Present it to compliance teams, auditors, counterparties, or regulators. It cannot be altered.",
+    sub: "Immutable record of the blocked execution. Verifiable at stvor.xyz/verifier. Present it to compliance teams, auditors, or counterparties.",
     code: [
       "{",
-      '  status:      "BLOCKED",',
-      '  reason:      "DESTINATION_MISMATCH",',
-      '  receipt_sig: "es256:3mK9...",',
-      '  agent_id:    "agt_finance_agent_v1",',
-      '  timestamp:   "2026-07-02T14:23:09Z"',
+      '  decision:    "DENY",',
+      '  reason:      "PAYLOAD_MISMATCH",',
+      '  signature:   "rQ3nsY5ghE3QT7acZGfWTmZJkoKkNgnE30CH-d2Ie22dAmBGW_mf49e7o1NOsn0EayW63fzbe_ZJhvdsfzXiuA",',
+      '  receiptId:   "rec_41gdRVEv7_Yo",',
+      '  binding:     "agent-committed"',
       "}",
     ],
     active: "receipt" as const,
@@ -387,7 +387,7 @@ function FlowDiagram({
           fill={step.showReceipt ? "rgba(16,185,129,0.6)" : "rgba(255,255,255,0.15)"}
           style={{ transition: "fill 0.3s" }}
         >
-          es256:3mK9pqR2...
+          rec_41gdRVEv7_Yo
         </text>
       </motion.g>
     </svg>

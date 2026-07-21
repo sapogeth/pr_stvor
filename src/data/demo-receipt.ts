@@ -1,10 +1,13 @@
-import demoFixture from "../../public/fixtures/demo-deny-receipt.json";
+import demoFixture from "./demo-deny-fixture.json";
+import demoKeyset from "./demo-keyset.json";
 
 export type DemoTrustReceipt = (typeof demoFixture)["receipt"];
 
 export const DEMO_DENY_FIXTURE = demoFixture;
 export const DEMO_DENY_RECEIPT = demoFixture.receipt;
+export const DEMO_DENY_KEYSET = demoKeyset;
 export const DEMO_COMMITTED_TO = demoFixture.committed.to;
+export const DEMO_ATTEMPTED_TO = demoFixture.attempted.to;
 
 /** Shorten long hex strings for display; full value stays in title/copy. */
 export function shortenHex(value: string, head = 10, tail = 4): string {

@@ -32,8 +32,8 @@ const PERSONAS = [
       '  agent_id:   agent.id,',
       '})',
       '',
-      '// receipt.status: "VERIFIED" | "BLOCKED"',
-      '// receipt.sig:    "es256:3mK9..."',
+      '// receipt.decision: "DENY"',
+      '// receipt.signature: (full ES256 base64url — see demo fixture)',
     ],
   },
   {

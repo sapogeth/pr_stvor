@@ -167,15 +167,16 @@ function verifyPayload(
         , CLI, or ~20 lines of WebCrypto.
       </DocsP>
       <DocsCode language="json" filename="receipt-sample.json">{`{
-  "ats_version": "0.1.0-draft",
-  "receipt_id": "ats1_01HXYZ...",
-  "agent_id": "agt_finance_agent_v1",
-  "decision": "ALLOW",
-  "checks_passed": ["payload_hash_match"],
-  "payload_hash": "sha256:a3f7c291...",
-  "committed_at": "2026-07-12T09:41:02Z",
-  "executed_at": "2026-07-12T09:41:03Z",
-  "signature": "es256:3mK9pqR2..."
+  "receiptId": "rec_41gdRVEv7_Yo",
+  "binding": "agent-committed",
+  "agentId": "agent_demo_blocked",
+  "decision": "DENY",
+  "reason": "PAYLOAD_MISMATCH",
+  "to": "0x8f3a2c91d4e7b0a6c5d8f1e2a4b7c9d0e3f6a8c1d",
+  "amount": "50000.00",
+  "currency": "USDC",
+  "kid": "key_xd4o8VukjEgAyNPg",
+  "signature": "rQ3nsY5ghE3QT7acZGfWTmZJkoKkNgnE30CH-d2Ie22dAmBGW_mf49e7o1NOsn0EayW63fzbe_ZJhvdsfzXiuA"
 }`}</DocsCode>
 
       <DocsH2 id="threat-model">07 · Threat model</DocsH2>

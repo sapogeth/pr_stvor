@@ -11,6 +11,7 @@ type Verdict =
   | { state: "fail"; title: string; detail?: string };
 
 const RECEIPT_FIELDS = [
+  "receiptId",
   "decision",
   "binding",
   "to",

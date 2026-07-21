@@ -1,5 +1,6 @@
 /**
- * Regenerate public/fixtures/demo-deny-receipt.json (offline, test issuer key).
+ * Regenerate a *local test* fixture (scripts/fixtures-gen issuer key).
+ * Production demo on the site uses src/data/demo-deny-fixture.json from stvor-hq/core capture.
  * Run: bun run scripts/gen-demo-receipt.ts
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'

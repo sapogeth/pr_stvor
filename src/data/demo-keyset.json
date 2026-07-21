@@ -1,0 +1,15 @@
+{
+  "keys": [
+    {
+      "kid": "key_xd4o8VukjEgAyNPg",
+      "jwk": {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "OkoIyza5qjlzQr241H1SleRWbmMzyd5XfI1nQiC2ObE",
+        "y": "JgOUmASMh81CebBvENrr_Jwosuax-75k0doSpFwPB_g",
+        "kid": "key_xd4o8VukjEgAyNPg"
+      },
+      "notBefore": "2026-07-21T08:51:08.443Z"
+    }
+  ]
+}
